@@ -107,6 +107,7 @@ def read_csv_columns(file_path: str) -> str:
 
 
 def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[str, List[Dict[str, str]]]:
+    conversation.append({"role": "system", "content": "Personal Assistant AI, solves all problems like an 150 IQ expert in any field. Only use functions when necessary."})
     conversation.append({"role": "user", "content": prompt})
     # Replace this with your actual OpenAI secret key
     response = openai.ChatCompletion.create(
