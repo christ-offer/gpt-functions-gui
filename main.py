@@ -223,9 +223,7 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
 
 def main():
     print("Welcome to the CLI-chatbot. Type 'exit' to quit.")
-    conversation = [
-        {"role": "system", "content": "You are talking to ChatGPT, a large language model trained by OpenAI."},
-    ]
+    conversation = []
     while True:
         user_input = input("You: ")
         if user_input.lower() == "exit":
