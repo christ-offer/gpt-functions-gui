@@ -26,6 +26,19 @@ def ensure_directory_exists(directory: str):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
+def write_code_file(filename: str, content: str) -> str:
+    if not is_valid_filename(filename):
+        raise ValueError(f"Invalid filename: {filename}")
+    # directory = os.path.dirname(filename)
+    # ensure_directory_exists(directory)
+    try:
+        with open(filename, 'w') as f:
+            f.write(content)
+        return f"File '{filename}' has been successfully written."
+    except Exception as e:
+        logging.error(f"An error occurred while writing the file: {str(e)}")
+        raise
+
 def knowledgebase_create_entry(filename: str, content: str) -> str:
     if not is_valid_filename(filename):
         raise ValueError("The provided filename is not valid.")
@@ -179,6 +192,18 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
                     "required": ["file_path"],
                 },
             },
+            {
+                "name": "write_code_file",
+                "description": "Writes a file to the system",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "filename": {"type": "string", "description": "The filename for the new entry."},
+                        "content": {"type": "string", "description": "The content for the new entry."},
+                    },
+                    "required": ["filename", "content"],
+                },
+            }
         ],
         function_call="auto",
     )
@@ -196,7 +221,7 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             function_response = python_repl(function_args.get("code"))
         elif function_name in ["knowledgebase_create_entry", "knowledgebase_read_entry", 
                                "knowledgebase_update_entry", "knowledgebase_list_entries", 
-                               "read_csv_columns"]:
+                               "read_csv_columns", "write_code_file"]:
             function_response = globals()[function_name](*function_args.values())
 
         logging.info(f"Function response: {function_response}")
