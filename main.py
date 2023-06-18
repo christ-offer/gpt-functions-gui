@@ -6,6 +6,7 @@ import json
 import sys
 import requests
 import io
+import html2text
 import logging
 import pandas as pd
 from contextlib import redirect_stdout
@@ -60,6 +61,23 @@ def wikidata_sparql_query(query: str) -> str:
     except Exception as e:
         return f"An error occurred: {e}"
 
+# Scrape a webpage and return the text content
+def scrape_webpage(url: str) -> str:
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xx
+
+        # Extract the text from the webpage
+        html = response.text
+        text = html2text.html2text(html)
+
+        return text
+    except requests.HTTPError as e:
+        return f"A HTTP error occurred: {str(e)}"
+    except requests.RequestException as e:
+        return f"A request exception occurred: {str(e)}"
+    except Exception as e:
+        return f"An error occurred: {e}"
 
 def write_code_file(filename: str, content: str) -> str:
     if not is_valid_filename(filename):
@@ -242,6 +260,17 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
                     "required": ["query"],
                 },
             },
+            {
+                "name": "scrape_webpage",
+                "description": "Scrapes a webpage and returns the result as a JSON string.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "url": {"type": "string", "description": "The URL of the webpage to scrape."},
+                    },
+                    "required": ["url"],
+                },
+            }
         ],
         function_call="auto",
     )
@@ -263,6 +292,8 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             function_response = globals()[function_name](*function_args.values())
         elif function_name == "wikidata_sparql_query":
             function_response = wikidata_sparql_query(function_args.get("query"))
+        elif function_name == "scrape_webpage":
+            function_response = scrape_webpage(function_args.get("url"))
 
         logging.info(f"Function response: {function_response}")
         
