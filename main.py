@@ -315,7 +315,7 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         second_response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-16k-0613",
             messages=[
-                {"role": "system", "content": "The following is the response from the function call:"},
+                {"role": "system", "content": "The following is the response from the function call(if the response is a scraped webpage that contains code examples, remember to provide all code examples when making a summary): "},
                 {"role": "user", "content": prompt},
                 message,
                 {
