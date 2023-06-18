@@ -1,10 +1,10 @@
-# OpenAI Chatbot with new Functions feature.
+# OpenAI CLI Chatbot with functions.
 
 ## Description
 
-Basic python chatbot with the new functions feature.
+Basic python CLI chatbot with the new functions feature.
 
-Basic history, not saved to file, just in memory.
+History in memory.
 
 ## Functions
 
