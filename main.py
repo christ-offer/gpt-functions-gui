@@ -311,7 +311,6 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
 
         logging.info(f"Function response: {function_response}")
         
-        print(f"Function response: {function_response}")
         second_response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-16k-0613",
             messages=[
