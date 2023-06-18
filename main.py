@@ -144,8 +144,8 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
 # GUI
 class ChatbotGUI:
     def __init__(self):
-        self.root = ThemedTk(theme="arc") # Choose a suitable theme
-        self.root.title('Chatbot')
+        self.root = ThemedTk(theme="black") # Choose a suitable theme
+        self.root.title('Personal Assistant')
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_columnconfigure(0, weight=1)  # Give sidebar and main frame different weight
         self.root.grid_columnconfigure(1, weight=4)
@@ -165,16 +165,6 @@ class ChatbotGUI:
         sidebar_label = ttk.Label(self.sidebar, text="Sidebar")
         sidebar_label.pack()
         
-        # Add a theme dropdown
-        available_themes = self.root.get_themes()  # get the list of themes
-        self.theme_var = tk.StringVar()  # create a StringVar to hold selected theme
-        self.theme_var.set(self.root.set_theme)  # set initial value to the current theme
-        theme_dropdown = ttk.Combobox(self.sidebar, textvariable=self.theme_var, values=available_themes)
-        theme_dropdown.pack()
-        theme_dropdown.bind('<<ComboboxSelected>>', self.change_theme)  # bind the selection event to the change_theme method
-
-
-
         # Add a reset button
         reset_button = ttk.Button(self.sidebar, text='Reset Conversation', command=self.reset_conversation)
         reset_button.pack()
@@ -186,6 +176,16 @@ class ChatbotGUI:
         # Add a csv upload button
         upload_csv_button = ttk.Button(self.sidebar, text='Upload CSV', command=self.upload_csv)
         upload_csv_button.pack()
+        
+        # Add a theme dropdown
+        available_themes = self.root.get_themes()  # get the list of themes
+        self.theme_var = tk.StringVar()  # create a StringVar to hold selected theme
+        self.theme_var.set(self.root.set_theme)  # set initial value to the current theme
+        theme_dropdown = ttk.Combobox(self.sidebar, textvariable=self.theme_var, values=available_themes)
+        theme_dropdown.pack(side=tk.BOTTOM, anchor='s')
+        theme_dropdown.bind('<<ComboboxSelected>>', self.change_theme)  # bind the selection event to the change_theme method
+
+
         
     def upload_image(self):
         image_file_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
@@ -235,7 +235,7 @@ class ChatbotGUI:
         self.create_input_area(main_frame)
 
     def create_text_area(self, frame):
-        self.text_area = scrolledtext.ScrolledText(frame, wrap='word', font=('Ubuntu', 20))
+        self.text_area = scrolledtext.ScrolledText(frame, wrap='word', background="oldlace", font=('Ubuntu', 16))
         self.text_area.tag_configure("user", background="lightgray", spacing3=10)  # style for user text
         self.text_area.tag_configure("bot", background="lightblue", spacing3=10)  # style for bot text
         self.text_area.grid(row=0, column=0, sticky='nsew')
@@ -244,7 +244,7 @@ class ChatbotGUI:
         bottom_frame = ttk.Frame(frame)
         bottom_frame.grid(sticky='nsew')
 
-        self.user_input_text = scrolledtext.ScrolledText(bottom_frame, wrap='word', height=1, font=('Ubuntu', 20)) # Set the font size and height
+        self.user_input_text = scrolledtext.ScrolledText(bottom_frame, wrap='word', background="oldlace", height=2, font=('Ubuntu', 16)) # Set the font size and height
         self.user_input_text.grid(row=0, column=0, sticky='nsew')
 
         send_button = ttk.Button(bottom_frame, text='Send', command=self.run_chat)
