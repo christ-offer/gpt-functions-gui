@@ -84,9 +84,14 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
 
         if function_name == "python_repl":
             function_response = python_repl(function_args.get("code"))
-        elif function_name in ["knowledgebase_create_entry", "knowledgebase_read_entry", 
-                               "knowledgebase_update_entry", "knowledgebase_list_entries", 
-                               "read_csv_columns", "write_code_file"]:
+        elif function_name == "knowledgebase_read_entry":
+            function_response = knowledgebase_read_entry(*function_args.values())
+            conversation.append({
+                "role": "assistant",
+                "content": function_response,  # directly add function response to the conversation
+            })
+            return function_response, conversation  # directly return function response
+        elif function_name in ["knowledgebase_create_entry","knowledgebase_update_entry", "knowledgebase_list_entries", "read_csv_columns", "write_code_file"]:
             function_response = globals()[function_name](*function_args.values())
         elif function_name == "wikidata_sparql_query":
             function_response = wikidata_sparql_query(function_args.get("query"))
@@ -116,23 +121,23 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         conversation.append(message)
         return message["content"], conversation
 
-def main():
-    print("Welcome to the CLI-chatbot. Type 'exit' to quit.")
-    conversation = []
-    while True:
-        user_input = input("You: ")
-        if user_input.lower() == "exit":
-            print("Goodbye!")
-            break
+# CLI
+#def main():
+#    print("Welcome to the CLI-chatbot. Type 'exit' to quit.")
+#    conversation = []
+#    while True:
+#        user_input = input("You: ")
+#        if user_input.lower() == "exit":
+#            print("Goodbye!")
+#            break
 
-        try:
-            response, conversation = run_conversation(user_input, conversation)
-            print(f"Bot: {response}")
-        except Exception as e:
-            print(f"An error occurred: {e}")
+#        try:
+#            response, conversation = run_conversation(user_input, conversation)
+#            print(f"Bot: {response}")
+#        except Exception as e:
+#            print(f"An error occurred: {e}")
 #if __name__ == "__main__":
 #    main()
-    
 
 # GUI
 class ChatbotGUI:

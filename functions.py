@@ -149,10 +149,10 @@ def knowledgebase_read_entry(filename: str) -> str:
     try:
         with open(filepath, 'r') as f:
             content = f.read()
-        html_content = markdown.markdown(content)
-        return html_content
+        return content  # Return content directly without conversion to HTML
     except Exception as e:
         return f"An error occurred while reading the entry: {str(e)}"
+
 
 def knowledgebase_update_entry(filename: str, content: str) -> str:
     if not is_valid_filename(filename):
