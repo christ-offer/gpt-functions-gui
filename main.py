@@ -3,13 +3,13 @@ import json
 import gradio as gr
 import logging
 from typing import Optional, Dict, List, Tuple
-
-from functions import function_params, wikidata_sparql_query, scrape_webpage, write_code_file, knowledgebase_create_entry, knowledgebase_list_entries, knowledgebase_read_entry, python_repl, read_csv_columns, image_to_text
 import tkinter as tk
 from tkinter import scrolledtext
 from ttkthemes import ThemedTk
 from tkinter import ttk
 import tkinter.font as tkfont
+
+from functions import function_params, wikidata_sparql_query, scrape_webpage, write_code_file, knowledgebase_create_entry, knowledgebase_list_entries, knowledgebase_read_entry, python_repl, read_csv_columns, image_to_text
 
 conversation = []
 
