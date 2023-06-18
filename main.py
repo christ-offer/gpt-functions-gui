@@ -3,7 +3,7 @@ import json
 import logging
 from typing import Optional, Dict, List, Tuple
 
-from functions import function_params, wikidata_sparql_query, scrape_webpage, write_code_file, knowledgebase_create_entry, knowledgebase_list_entries, knowledgebase_read_entry, python_repl, read_csv_columns
+from functions import function_params, wikidata_sparql_query, scrape_webpage, write_code_file, knowledgebase_create_entry, knowledgebase_list_entries, knowledgebase_read_entry, python_repl, read_csv_columns, image_to_text
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
@@ -24,6 +24,7 @@ system_message = """PersonalAssistant {
   /kb_list - Uses the knowledgebase_list_entries function
   /kb_read [entry_name] - Uses the knowledgebase_read_entry function
   /csv [filename] - Uses the read_csv_columns function
+  /image_to_text [image] - Uses the image_to_text function
   /help - Returns a list of all available functions
 }
 """
@@ -50,6 +51,8 @@ read_csv_columns
 If the request succeeds, return a list of all columns in the CSV file
 python_repl
 If the request succeeds, return the output of the code or the filename of the saved output(s)
+image_to_text
+If the request succeeds, return the text caption/description
 """
 
 def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[str, List[Dict[str, str]]]:
@@ -68,8 +71,8 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
     if message.get("function_call"):
         function_name = message["function_call"]["name"]
         function_args = json.loads(message["function_call"]["arguments"])
-        logging.info(f"Function name: {function_name}")
-        logging.info(f"Function arguments: {function_args}")
+        print(f"Function name: {function_name}")
+        print(f"Function arguments: {function_args}")
 
         if function_name == "python_repl":
             function_response = python_repl(function_args.get("code"))
@@ -81,6 +84,8 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             function_response = wikidata_sparql_query(function_args.get("query"))
         elif function_name == "scrape_webpage":
             function_response = scrape_webpage(function_args.get("url"))
+        elif function_name == "image_to_text":
+            function_response = image_to_text(function_args.get("filename"))
 
         logging.info(f"Function response: {function_response}")
         

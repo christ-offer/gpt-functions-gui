@@ -16,6 +16,7 @@ History in memory.
 * knowledgebase_read_entry - read a knowledgebase entry
 * python_repl - run python code
 * read_csv_columns - read columns from a csv file
+* image_to_text - convert an image to text caption using Coca, based on CoCa clone from: https://huggingface.co/spaces/fffiloni/CoCa-clone
 
 ## System Messages
 
@@ -30,7 +31,7 @@ PersonalAssistant {
     You only use your functions when they are called
   }
   
-  /python [idea] - Uses the python_repl function
+  /python [idea] - Uses the python_repl function.
   /wikidata [question] - Uses the wikidata_sparql_query function
   /scrape [url] - Uses the scrape_webpage function
   /write_code [idea] - Generates code for the idea, uses the write_code_file function
@@ -38,6 +39,7 @@ PersonalAssistant {
   /kb_list - Uses the knowledgebase_list_entries function
   /kb_read [entry_name] - Uses the knowledgebase_read_entry function
   /csv [filename] - Uses the read_csv_columns function
+  /image_to_text [image] - Uses the image_to_text function
   /help - Returns a list of all available functions
 }
 ```
@@ -66,6 +68,8 @@ read_csv_columns
 If the request succeeds, return a list of all columns in the CSV file
 python_repl
 If the request succeeds, return the output of the code or the filename of the saved output(s)
+image_to_text
+If the request succeeds, return the text caption/description
 ```
 
 ## Usage
