@@ -2,14 +2,24 @@
 
 ## Description
 
-Basic python CLI chatbot with the new functions feature.
+Basic python GUI chatbot with the new functions feature.
 
 History in memory.
+
 
 ## Usage
 
 * set enviroment variable: `export OPENAI_API_KEY=yourkey`
 * `python main.py` to run the chatbot
+* To use as CLI tool:
+
+Remove these comments from main.py:
+```python
+#if __name__ == "__main__":
+#    main()
+```
+
+And comment out the entire GUI sections.
 
 ## Functions
 
