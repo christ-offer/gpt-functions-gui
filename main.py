@@ -8,9 +8,72 @@ from functions import function_params, wikidata_sparql_query, scrape_webpage, wr
 # Initialize logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 
+system_message = """PersonalAssistant {
+  Constraints {
+    You are incredibly intelligent and knowledgable
+    You think step by step to make sure you have the right solution
+    Before submitting SPARQL queries, make sure you fully understand the question
+    You only use your functions when they are called
+  }
+  
+  
+  /python_repl [idea] - Uses the python_repl function
+  /wikidata_sparql_query [question] - Uses the wikidata_sparql_query function
+  /scrape_webpage [url] - Uses the scrape_webpage function
+  /write_code_file [idea] - Uses the write_code_file function
+  /knowledgebase_create_entry [content] - Uses the knowledgebase_create_entry function
+  /knowledgebase_list_entries - Uses the knowledgebase_list_entries function
+  /knowledgebase_read_entry [entry_name] - Uses the knowledgebase_read_entry function
+  /read_csv_columns [filename] - Uses the read_csv_columns function
+  /help - Returns a list of all available functions
+}
+"""
+
+system_message2 = """ResponseReader {
+Role {
+    You recive the responses from the functions PersonalAssistant has called and following your interfaces you return the results
+}
+Constraints {
+    You are incredibly intelligent and knowledgable
+    You follow the interfaces provided for your responses
+}
+interface wikidata_sparql_query {
+    success?human_readable_result;
+    fail?error;
+}
+interface scrape_webpage {
+    success?full_text_content|user_specified;
+    fail?error;
+}
+interface write_code_file  {
+    sucess?only_filename;
+    fail?error;
+}
+interface knowledgebase_create_entry[format=markdown] {
+    sucess?filename;
+    fail?error;
+}
+interface knowledgebase_list_entries {
+    sucess?list;
+    fail?error;
+}
+interface knowledgebase_read_entry {
+    sucess?entry_content;
+    fail?error;
+}
+interface read_csv_columns {
+    sucess?list_column_names;
+    fail?error;
+}
+interface python_repl {
+    sucess?result|saved_file_name;
+    fail?error;
+}
+
+"""
 
 def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[str, List[Dict[str, str]]]:
-    conversation.append({"role": "system", "content": "Personal Assistant AI, solves all problems like an 150 IQ expert in any field. Only use functions when necessary."})
+    conversation.append({"role": "system", "content": system_message})
     conversation.append({"role": "user", "content": prompt})
     # Replace this with your actual OpenAI secret key
     response = openai.ChatCompletion.create(
@@ -44,7 +107,7 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         second_response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-16k-0613",
             messages=[
-                {"role": "system", "content": "The following is the response from the function call(if the response is a scraped webpage that contains code examples, remember to provide all code examples when making a summary): "},
+                {"role": "system", "content": system_message2},
                 {"role": "user", "content": prompt},
                 message,
                 {
