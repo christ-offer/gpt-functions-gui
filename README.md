@@ -6,6 +6,10 @@
 ## Read CSV and Use Python to plot
 ![Read CSV and Use Python to plot](image-2.png)
 
+## Image to Text
+
+![Image to Text](image.png)
+
 ## Functions
 
 * wikidata_sparql_query - query wikidata
