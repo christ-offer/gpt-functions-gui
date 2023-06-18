@@ -11,6 +11,8 @@ Basic history, not saved to file, just in memory.
 * reads columns from csv files
 * read/write/update/list knowledgebase (create a /kb folder before starting)
 * python repl, allows for running python code (math, plotting, graphs, etc)
+* wikidata sparql queries
+* write code to file
 
 ## Usage
 
