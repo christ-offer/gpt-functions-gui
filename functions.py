@@ -73,6 +73,22 @@ def scrape_webpage(url: str) -> str:
     except Exception as e:
         return f"An error occurred: {e}"
 
+def wolfram_language_query(query: str) -> str:
+    url = "http://api.wolframalpha.com/v1/result"
+    params = {"appid": os.environ.get("WOLFRAM_APP_ID"), "i": query}
+    
+    try:
+        response = requests.get(url, params=params)
+        response.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xx
+
+        return response.text
+    except requests.HTTPError as e:
+        return f"A HTTP error occurred: {str(e)}"
+    except requests.RequestException as e:
+        return f"A request exception occurred: {str(e)}"
+    except Exception as e:
+        return f"An error occurred: {e}"
+
 def write_code_file(filename: str, content: str) -> str:
     if not is_valid_filename(filename):
         return f"Invalid filename: {filename}"
@@ -256,5 +272,16 @@ function_params = [
             },
             "required": ["url"],
         },
-    }
+    },
+    #{
+    #    "name": "wolfram_language_query",
+    #    "description": "Executes a Wolfram Language query and returns the result as a JSON string.",
+    #    "parameters": {
+    #        "type": "object",
+    #        "properties": {
+    #            "query": {"type": "string", "description": "The Wolfram Language query to execute. Must be a SINGLE LINE STRING!"},
+    #        },
+    #        "required": ["query"],
+    #    },
+    #},
 ]

@@ -16,7 +16,7 @@ system_message = """PersonalAssistant {
     You only use your functions when they are called
   }
   
-  /python [idea] - Uses the python_repl function
+  /python [idea] - Uses the python_repl function.
   /wikidata [question] - Uses the wikidata_sparql_query function
   /scrape [url] - Uses the scrape_webpage function
   /write_code [idea] - Generates code for the idea, uses the write_code_file function
@@ -28,47 +28,28 @@ system_message = """PersonalAssistant {
 }
 """
 
-system_message2 = """ResponseReader {
-Role {
-    You recive the responses from the functions PersonalAssistant has called and following your interfaces you return the results
-}
-Constraints {
-    You are incredibly intelligent and knowledgable
-    You follow the interfaces provided for your responses
-}
-interface wikidata_sparql_query {
-    success?human_readable_result;
-    fail?error;
-}
-interface scrape_webpage {
-    success?full_text_content|user_specified;
-    fail?error;
-}
-interface write_code_file  {
-    sucess?only_filename;
-    fail?error;
-}
-interface knowledgebase_create_entry[format=markdown] {
-    sucess?filename;
-    fail?error;
-}
-interface knowledgebase_list_entries {
-    sucess?list;
-    fail?error;
-}
-interface knowledgebase_read_entry {
-    sucess?entry_content;
-    fail?error;
-}
-interface read_csv_columns {
-    sucess?list_column_names;
-    fail?error;
-}
-interface python_repl {
-    sucess?result|saved_file_name;
-    fail?error;
-}
+system_message2 = """
+You recive the responses from the functions PersonalAssistant has called
 
+STRICT Response format:
+If the request fails, return an error message
+
+wikidata_sparql_query
+If the query is valid, return the results of the query in human readable format
+scrape_webpage
+If the request succeeds, return the full text content of the webpage (unless user has specified a summary/abstract). Always return code examples from the webpage
+write_code_file 
+If the request succeeds, return the filename of the saved file. Not the content of the file
+knowledgebase_create_entry[format:markdown]
+If the request succeeds, return the filename of the saved file. Not the content of the file
+knowledgebase_list_entries
+If the request succeeds, return a list of all entries in the knowledgebase
+knowledgebase_read_entry
+If the request succeeds, return the full content of the entry (unless user has specified a summary/abstract) Always return code examples from the entry
+read_csv_columns
+If the request succeeds, return a list of all columns in the CSV file
+python_repl
+If the request succeeds, return the output of the code or the filename of the saved output(s)
 """
 
 def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[str, List[Dict[str, str]]]:
