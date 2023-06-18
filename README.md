@@ -6,6 +6,11 @@ Basic python CLI chatbot with the new functions feature.
 
 History in memory.
 
+## Usage
+
+* set enviroment variable: `export OPENAI_API_KEY=yourkey`
+* `python main.py` to run the chatbot
+
 ## Functions
 
 * wikidata_sparql_query - query wikidata
@@ -71,8 +76,3 @@ If the request succeeds, return the output of the code or the filename of the sa
 image_to_text
 If the request succeeds, return the text caption/description
 ```
-
-## Usage
-
-* set enviroment variable: `export OPENAI_API_KEY=yourkey`
-* `python main.py` to run the chatbot
