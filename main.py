@@ -142,8 +142,6 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
 #    main()
 
 # GUI
-
-
 class ChatbotGUI:
     def __init__(self):
         self.root = ThemedTk(theme="arc") # Choose a suitable theme
@@ -166,6 +164,16 @@ class ChatbotGUI:
         # Add a widget to make the sidebar visible. Adjust as necessary for your design.
         sidebar_label = ttk.Label(self.sidebar, text="Sidebar")
         sidebar_label.pack()
+        
+        # Add a theme dropdown
+        available_themes = self.root.get_themes()  # get the list of themes
+        self.theme_var = tk.StringVar()  # create a StringVar to hold selected theme
+        self.theme_var.set(self.root.set_theme)  # set initial value to the current theme
+        theme_dropdown = ttk.Combobox(self.sidebar, textvariable=self.theme_var, values=available_themes)
+        theme_dropdown.pack()
+        theme_dropdown.bind('<<ComboboxSelected>>', self.change_theme)  # bind the selection event to the change_theme method
+
+
 
         # Add a reset button
         reset_button = ttk.Button(self.sidebar, text='Reset Conversation', command=self.reset_conversation)
@@ -243,7 +251,11 @@ class ChatbotGUI:
         send_button.grid(row=0, column=1)
 
         bottom_frame.grid_columnconfigure(0, weight=1)
-
+    
+    def change_theme(self, event):
+        selected_theme = self.theme_var.get()
+        self.root.set_theme(selected_theme)
+    
     def run_chat(self, event=None):
         user_input = self.user_input_text.get("1.0", tk.END).strip()
         try:
