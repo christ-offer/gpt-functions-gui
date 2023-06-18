@@ -1,9 +1,17 @@
 import openai
 import json
+import gradio as gr
 import logging
 from typing import Optional, Dict, List, Tuple
 
 from functions import function_params, wikidata_sparql_query, scrape_webpage, write_code_file, knowledgebase_create_entry, knowledgebase_list_entries, knowledgebase_read_entry, python_repl, read_csv_columns, image_to_text
+import tkinter as tk
+from tkinter import scrolledtext
+from ttkthemes import ThemedTk
+from tkinter import ttk
+import tkinter.font as tkfont
+
+conversation = []
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
@@ -122,5 +130,64 @@ def main():
             print(f"Bot: {response}")
         except Exception as e:
             print(f"An error occurred: {e}")
+#if __name__ == "__main__":
+#    main()
+    
+
+# GUI
+class ChatbotGUI:
+    def __init__(self):
+        self.root = ThemedTk(theme="arc") # Choose a suitable theme
+        self.root.title('Chatbot')
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.create_text_area()
+        self.create_input_area()
+        self.root.bind('<Return>', self.run_chat)  # If you press 'Enter', it will trigger the run_chat function
+
+    def create_text_area(self):
+        frame = ttk.Frame(self.root)
+        frame.grid(sticky='nsew')
+
+        self.root.grid_rowconfigure(0, weight=1)
+        self.root.grid_columnconfigure(0, weight=1)
+
+        self.text_area = scrolledtext.ScrolledText(frame, wrap='word', font=('Ubuntu', 20)) # Set the font size
+        self.text_area.grid(row=0, column=0, sticky='nsew')
+
+        frame.grid_rowconfigure(0, weight=1)
+        frame.grid_columnconfigure(0, weight=1)
+
+    def create_input_area(self):
+        bottom_frame = ttk.Frame(self.root)
+        bottom_frame.grid(sticky='nsew')
+
+        self.user_input_text = scrolledtext.ScrolledText(bottom_frame, wrap='word', height=1, font=('Ubuntu', 20)) # Set the font size and height
+        self.user_input_text.grid(row=0, column=0, sticky='nsew')
+
+        send_button = ttk.Button(bottom_frame, text='Send', command=self.run_chat)
+        send_button.grid(row=0, column=1)
+
+        bottom_frame.grid_columnconfigure(0, weight=1)
+
+    def run_chat(self, event=None):
+        """
+        Process the user input and display the bot's response in the text area.
+        """
+        user_input = self.user_input_text.get("1.0", tk.END).strip()
+        try:
+            response, _ = run_conversation(user_input, conversation)
+        except Exception as e:
+            response = f"Error: {str(e)}"
+        self.text_area.insert(tk.INSERT, f'You: {user_input}\n')
+        self.text_area.insert(tk.INSERT, f'Bot: {response}\n')
+        self.user_input_text.delete("1.0", tk.END)
+
+    def run(self):
+        self.root.mainloop()
+
+
 if __name__ == "__main__":
-    main()
+    chatbot_gui = ChatbotGUI()
+    chatbot_gui.run()
