@@ -7,6 +7,9 @@ from tkinter import scrolledtext
 from ttkthemes import ThemedTk
 from tkinter import ttk
 import tkinter.font as tkfont
+import os
+from tkinter import filedialog
+import shutil
 
 from functions import function_params, wikidata_sparql_query, scrape_webpage, write_code_file, knowledgebase_create_entry, knowledgebase_list_entries, knowledgebase_read_entry, python_repl, read_csv_columns, image_to_text
 
@@ -139,32 +142,96 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
 #    main()
 
 # GUI
+
+
 class ChatbotGUI:
     def __init__(self):
         self.root = ThemedTk(theme="arc") # Choose a suitable theme
         self.root.title('Chatbot')
+        self.root.grid_rowconfigure(0, weight=1)
+        self.root.grid_columnconfigure(0, weight=1)  # Give sidebar and main frame different weight
+        self.root.grid_columnconfigure(1, weight=4)
+        self.conversation = []  # Add this line
         self.create_widgets()
 
     def create_widgets(self):
-        self.create_text_area()
-        self.create_input_area()
+        self.create_sidebar()
+        self.create_main_area()
         self.root.bind('<Return>', self.run_chat)  # If you press 'Enter', it will trigger the run_chat function
 
-    def create_text_area(self):
-        frame = ttk.Frame(self.root)
-        frame.grid(sticky='nsew')
+    def create_sidebar(self):
+        self.sidebar = ttk.Frame(self.root, width=200)
+        self.sidebar.grid(row=0, column=0, sticky='nsew')
 
-        self.root.grid_rowconfigure(0, weight=1)
-        self.root.grid_columnconfigure(0, weight=1)
+        # Add a widget to make the sidebar visible. Adjust as necessary for your design.
+        sidebar_label = ttk.Label(self.sidebar, text="Sidebar")
+        sidebar_label.pack()
 
+        # Add a reset button
+        reset_button = ttk.Button(self.sidebar, text='Reset Conversation', command=self.reset_conversation)
+        reset_button.pack()
+        
+        # Add an image upload button
+        upload_button = ttk.Button(self.sidebar, text='Upload Image', command=self.upload_image)
+        upload_button.pack()
+        
+        # Add a csv upload button
+        upload_csv_button = ttk.Button(self.sidebar, text='Upload CSV', command=self.upload_csv)
+        upload_csv_button.pack()
+        
+    def upload_image(self):
+        image_file_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
+        if image_file_path:
+            target_directory = "data/images"
+            os.makedirs(target_directory, exist_ok=True)
+            target_file_path = os.path.join(target_directory, os.path.basename(image_file_path))
+            import shutil
+            shutil.copy(image_file_path, target_file_path)
+            
+            caption = image_to_text(image_file_path)
+            # Insert message into text area
+            self.text_area.insert(tk.INSERT, f'Bot: {os.path.basename(image_file_path)} was added to image folder\n The caption is: {caption}\n')
+            
+            self.conversation.append({
+                "role": "assistant",
+                "content": f'Bot: {os.path.basename(image_file_path)} was added to image folder\nThe capition is: {caption}\n',  # directly add function response to the conversation
+            })
+
+    def upload_csv(self):
+        csv_file_path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
+        if csv_file_path:
+            target_directory = "data/csv"
+            os.makedirs(target_directory, exist_ok=True)
+            target_file_path = os.path.join(target_directory, os.path.basename(csv_file_path))
+            shutil.copy(csv_file_path, target_file_path)
+            
+            columns = read_csv_columns(csv_file_path)
+
+            # Insert message into text area
+            self.text_area.insert(tk.INSERT, f'Bot: {os.path.basename(csv_file_path)} was added to CSV folder\nThe columns are: {columns}\n')
+            # add same text to conversation
+            self.conversation.append({
+                "role": "assistant",
+                "content": f'Bot: {os.path.basename(csv_file_path)} was added to CSV folder\nThe columns are: {columns}\n',  # directly add function response to the conversation
+            })
+
+
+
+    def create_main_area(self):
+        main_frame = ttk.Frame(self.root)
+        main_frame.grid(row=0, column=1, sticky='nsew')
+        main_frame.grid_rowconfigure(0, weight=1)
+        main_frame.grid_columnconfigure(0, weight=1)
+
+        self.create_text_area(main_frame)
+        self.create_input_area(main_frame)
+
+    def create_text_area(self, frame):
         self.text_area = scrolledtext.ScrolledText(frame, wrap='word', font=('Ubuntu', 20)) # Set the font size
         self.text_area.grid(row=0, column=0, sticky='nsew')
 
-        frame.grid_rowconfigure(0, weight=1)
-        frame.grid_columnconfigure(0, weight=1)
-
-    def create_input_area(self):
-        bottom_frame = ttk.Frame(self.root)
+    def create_input_area(self, frame):
+        bottom_frame = ttk.Frame(frame)
         bottom_frame.grid(sticky='nsew')
 
         self.user_input_text = scrolledtext.ScrolledText(bottom_frame, wrap='word', height=1, font=('Ubuntu', 20)) # Set the font size and height
@@ -181,15 +248,20 @@ class ChatbotGUI:
         """
         user_input = self.user_input_text.get("1.0", tk.END).strip()
         try:
-            response, _ = run_conversation(user_input, conversation)
+            response, _ = run_conversation(user_input, self.conversation)  # Adjust this line
         except Exception as e:
             response = f"Error: {str(e)}"
         self.text_area.insert(tk.INSERT, f'You: {user_input}\n')
         self.text_area.insert(tk.INSERT, f'Bot: {response}\n')
         self.user_input_text.delete("1.0", tk.END)
 
+    def reset_conversation(self):
+        self.conversation = []
+        self.text_area.delete('1.0', tk.END)
+
     def run(self):
         self.root.mainloop()
+
 
 
 if __name__ == "__main__":
