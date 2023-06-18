@@ -1,5 +1,12 @@
 # OpenAI GUI Chatbot with functions.
 
+## Description
+
+GUI chatbot playground with the new functions feature.
+
+GUI is pretty darn basic.
+History in memory only. Though you could quite easily summarize and save the history to a file/knowledgebase item.
+
 ## GUI Screenshot
 ![Alt text](image-1.png)
 
@@ -22,13 +29,6 @@
 * read_csv_columns - read columns from a csv file
 * image_to_text - convert an image to text caption using Coca, based on CoCa clone from: https://huggingface.co/spaces/fffiloni/CoCa-clone
 
-
-## Description
-
-GUI chatbot with the new functions feature.
-
-GUI is extremely basic.
-History in memory.
 
 ## Usage
 
