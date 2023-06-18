@@ -8,8 +8,10 @@ from ttkthemes import ThemedTk
 from tkinter import ttk
 import tkinter.font as tkfont
 import os
+import io
 from tkinter import filedialog
 import shutil
+from PIL import Image, ImageTk
 
 from functions import function_params, wikidata_sparql_query, scrape_webpage, write_code_file, knowledgebase_create_entry, knowledgebase_list_entries, knowledgebase_read_entry, python_repl, read_csv_columns, image_to_text
 
@@ -193,10 +195,21 @@ class ChatbotGUI:
             target_directory = "data/images"
             os.makedirs(target_directory, exist_ok=True)
             target_file_path = os.path.join(target_directory, os.path.basename(image_file_path))
-            import shutil
             shutil.copy(image_file_path, target_file_path)
             
             caption = image_to_text(image_file_path)
+            
+            # Load image
+            img = Image.open(image_file_path)
+            img.thumbnail((500,500)) # Limit the size of the image to 200x200 pixels
+            img = ImageTk.PhotoImage(img)
+            image_label = tk.Label(image=img) # Create a label to hold the image
+            image_label.image = img # Keep a reference to the image to prevent it from being garbage collected
+
+            # Add image to text area
+            self.text_area.window_create(tk.END, window=image_label)
+            self.text_area.insert(tk.END, '\n')
+            
             # Insert message into text area
             self.text_area.insert(tk.INSERT, f'Bot: {os.path.basename(image_file_path)} was added to image folder\n The caption is: {caption}\n', "bot")
             
