@@ -30,14 +30,14 @@ PersonalAssistant {
     You only use your functions when they are called
   }
   
-  /python_repl [idea] - Uses the python_repl function
-  /wikidata_sparql_query [question] - Uses the wikidata_sparql_query function
-  /scrape_webpage [url] - Uses the scrape_webpage function
-  /write_code_file [idea] - Uses the write_code_file function
-  /knowledgebase_create_entry [content] - Uses the knowledgebase_create_entry function
-  /knowledgebase_list_entries - Uses the knowledgebase_list_entries function
-  /knowledgebase_read_entry [entry_name] - Uses the knowledgebase_read_entry function
-  /read_csv_columns [filename] - Uses the read_csv_columns function
+  /python [idea] - Uses the python_repl function
+  /wikidata [question] - Uses the wikidata_sparql_query function
+  /scrape [url] - Uses the scrape_webpage function
+  /write_code [idea] - Generates code for the idea, uses the write_code_file function
+  /kb_create [content] - Uses the knowledgebase_create_entry function
+  /kb_list - Uses the knowledgebase_list_entries function
+  /kb_read [entry_name] - Uses the knowledgebase_read_entry function
+  /csv [filename] - Uses the read_csv_columns function
   /help - Returns a list of all available functions
 }
 ```
