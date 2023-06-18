@@ -8,6 +8,8 @@ import requests
 import io
 import html2text
 import logging
+from bs4 import BeautifulSoup
+import re
 import pandas as pd
 from contextlib import redirect_stdout
 from typing import Optional, Dict, List, Tuple
@@ -61,15 +63,27 @@ def wikidata_sparql_query(query: str) -> str:
     except Exception as e:
         return f"An error occurred: {e}"
 
-# Scrape a webpage and return the text content
 def scrape_webpage(url: str) -> str:
     try:
         response = requests.get(url)
         response.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xx
 
-        # Extract the text from the webpage
-        html = response.text
-        text = html2text.html2text(html)
+        # Parse the webpage with BeautifulSoup
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        # Remove any existing <a> tags (hyperlinks)
+        for a in soup.find_all('a', href=True):
+            a.decompose()
+
+        # Remove any existing <img> tags (images)
+        for img in soup.find_all('img', src=True):
+            img.decompose()
+
+        # Extract text from the parsed HTML
+        text = soup.get_text()
+
+        # Remove extra whitespace
+        text = ' '.join(text.split())
 
         return text
     except requests.HTTPError as e:
