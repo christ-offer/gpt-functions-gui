@@ -1,5 +1,11 @@
 # OpenAI GUI Chatbot with functions.
 
+## GUI Screenshot
+![GUI Screenshot](image.png)
+
+## Read CSV and Use Python to plot
+![Read CSV and Use Python to plot](image-1.png)
+
 ## Functions
 
 * wikidata_sparql_query - query wikidata
@@ -19,8 +25,6 @@ GUI chatbot with the new functions feature.
 
 GUI is extremely basic.
 History in memory.
-
-![GUI Screenshot](image.png)
 
 ## Usage
 
