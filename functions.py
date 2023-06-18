@@ -79,19 +79,24 @@ def scrape_webpage(url: str) -> str:
 def image_to_text(image_path, seq_len=20):
     device = torch.device("cpu")
 
-    model, _, transform = open_clip.create_model_and_transforms(
-        "coca_ViT-L-14",
-        pretrained="mscoco_finetuned_laion2B-s13B-b90k"
-    )
-    model.to(device)
+    try:
+        model, _, transform = open_clip.create_model_and_transforms(
+            "coca_ViT-L-14",
+            pretrained="mscoco_finetuned_laion2B-s13B-b90k"
+        )
+        model.to(device)
 
-    image = Image.open(image_path).convert("RGB")
-    im = transform(image).unsqueeze(0).to(device)
+        image = Image.open(image_path).convert("RGB")
+        im = transform(image).unsqueeze(0).to(device)
     
-    with torch.no_grad(), torch.cuda.amp.autocast():
-        generated = model.generate(im, seq_len=seq_len)
-    
-    return open_clip.decode(generated[0].detach()).split("<end_of_text>")[0].replace("<start_of_text>", "")
+        with torch.no_grad(), torch.cuda.amp.autocast():
+            generated = model.generate(im, seq_len=seq_len)
+        
+        return open_clip.decode(generated[0].detach()).split("<end_of_text>")[0].replace("<start_of_text>", "")
+    except FileNotFoundError:
+        return f"No file found at {image_path}"
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
 
 def wolfram_language_query(query: str) -> str:
     url = "http://api.wolframalpha.com/v1/result"
