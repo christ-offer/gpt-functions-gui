@@ -1,9 +1,10 @@
-# OpenAI CLI Chatbot with functions.
+# OpenAI GUI Chatbot with functions.
 
 ## Description
 
-Basic python GUI chatbot with the new functions feature.
+GUI chatbot with the new functions feature.
 
+GUI is extremely basic.
 History in memory.
 
 
@@ -13,13 +14,8 @@ History in memory.
 * `python main.py` to run the chatbot
 * To use as CLI tool:
 
-Remove these comments from main.py:
-```python
-#if __name__ == "__main__":
-#    main()
-```
+In `main.py` comment out the entire GUI section and uncomment the CLI section.
 
-And comment out the entire GUI sections.
 
 ## Functions
 
