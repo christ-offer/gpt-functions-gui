@@ -1,22 +1,5 @@
 # OpenAI GUI Chatbot with functions.
 
-## Description
-
-GUI chatbot with the new functions feature.
-
-GUI is extremely basic.
-History in memory.
-
-
-## Usage
-
-* set enviroment variable: `export OPENAI_API_KEY=yourkey`
-* `python main.py` to run the chatbot
-* To use as CLI tool:
-
-In `main.py` comment out the entire GUI section and uncomment the CLI section.
-
-
 ## Functions
 
 * wikidata_sparql_query - query wikidata
@@ -28,6 +11,24 @@ In `main.py` comment out the entire GUI section and uncomment the CLI section.
 * python_repl - run python code
 * read_csv_columns - read columns from a csv file
 * image_to_text - convert an image to text caption using Coca, based on CoCa clone from: https://huggingface.co/spaces/fffiloni/CoCa-clone
+
+
+## Description
+
+GUI chatbot with the new functions feature.
+
+GUI is extremely basic.
+History in memory.
+
+![GUI Screenshot](image.png)
+
+## Usage
+
+* set enviroment variable: `export OPENAI_API_KEY=yourkey`
+* `python main.py` to run the chatbot
+* To use as CLI tool:
+
+In `main.py` comment out the entire GUI section and uncomment the CLI section.
 
 ## System Messages
 
