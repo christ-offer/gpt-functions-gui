@@ -25,6 +25,7 @@ History in memory.
 ## Usage
 
 * set enviroment variable: `export OPENAI_API_KEY=yourkey`
+* `pip install -r requirements.txt` to install dependencies
 * `python main.py` to run the chatbot
 * To use as CLI tool:
 
