@@ -1,10 +1,10 @@
 # OpenAI GUI Chatbot with functions.
 
 ## GUI Screenshot
-![GUI Screenshot](image.png)
+![Alt text](image-1.png)
 
 ## Read CSV and Use Python to plot
-![Read CSV and Use Python to plot](image-1.png)
+![Read CSV and Use Python to plot](image-2.png)
 
 ## Functions
 
