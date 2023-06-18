@@ -1,6 +1,5 @@
 import openai
 import json
-import gradio as gr
 import logging
 from typing import Optional, Dict, List, Tuple
 import tkinter as tk

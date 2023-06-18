@@ -1,0 +1,9 @@
+openai
+ttkthemes
+requests
+bs4
+markdown
+pandas
+torch
+open_clip
+PIL

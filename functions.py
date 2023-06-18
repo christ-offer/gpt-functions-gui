@@ -8,7 +8,6 @@ import pandas as pd
 import torch
 import open_clip
 from PIL import Image
-import tempfile
 import urllib
 
 from utils import is_valid_filename, ensure_directory_exists
