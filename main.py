@@ -190,7 +190,7 @@ class ChatbotGUI:
             
             caption = image_to_text(image_file_path)
             # Insert message into text area
-            self.text_area.insert(tk.INSERT, f'Bot: {os.path.basename(image_file_path)} was added to image folder\n The caption is: {caption}\n')
+            self.text_area.insert(tk.INSERT, f'Bot: {os.path.basename(image_file_path)} was added to image folder\n The caption is: {caption}\n', "bot")
             
             self.conversation.append({
                 "role": "assistant",
@@ -208,7 +208,7 @@ class ChatbotGUI:
             columns = read_csv_columns(csv_file_path)
 
             # Insert message into text area
-            self.text_area.insert(tk.INSERT, f'Bot: {os.path.basename(csv_file_path)} was added to CSV folder\nThe columns are: {columns}\n')
+            self.text_area.insert(tk.INSERT, f'Bot: {os.path.basename(csv_file_path)} was added to CSV folder\nThe columns are: {columns}\n', "bot")
             # add same text to conversation
             self.conversation.append({
                 "role": "assistant",
@@ -227,7 +227,9 @@ class ChatbotGUI:
         self.create_input_area(main_frame)
 
     def create_text_area(self, frame):
-        self.text_area = scrolledtext.ScrolledText(frame, wrap='word', font=('Ubuntu', 20)) # Set the font size
+        self.text_area = scrolledtext.ScrolledText(frame, wrap='word', font=('Ubuntu', 20))
+        self.text_area.tag_configure("user", background="lightgray", spacing3=10)  # style for user text
+        self.text_area.tag_configure("bot", background="lightblue", spacing3=10)  # style for bot text
         self.text_area.grid(row=0, column=0, sticky='nsew')
 
     def create_input_area(self, frame):
@@ -243,17 +245,15 @@ class ChatbotGUI:
         bottom_frame.grid_columnconfigure(0, weight=1)
 
     def run_chat(self, event=None):
-        """
-        Process the user input and display the bot's response in the text area.
-        """
         user_input = self.user_input_text.get("1.0", tk.END).strip()
         try:
-            response, _ = run_conversation(user_input, self.conversation)  # Adjust this line
+            response, _ = run_conversation(user_input, self.conversation)
         except Exception as e:
             response = f"Error: {str(e)}"
-        self.text_area.insert(tk.INSERT, f'You: {user_input}\n')
-        self.text_area.insert(tk.INSERT, f'Bot: {response}\n')
+        self.text_area.insert(tk.INSERT, f'You: {user_input}\n', "user")
+        self.text_area.insert(tk.INSERT, f'Bot: {response}\n', "bot")
         self.user_input_text.delete("1.0", tk.END)
+
 
     def reset_conversation(self):
         self.conversation = []
