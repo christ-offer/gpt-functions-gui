@@ -5,9 +5,9 @@
 - [Description](#description)
 - [Functions](#functions)
 - [Screenshots](#gui-screenshots)
--- [Help command](#help-command)
--- [Image to Text](#image-to-text)
--- [Read CSV and Plot with Python](#read-csv-and-use-python-to-plot-older-gui)
+  - [Help command](#help-command)
+  - [Image to Text](#image-to-text)
+  - [Read CSV and Plot with Python](#read-csv-and-use-python-to-plot-older-gui)
 - [Usage](#usage)
 - [System Messages](#system-messages)
 
