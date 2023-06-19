@@ -18,6 +18,7 @@ GUI chatbot playground with the new functions feature.
 * GUI is pretty darn basic.
 * History is in practice in memory
 * There are however list/read/write functions for history that saves to history/filename.md, should summarize the chat history.
+* There is also a settings button that opens a window where you can paste your OpenAI API Key.
 
 ## Functions
 
