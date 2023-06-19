@@ -1,21 +1,22 @@
 # OpenAI GUI Chatbot with functions.
 
+## Table of Contents
+
+- [Description](#description)
+- [Functions](#functions)
+- [GUI Screenshot](#gui-screenshot)
+- [Read CSV and Use Python to plot](#read-csv-and-use-python-to-plot)
+- [Image to Text](#image-to-text)
+- [Usage](#usage)
+- [System Messages](#system-messages)
+
+
 ## Description
 
 GUI chatbot playground with the new functions feature.
 
 GUI is pretty darn basic.
 History in memory only. Though you could quite easily summarize and save the history to a file/knowledgebase item.
-
-## GUI Screenshot
-![Alt text](image-1.png)
-
-## Read CSV and Use Python to plot
-![Read CSV and Use Python to plot](image-2.png)
-
-## Image to Text
-
-![Image to text](image-3.png)
 
 ## Functions
 
@@ -36,6 +37,17 @@ History in memory only. Though you could quite easily summarize and save the his
 * Usecase: /read_file code.ts/py/rs/etc -> /review
 
 `/help` is not a function per se, its a structured command for the agent to return a list of all available functions.
+
+
+## GUI Screenshot
+![Alt text](image-1.png)
+
+## Read CSV and Use Python to plot
+![Read CSV and Use Python to plot](image-2.png)
+
+## Image to Text
+
+![Image to text](image-3.png)
 
 
 
