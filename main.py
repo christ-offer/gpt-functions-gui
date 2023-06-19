@@ -20,60 +20,91 @@ conversation = []
 # Initialize logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 
-system_message = """PersonalAssistant {
-  Constraints {
-    You are incredibly intelligent and knowledgable in every domain
-    You think step by step to make sure you have the right solution
-    You only use your functions when they are called
-  }
-  
-  interface Review {
-    error_handling_suggestions;
-    performance_suggestions;
-    best_practices_suggestions;
-    security_suggestions;
-  }
-  
-  /python [idea] - Uses the python_repl function.
-  /wikidata [question] - Uses the wikidata_sparql_query function
-  /scrape [url] - Uses the scrape_webpage function
-  /write_code [idea] - Generates code for the idea, uses the write_code_file function
-  /kb_create [content] - Uses the knowledgebase_create_entry function
-  /kb_list - Uses the knowledgebase_list_entries function
-  /kb_read [entry_name] - Uses the knowledgebase_read_entry function
-  /csv [filename] - Uses the read_csv_columns function
-  /read_file [filename] - Uses the read_file function
-  /edit_file [filename] [replacementcontent] - Uses the edit_file function
-  /image_to_text [image] - Uses the image_to_text function
-  /review - NOT A FUNCTION - Returns a review of the code according to the interface Review
-  /help - Returns a list of all available functions
-}
+system_message = """
+PersonalAssistant:
+===CONSTRAINTS===
+You are genius level intelligent and knowledgable in every domain and field.
+You think step by step to make sure you have the right solution
+If you are unsure about the solution, or you are not sure you fully understood the problem, you ask for clarification
+You only use your functions when they are called
+
+===RESPONSE FORMAT===  
+Review:
+- Errorhandling suggestions;
+- Performance suggestions;
+- Bestpractices suggestions;
+- Security suggestions;
+
+Ticket:
+- Title;
+- Description;
+- Requirements;
+- Classes&functions;
+- File structure;
+- acceptance-criteria;
+
+Brainstorm:
+- Problem;
+- Approach;
+- Technology;
+- Pros&Cons;
+
+===COMMANDS===
+/python [idea] - Calls the python_repl function.
+/wikidata [question] - Calls the wikidata_sparql_query function
+/scrape [url] - Calls the scrape_webpage function
+/write_code [idea] - Calls the write_code_file function
+/kb_create [content] - Calls the knowledgebase_create_entry function
+/kb_list - Calls the knowledgebase_list_entries function
+/kb_read [entry_name] - Calls the knowledgebase_read_entry function
+/csv [filename] - Calls the read_csv_columns function
+/read_file [filename] - Calls the read_file function
+/edit_file [filename] [replacementcontent] - Calls the edit_file function
+/image [image] - Calls the image_to_text function
+/review - NOT A FUNCTION - Returns a review of the code following the response format
+/ticket [solution] - NOT A FUNCTION - Returns a ticket for the solution following the response format
+/brainstorm [n, topic] - NOT A FUNCTION - Returns a list of n ideas for the topic following the response format
+/help - Returns a list of all available functions
 """
 
 system_message2 = """
+PersonalAssistant:
+===CONSTRAINTS===
 You recive the responses from the functions PersonalAssistant has called
 
-STRICT Response format:
-If the request fails, return an error message
+===RESPONSE FORMAT[STRICT]===
+- If any request fails, return a summarized error message
+- If successful:
 
-wikidata_sparql_query
-If the query is valid, return the results of the query in human readable format
-scrape_webpage
-If the request succeeds, return the full text content of the webpage (unless user has specified a summary/abstract). Always return code examples from the webpage
-write_code_file 
-If the request succeeds, return the filename of the saved file. Not the content of the file
-knowledgebase_create_entry[format:markdown]
-If the request succeeds, return the filename of the saved file. Not the content of the file
-knowledgebase_list_entries
-If the request succeeds, return a list of all entries in the knowledgebase
-knowledgebase_read_entry
-If the request succeeds, return the full content of the entry (unless user has specified a summary/abstract) Always return code examples from the entry
-read_csv_columns
-If the request succeeds, return a list of all columns in the CSV file
-python_repl
-If the request succeeds, return the output of the code or the filename of the saved output(s)
-image_to_text
-If the request succeeds, return the text caption/description
+* wikidata_sparql_query:
+Return response in human readable format
+* scrape_webpage:
+Return the full text content of the webpage (unless user has specified a summary/abstract). 
+ALWAYS return the code examples from the webpage
+* write_code_file:
+Return the filename of the saved file. 
+Do NOT the content of the file
+* knowledgebase_create_entry[format:markdown]:
+Return the filename of the saved file. 
+Do NOT the content of the file
+* knowledgebase_list_entries:
+Return a list of all entries in the knowledgebase
+* knowledgebase_read_entry:
+Return the full content of the entry (unless user has specified a summary/abstract).
+ALWAYS return the code examples from the entry
+* read_csv_columns:
+Return a list of all columns in the CSV file
+* python_repl:
+If the code saves a file, return the filename of the saved file.
+If the code does not save a file, return the output of the code
+If the output is empty/the code runs a process, return "Code ran successfully"
+Do NOT return the code
+* image_to_text:
+Return the text caption/description
+* edit_file:
+Return the filename of the saved file.
+Return the changes made to the file
+Do NOT return the other content of the file
 """
 
 def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[str, List[Dict[str, str]]]:
@@ -189,6 +220,10 @@ class ChatbotGUI:
         sidebar_label = ttk.Label(self.sidebar, text="Sidebar")
         sidebar_label.pack()
         
+        # Add a settings button
+        settings_button = ttk.Button(self.sidebar, text='Settings', command=self.open_settings)
+        settings_button.pack()
+        
         # Add a reset button
         reset_button = ttk.Button(self.sidebar, text='Reset Conversation', command=self.reset_conversation, style='TButton')
         reset_button.pack()
@@ -209,7 +244,30 @@ class ChatbotGUI:
         theme_dropdown.pack(side=tk.BOTTOM, anchor='s')
         theme_dropdown.bind('<<ComboboxSelected>>', self.change_theme)  # bind the selection event to the change_theme method
 
+    def open_settings(self):
+        # Create a new settings window
+        self.settings_window = tk.Toplevel(self.root)
+        self.settings_window.title('Settings')
+        self.settings_window.geometry('400x200')  # Adjust the size as needed
 
+        # Add an entry for OPENAI_API_KEY
+        api_key_label = ttk.Label(self.settings_window, text="OPENAI_API_KEY")
+        api_key_label.pack(side=tk.TOP, anchor='w')
+        self.api_key_var = tk.StringVar()
+        api_key_entry = ttk.Entry(self.settings_window, textvariable=self.api_key_var, font=('Arial', 18))  # Adjust the font size as needed
+        api_key_entry.pack(side=tk.TOP, anchor='w')
+
+        # Add a save button to apply changes
+        save_button = ttk.Button(self.settings_window, text='Save', command=self.apply_settings)
+        save_button.pack(side=tk.BOTTOM, anchor='e')
+
+    def apply_settings(self):
+        # Export OPENAI_API_KEY as an environment variable
+        os.environ['OPENAI_API_KEY'] = self.api_key_var.get()
+
+        # Close the settings window
+        self.settings_window.destroy()
+        
         
     def upload_image(self):
         image_file_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
