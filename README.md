@@ -4,7 +4,7 @@
 
 - [Description](#description)
 - [Functions](#functions)
-- [GUI Screenshot](#gui-screenshot)
+- [Screenshots](#gui-screenshots)
 - [Usage](#usage)
 - [System Messages](#system-messages)
 
