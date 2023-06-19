@@ -13,7 +13,7 @@ from tkinter import filedialog
 import shutil
 from PIL import Image, ImageTk
 
-from functions import function_params, wikidata_sparql_query, scrape_webpage, write_file, knowledgebase_create_entry, knowledgebase_list_entries, knowledgebase_read_entry, python_repl, read_csv_columns, image_to_text, read_file, edit_file, list_history_entries, write_history_entry, read_history_entry
+from functions import function_params, wikidata_sparql_query, scrape_webpage, write_file, knowledgebase_create_entry, knowledgebase_list_entries, knowledgebase_read_entry, python_repl, read_csv_columns, image_to_text, read_file, edit_file, list_history_entries, write_history_entry, read_history_entry, query_wolframalpha
 
 conversation = []
 
@@ -51,6 +51,7 @@ Brainstorm:
 
 ===COMMANDS===
 /python [idea] - Calls the python_repl function.
+/wolfram [question] - Calls the query_wolframalpha function
 /wikidata [question] - Calls the wikidata_sparql_query function
 /scrape [url] - Calls the scrape_webpage function
 /write_code [idea] - Calls the write_file function
@@ -80,6 +81,8 @@ You recive the responses from the functions PersonalAssistant has called
 - If successful:
 
 * wikidata_sparql_query:
+Return response in human readable format
+* query_wolframalpha:
 Return response in human readable format
 * scrape_webpage:
 Return the full text content of the webpage (unless user has specified a summary/abstract). 
@@ -137,6 +140,8 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
 
         if function_name == "python_repl":
             function_response = python_repl(function_args.get("code"))
+        elif function_name == "query_wolframalpha":
+            function_response = query_wolframalpha(function_args.get("query"))
         elif function_name == "knowledgebase_read_entry":
             function_response = knowledgebase_read_entry(*function_args.values())
             conversation.append({
@@ -282,20 +287,27 @@ class ChatbotGUI:
         self.settings_window.title('Settings')
         self.settings_window.geometry('400x200')  # Adjust the size as needed
 
+        # Create a container for the settings
+        settings_frame = ttk.Frame(self.settings_window)
+        settings_frame.pack(pady=10, padx=10)
+
         # Add an entry for OPENAI_API_KEY
-        api_key_label = ttk.Label(self.settings_window, text="OPENAI_API_KEY")
-        api_key_label.pack(side=tk.TOP, anchor='w')
+        api_key_label = ttk.Label(settings_frame, text="OPENAI_API_KEY")
+        api_key_label.grid(row=0, column=0, sticky="w", padx=5, pady=5)
         self.api_key_var = tk.StringVar()
-        api_key_entry = ttk.Entry(self.settings_window, textvariable=self.api_key_var, font=('Arial', 18))  # Adjust the font size as needed
-        api_key_entry.pack(side=tk.TOP, anchor='w')
+        api_key_entry = ttk.Entry(settings_frame, textvariable=self.api_key_var, font=('Arial', 18))  # Adjust the font size as needed
+        api_key_entry.grid(row=0, column=1, sticky="w", padx=5, pady=5)
 
         # Add a save button to apply changes
-        save_button = ttk.Button(self.settings_window, text='Save', command=self.apply_settings)
-        save_button.pack(side=tk.BOTTOM, anchor='e')
+        save_button = ttk.Button(settings_frame, text='Save', command=self.apply_settings)
+        save_button.grid(row=1, column=1, sticky="e", padx=5, pady=5)
 
     def apply_settings(self):
         # Export OPENAI_API_KEY as an environment variable
         os.environ['OPENAI_API_KEY'] = self.api_key_var.get()
+
+        # Inform the user that changes have been applied
+        #messagebox.showinfo("Settings", "Settings have been applied successfully.")
 
         # Close the settings window
         self.settings_window.destroy()

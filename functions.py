@@ -10,6 +10,7 @@ import torch
 import open_clip
 from PIL import Image
 import urllib
+import wolframalpha
 
 from utils import is_valid_filename, ensure_directory_exists
 
@@ -51,6 +52,23 @@ def wikidata_sparql_query(query: str) -> str:
         return f"A request exception occurred: {str(e)}"
     except Exception as e:
         return f"An error occurred: {e}"
+
+def query_wolframalpha(query_str):
+    try:
+        #wolfram_id = os.environ.get('WOLFRAM_APP_ID')
+        client = wolframalpha.Client('JE4W7V-H3R6PWJ7LH')
+        res = client.query(query_str)
+
+        response = ''
+        for pod in res.pods:
+            response += pod.text
+            response += '\n'
+
+        return response.strip()
+    except requests.HTTPError as e:
+        return f"A HTTP error occurred: {str(e)}"
+    except requests.RequestException as e:
+        return f"A request exception occurred: {str(e)}"
 
 def scrape_webpage(url: str) -> str:
     try:
@@ -304,6 +322,17 @@ function_params = [
             },
             "required": ["code"],
         },
+    },
+    {
+        "name": "query_wolframalpha",
+        "description": "Queries Wolfram Alpha and returns the result.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "The query to send to Wolfram Alpha."},
+            },
+            "required": ["query"],
+        },  
     },
     {
         "name": "read_file",
