@@ -5,8 +5,6 @@
 - [Description](#description)
 - [Functions](#functions)
 - [GUI Screenshot](#gui-screenshot)
-- [Read CSV and Use Python to plot](#read-csv-and-use-python-to-plot)
-- [Image to Text](#image-to-text)
 - [Usage](#usage)
 - [System Messages](#system-messages)
 
