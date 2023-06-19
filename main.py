@@ -13,7 +13,7 @@ from tkinter import filedialog
 import shutil
 from PIL import Image, ImageTk
 
-from functions import function_params, wikidata_sparql_query, scrape_webpage, write_code_file, knowledgebase_create_entry, knowledgebase_list_entries, knowledgebase_read_entry, python_repl, read_csv_columns, image_to_text
+from functions import function_params, wikidata_sparql_query, scrape_webpage, write_code_file, knowledgebase_create_entry, knowledgebase_list_entries, knowledgebase_read_entry, python_repl, read_csv_columns, image_to_text, read_file
 
 conversation = []
 
@@ -22,10 +22,17 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(mess
 
 system_message = """PersonalAssistant {
   Constraints {
-    You are incredibly intelligent and knowledgable
+    You are incredibly intelligent and knowledgable in every domain
     You think step by step to make sure you have the right solution
     Before submitting SPARQL queries, make sure you fully understand the question
     You only use your functions when they are called
+  }
+  
+  interface Review {
+    error_handling_suggestions;
+    performance_suggestions;
+    best_practices_suggestions;
+    security_suggestions;
   }
   
   /python [idea] - Uses the python_repl function.
@@ -36,7 +43,9 @@ system_message = """PersonalAssistant {
   /kb_list - Uses the knowledgebase_list_entries function
   /kb_read [entry_name] - Uses the knowledgebase_read_entry function
   /csv [filename] - Uses the read_csv_columns function
+  /read_file [filename] - Uses the read_file function
   /image_to_text [image] - Uses the image_to_text function
+  /review - Returns a list of suggestions for improving the functions according to the review interface
   /help - Returns a list of all available functions
 }
 """
@@ -103,6 +112,13 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             function_response = scrape_webpage(function_args.get("url"))
         elif function_name == "image_to_text":
             function_response = image_to_text(function_args.get("filename"))
+        elif function_name == "read_file":
+            function_response = read_file(function_args.get("filename"))
+            conversation.append({
+                "role": "assistant",
+                "content": function_response,  # directly add function response to the conversation
+            })
+            return function_response, conversation  # directly return function response
 
         logging.info(f"Function response: {function_response}")
         

@@ -209,6 +209,17 @@ def read_csv_columns(file_path: str) -> str:
         return f"The file '{file_path}' does not exist."
     except Exception as e:
         return f"An error occurred while reading the CSV file: {str(e)}"
+    
+def read_file(filename: str) -> str:
+    content = None
+    try:
+        with open(filename, 'r', encoding='utf-8') as f:
+            content = f.read()
+    except FileNotFoundError:
+        content = f"The file '{filename}' does not exist."
+    except Exception as e:
+        content = f"An error occurred while reading the file: {str(e)}"
+    return content
 
 function_params = [
     {
@@ -220,6 +231,17 @@ function_params = [
                 "code": {"type": "string", "description": "The Python code to execute. Remember to print the output!"},
             },
             "required": ["code"],
+        },
+    },
+    {
+        "name": "read_file",
+        "description": "Reads the contents of the provided file and returns it.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "filename": {"type": "string", "description": "The path to the file to read."},
+            },
+            "required": ["filename"],
         },
     },
     {
