@@ -13,7 +13,7 @@ from tkinter import filedialog
 import shutil
 from PIL import Image, ImageTk
 
-from functions import function_params, wikidata_sparql_query, scrape_webpage, write_code_file, knowledgebase_create_entry, knowledgebase_list_entries, knowledgebase_read_entry, python_repl, read_csv_columns, image_to_text, read_file, edit_file
+from functions import function_params, wikidata_sparql_query, scrape_webpage, write_file, knowledgebase_create_entry, knowledgebase_list_entries, knowledgebase_read_entry, python_repl, read_csv_columns, image_to_text, read_file, edit_file, list_history_entries, write_history_entry, read_history_entry
 
 conversation = []
 
@@ -53,10 +53,13 @@ Brainstorm:
 /python [idea] - Calls the python_repl function.
 /wikidata [question] - Calls the wikidata_sparql_query function
 /scrape [url] - Calls the scrape_webpage function
-/write_code [idea] - Calls the write_code_file function
+/write_code [idea] - Calls the write_file function
 /kb_create [content] - Calls the knowledgebase_create_entry function
 /kb_list - Calls the knowledgebase_list_entries function
 /kb_read [entry_name] - Calls the knowledgebase_read_entry function
+/list_history - Calls the list_history_entries function
+/read_history [entry_name] - Calls the read_history_entry function
+/write_history [content] - Summarizes the chat history, calls the write_history_entry function
 /csv [filename] - Calls the read_csv_columns function
 /read_file [filename] - Calls the read_file function
 /edit_file [filename] [replacementcontent] - Calls the edit_file function
@@ -81,7 +84,7 @@ Return response in human readable format
 * scrape_webpage:
 Return the full text content of the webpage (unless user has specified a summary/abstract). 
 ALWAYS return the code examples from the webpage
-* write_code_file:
+* write_file:
 Return the filename of the saved file. 
 Do NOT the content of the file
 * knowledgebase_create_entry[format:markdown]:
@@ -92,6 +95,12 @@ Return a list of all entries in the knowledgebase
 * knowledgebase_read_entry:
 Return the full content of the entry (unless user has specified a summary/abstract).
 ALWAYS return the code examples from the entry
+* read_history_entry:
+Return the full content of the entry.
+ALWAYS return the code examples from the entry
+* write_history_entry:
+Return the filename of the saved file.
+Do NOT return the content of the file
 * read_csv_columns:
 Return a list of all columns in the CSV file
 * python_repl:
@@ -135,7 +144,30 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
                 "content": function_response,  # directly add function response to the conversation
             })
             return function_response, conversation  # directly return function response
-        elif function_name in ["knowledgebase_create_entry","knowledgebase_update_entry", "knowledgebase_list_entries", "read_csv_columns", "write_code_file"]:
+        elif function_name == "read_history_entry":
+            function_response = read_history_entry(*function_args.values())
+            conversation.append({
+                "role": "assistant",
+                "content": function_response,  # directly add function response to the conversation
+            })
+            return function_response, conversation  # directly return function response
+        elif function_name == "write_history_entry":
+            function_response = write_history_entry(*function_args.values())
+        elif function_name == "list_history_entries":
+            function_response = list_history_entries(*function_args.values())
+            conversation.append({
+                "role": "assistant",
+                "content": function_response,  # directly add function response to the conversation
+            })
+            return function_response, conversation  # directly return function response
+        elif function_name == "knowledgebase_list_entries":
+            function_response = knowledgebase_list_entries()
+            conversation.append({
+                "role": "assistant",
+                "content": function_response,  # directly add function response to the conversation
+            })
+            return function_response, conversation
+        elif function_name in ["knowledgebase_create_entry","knowledgebase_update_entry", "read_csv_columns", "write_file"]:
             function_response = globals()[function_name](*function_args.values())
         elif function_name == "wikidata_sparql_query":
             function_response = wikidata_sparql_query(function_args.get("query"))

@@ -15,8 +15,9 @@
 
 GUI chatbot playground with the new functions feature.
 
-GUI is pretty darn basic.
-History in memory only. Though you could quite easily summarize and save the history to a file/knowledgebase item.
+* GUI is pretty darn basic.
+* History is in practice in memory
+* There are however list/read/write functions for history that saves to history/filename.md, should summarize the chat history.
 
 ## Functions
 
@@ -98,10 +99,13 @@ Brainstorm:
 /python [idea] - Calls the python_repl function.
 /wikidata [question] - Calls the wikidata_sparql_query function
 /scrape [url] - Calls the scrape_webpage function
-/write_code [idea] - Calls the write_code_file function
+/write_code [idea] - Calls the write_file function
 /kb_create [content] - Calls the knowledgebase_create_entry function
 /kb_list - Calls the knowledgebase_list_entries function
 /kb_read [entry_name] - Calls the knowledgebase_read_entry function
+/list_history - Calls the list_history_entries function
+/read_history [entry_name] - Calls the read_history_entry function
+/write_history [content] - Summarizes the chat history, calls the write_history_entry function
 /csv [filename] - Calls the read_csv_columns function
 /read_file [filename] - Calls the read_file function
 /edit_file [filename] [replacementcontent] - Calls the edit_file function
@@ -128,7 +132,7 @@ Return response in human readable format
 * scrape_webpage:
 Return the full text content of the webpage (unless user has specified a summary/abstract). 
 ALWAYS return the code examples from the webpage
-* write_code_file:
+* write_file:
 Return the filename of the saved file. 
 Do NOT the content of the file
 * knowledgebase_create_entry[format:markdown]:
@@ -139,6 +143,12 @@ Return a list of all entries in the knowledgebase
 * knowledgebase_read_entry:
 Return the full content of the entry (unless user has specified a summary/abstract).
 ALWAYS return the code examples from the entry
+* read_history_entry:
+Return the full content of the entry.
+ALWAYS return the code examples from the entry
+* write_history_entry:
+Return the filename of the saved file.
+Do NOT return the content of the file
 * read_csv_columns:
 Return a list of all columns in the CSV file
 * python_repl:

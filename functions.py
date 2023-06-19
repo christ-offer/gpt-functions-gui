@@ -13,8 +13,12 @@ import urllib
 
 from utils import is_valid_filename, ensure_directory_exists
 
-# Define the directory where the knowledgebase files are stored
+# Define the directories where files are stored
 KB_DIR = "./kb"
+HISTORY_DIR = "./history"
+DATA_DIR = "./data"
+IMAGE_DIR = "./data/images"
+CSV_DIR = "./data/csv"
 
 def wikidata_sparql_query(query: str) -> str:
     url = "https://query.wikidata.org/sparql"
@@ -127,7 +131,7 @@ def wolfram_language_query(query: str) -> str:
     except Exception as e:
         return f"An error occurred: {e}"
 
-def write_code_file(filename: str, content: str) -> str:
+def write_file(filename: str, content: str) -> str:
     if not is_valid_filename(filename):
         return f"Invalid filename: {filename}"
     # directory = os.path.dirname(filename)
@@ -189,6 +193,42 @@ def knowledgebase_list_entries() -> str:
         entries = os.listdir(KB_DIR)
         entries_str = '\n'.join(entries)
         return f"The knowledgebase contains the following entries:\n{entries_str}"
+    except Exception as e:
+        return f"An error occurred while listing the entries: {str(e)}"
+
+def write_history_entry(filename: str, content: str) -> str:
+    if not is_valid_filename(filename):
+        return "The provided filename is not valid."
+    
+    ensure_directory_exists(HISTORY_DIR)
+    filepath = os.path.join(HISTORY_DIR, filename)
+    
+    try:
+        with open(filepath, 'w') as f:
+            f.write(content)
+        return f"Entry '{filename}' has been successfully created."
+    except Exception as e:
+        return f"An error occurred while creating the entry: {str(e)}"
+    
+def read_history_entry(filename: str) -> str:
+    if not is_valid_filename(filename):
+        return "The provided filename is not valid."
+    
+    filepath = os.path.join(HISTORY_DIR, filename)
+    
+    try:
+        with open(filepath, 'r') as f:
+            content = f.read()
+        return content  # Return content directly without conversion to HTML
+    except Exception as e:
+        return f"An error occurred while reading the entry: {str(e)}"    
+
+def list_history_entries() -> str:
+    ensure_directory_exists(HISTORY_DIR)
+    try:
+        entries = os.listdir(HISTORY_DIR)
+        entries_str = '\n'.join(entries)
+        return f"The history contains the following entries:\n{entries_str}"
     except Exception as e:
         return f"An error occurred while listing the entries: {str(e)}"
 
@@ -307,6 +347,37 @@ function_params = [
         },
     },
     {
+        "name": "write_history_entry",
+        "description": "Writes a new entry to the history knowledge base.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "filename": {"type": "string", "description": "The filename for the new entry."},
+                "content": {"type": "string", "description": "The content for the new entry. Format: Markdown."},
+            },
+            "required": ["filename", "content"],
+        },
+    },
+    {
+        "name": "read_history_entry",
+        "description": "Reads an existing entry from the history knowledge base.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "filename": {"type": "string", "description": "The filename of the entry to read."},
+            },
+            "required": ["filename"],
+        },
+    },
+    {
+        "name": "list_history_entries",
+        "description": "Lists all entries in the history knowledge base.",
+        "parameters": {
+            "type": "object",
+            "properties": {},
+        },
+    },
+    {
         "name": "knowledgebase_create_entry",
         "description": "Creates a new knowledge base entry",
         "parameters": {
@@ -361,7 +432,7 @@ function_params = [
         },
     },
     {
-        "name": "write_code_file",
+        "name": "write_file",
         "description": "Writes a file to the system",
         "parameters": {
             "type": "object",
