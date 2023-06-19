@@ -1,4 +1,4 @@
-# OpenAI GUI Chatbot with functions.
+# GPT-UglyUI
 
 ## Table of Contents
 
