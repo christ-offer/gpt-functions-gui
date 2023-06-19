@@ -172,6 +172,8 @@ class ChatbotGUI:
         self.root.grid_columnconfigure(0, weight=1)  # Give sidebar and main frame different weight
         self.root.grid_columnconfigure(1, weight=4)
         self.conversation = []  # Add this line
+        self.style = ttk.Style()
+        self.style.configure('TButton', font=('Ubuntu', 14))
         self.create_widgets()
 
     def create_widgets(self):
@@ -188,15 +190,15 @@ class ChatbotGUI:
         sidebar_label.pack()
         
         # Add a reset button
-        reset_button = ttk.Button(self.sidebar, text='Reset Conversation', command=self.reset_conversation)
+        reset_button = ttk.Button(self.sidebar, text='Reset Conversation', command=self.reset_conversation, style='TButton')
         reset_button.pack()
         
         # Add an image upload button
-        upload_button = ttk.Button(self.sidebar, text='Upload Image', command=self.upload_image)
+        upload_button = ttk.Button(self.sidebar, text='Upload Image', command=self.upload_image, style='TButton')
         upload_button.pack()
         
         # Add a csv upload button
-        upload_csv_button = ttk.Button(self.sidebar, text='Upload CSV', command=self.upload_csv)
+        upload_csv_button = ttk.Button(self.sidebar, text='Upload CSV', command=self.upload_csv, style='TButton')
         upload_csv_button.pack()
         
         # Add a theme dropdown
@@ -269,8 +271,8 @@ class ChatbotGUI:
 
     def create_text_area(self, frame):
         self.text_area = scrolledtext.ScrolledText(frame, wrap='word', background="oldlace", font=('Ubuntu', 16))
-        self.text_area.tag_configure("user", background="lightgray", spacing3=10)  # style for user text
-        self.text_area.tag_configure("bot", background="lightblue", spacing3=10)  # style for bot text
+        self.text_area.tag_configure("user", background="lightgray", spacing1=30, spacing3=10)  # style for user text
+        self.text_area.tag_configure("bot", background="lightblue", spacing1=30, spacing3=10)  # style for bot text
         self.text_area.grid(row=0, column=0, sticky='nsew')
 
     def create_input_area(self, frame):
@@ -280,7 +282,7 @@ class ChatbotGUI:
         self.user_input_text = scrolledtext.ScrolledText(bottom_frame, wrap='word', background="oldlace", height=2, font=('Ubuntu', 16)) # Set the font size and height
         self.user_input_text.grid(row=0, column=0, sticky='nsew')
 
-        send_button = ttk.Button(bottom_frame, text='Send', command=self.run_chat)
+        send_button = ttk.Button(bottom_frame, text='Send', command=self.run_chat, style='TButton')
         send_button.grid(row=0, column=1)
 
         bottom_frame.grid_columnconfigure(0, weight=1)
