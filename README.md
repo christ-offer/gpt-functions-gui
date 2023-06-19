@@ -45,16 +45,16 @@ GUI chatbot playground with the new functions feature.
 `/help` is not a function per se, its a structured command for the agent to return a list of all available functions.
 
 
-## GUI Screenshot
-![Alt text](image-1.png)
+## GUI Screenshots
 
-## Read CSV and Use Python to plot
+### Help command
+![Help Command](image.png)
+
+### Image to Text
+![Image to Text](image-1.png)
+
+### Read CSV and Use Python to plot (older GUI)
 ![Read CSV and Use Python to plot](image-2.png)
-
-## Image to Text
-
-![Image to text](image-3.png)
-
 
 
 ## Usage
