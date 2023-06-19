@@ -5,5 +5,4 @@ bs4
 markdown
 pandas
 torch
-open_clip
 PIL

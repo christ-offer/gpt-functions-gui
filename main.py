@@ -13,7 +13,7 @@ from tkinter import filedialog
 import shutil
 from PIL import Image, ImageTk
 
-from functions import function_params, wikidata_sparql_query, scrape_webpage, write_code_file, knowledgebase_create_entry, knowledgebase_list_entries, knowledgebase_read_entry, python_repl, read_csv_columns, image_to_text, read_file
+from functions import function_params, wikidata_sparql_query, scrape_webpage, write_code_file, knowledgebase_create_entry, knowledgebase_list_entries, knowledgebase_read_entry, python_repl, read_csv_columns, image_to_text, read_file, edit_file
 
 conversation = []
 
@@ -43,6 +43,7 @@ system_message = """PersonalAssistant {
   /kb_read [entry_name] - Uses the knowledgebase_read_entry function
   /csv [filename] - Uses the read_csv_columns function
   /read_file [filename] - Uses the read_file function
+  /edit_file [filename] [replacementcontent] - Uses the edit_file function
   /image_to_text [image] - Uses the image_to_text function
   /review - NOT A FUNCTION - Returns a review of the code according to the interface Review
   /help - Returns a list of all available functions
@@ -118,6 +119,10 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
                 "content": function_response,  # directly add function response to the conversation
             })
             return function_response, conversation  # directly return function response
+        elif function_name == "edit_file":
+            filename = function_args.get("filepath")
+            changes = function_args.get("changes")
+            function_response = edit_file(filename, changes)
 
         logging.info(f"Function response: {function_response}")
         

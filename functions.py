@@ -1,5 +1,6 @@
 import io
 import os
+from typing import List, Dict
 import requests
 from contextlib import redirect_stdout
 from bs4 import BeautifulSoup
@@ -221,6 +222,37 @@ def read_file(filename: str) -> str:
         content = f"An error occurred while reading the file: {str(e)}"
     return content
 
+def edit_file(filepath: str, changes: List[Dict]) -> None:
+    print(f"Editing file '{filepath}'...")
+    print(f"Changes: {changes}")
+    try:
+        # Read the file into a list of lines
+        with open(filepath, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+            
+        # Apply the changes
+        for change in changes:
+            for line_num in change['range']:
+                if line_num <= len(lines):  # Ensure the line number is valid
+                    lines[line_num-1] = change['replacementcontent'] + '\n'
+                else:
+                    print(f"Line number {line_num} is out of range in file {filepath}.")
+                    return(f"Line number {line_num} is out of range in file {filepath}.")
+                    
+        # Write the modified lines back to the file
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.writelines(lines)
+            
+        print(f"File '{filepath}' has been successfully edited.")
+        return(f"File '{filepath}' has been successfully edited.")
+            
+    except FileNotFoundError:
+        print(f"The file '{filepath}' does not exist.")
+        return(f"The file '{filepath}' does not exist.")
+    except Exception as e:
+        print(f"An error occurred while editing the file: {str(e)}")
+        return(f"An error occurred while editing the file: {str(e)}")
+
 function_params = [
     {
         "name": "python_repl",
@@ -242,6 +274,36 @@ function_params = [
                 "filename": {"type": "string", "description": "The path to the file to read."},
             },
             "required": ["filename"],
+        },
+    },
+    {
+        "name": "edit_file",
+        "description": "Edits the provided file by replacing the specified lines with the provided content.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "filepath": {"type": "string", "description": "The path to the file to edit."},
+                "changes": {
+                    "type": "array",
+                    "description": "The changes to apply to the file.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "range": {
+                                "type": "array",
+                                "description": "The line numbers to replace.",
+                                "items": {"type": "integer"},
+                            },
+                            "replacementcontent": {
+                                "type": "string",
+                                "description": "The content to replace the lines with.",
+                            },
+                        },
+                        "required": ["range", "replacementcontent"],
+                    },
+                },
+            },
+            "required": ["filepath", "changes"],
         },
     },
     {
