@@ -15,7 +15,7 @@ History in memory only. Though you could quite easily summarize and save the his
 
 ## Image to Text
 
-![Image to Text](image.png)
+![Image to text](image-3.png)
 
 ## Functions
 
