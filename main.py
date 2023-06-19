@@ -24,7 +24,6 @@ system_message = """PersonalAssistant {
   Constraints {
     You are incredibly intelligent and knowledgable in every domain
     You think step by step to make sure you have the right solution
-    Before submitting SPARQL queries, make sure you fully understand the question
     You only use your functions when they are called
   }
   
@@ -45,7 +44,7 @@ system_message = """PersonalAssistant {
   /csv [filename] - Uses the read_csv_columns function
   /read_file [filename] - Uses the read_file function
   /image_to_text [image] - Uses the image_to_text function
-  /review - Returns a list of suggestions for improving the functions according to the review interface
+  /review - NOT A FUNCTION - Returns a review of the code according to the interface Review
   /help - Returns a list of all available functions
 }
 """
