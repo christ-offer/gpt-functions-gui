@@ -27,6 +27,9 @@ GUI chatbot playground with the new functions feature.
 * knowledgebase_create_entry - create a knowledgebase entry
 * knowledgebase_list_entries - list knowledgebase entries
 * knowledgebase_read_entry - read a knowledgebase entry
+* list_history - list history entries
+* read_history - read a history entry
+* write_history - write a history entry
 * python_repl - run python code
 * read_csv_columns - read columns from a csv file
 * read_file - read a file
