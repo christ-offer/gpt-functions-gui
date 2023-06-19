@@ -198,7 +198,8 @@ class ChatbotGUI:
         try:
             response, _ = run_conversation(user_input, self.conversation)
         except Exception as e:
-            response = f"Error: {str(e)}"
+            response = f"Oops! An server error occurred, please try again."
+            print(e)
 
         # Update the text area with the response
         # Because we are updating the UI from a different thread, we must use the 'after' method
