@@ -29,12 +29,13 @@ History in memory only. Though you could quite easily summarize and save the his
 * python_repl - run python code
 * read_csv_columns - read columns from a csv file
 * read_file - read a file
+* edit_file - edit a file - Useful to read_file first, so the bot knows what lines are where. 
 * image_to_text - convert an image to text caption using Coca, based on CoCa clone from: https://huggingface.co/spaces/fffiloni/CoCa-clone
 
 
 `/review` is not a function per se, its a structured command for the agent to return a list of suggestions for improving the functions according to the review interface.
 
-* Usecase: /read_file code.ts/py/rs/etc -> /review
+* Usecase: /read_file code.ts/py/rs/etc -> /review -> /edit_file code.ts/py/rs/etc
 
 `/help` is not a function per se, its a structured command for the agent to return a list of all available functions.
 
@@ -89,6 +90,7 @@ PersonalAssistant {
   /kb_read [entry_name] - Uses the knowledgebase_read_entry function
   /csv [filename] - Uses the read_csv_columns function
   /read_file [filename] - Uses the read_file function
+  /edit_file [filename] - Uses the edit_file function
   /image_to_text [image] - Uses the image_to_text function
   /review - Returns a list of suggestions for improving the functions according to the review interface
   /help - Returns a list of all available functions
@@ -121,4 +123,9 @@ python_repl
 If the request succeeds, return the output of the code or the filename of the saved output(s)
 image_to_text
 If the request succeeds, return the text caption/description
+read_file
+If the request succeeds, return the content of the file
+edit_file
+If the request succeeds, return the filename of the saved file. Not the content of the file
+
 ```
