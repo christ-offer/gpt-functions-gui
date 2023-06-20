@@ -55,20 +55,20 @@ GUI chatbot playground with the new functions feature.
 ## GUI Screenshots
 
 ### Chat UI
-![ChatUI](image-7.png)
+![ChatUI](screenshots/image-7.png)
 
 ### Image to Text
-![Image to Text](image-1.png)
+![Image to Text](screenshots/image-1.png)
 
 ### Read CSV and Use Python to plot (older GUI)
-![Read CSV and Use Python to plot](image-2.png)
+![Read CSV and Use Python to plot](screenshots/image-2.png)
 
 ### Tabs (Knowledgebase, History, Images)
-![KnowledgeBase](image-4.png)
+![KnowledgeBase](screenshots/image-4.png)
 
-![History](image-5.png)
+![History](screenshots/image-5.png)
 
-![Images](image-6.png)
+![Images](screenshots/image-8.png)
 
 
 ## Usage
