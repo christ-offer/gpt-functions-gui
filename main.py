@@ -430,9 +430,12 @@ class ChatbotGUI:
 
     def create_img_viewer(self, parent):
         self.img_canvas = Canvas(parent)
-        self.img_canvas.grid(row=0, 
-                             column=2, 
-                             sticky=N+S+E+W)
+        self.img_canvas.grid(row=0,
+                             column=2,
+                             sticky=N + S + E + W)
+
+        # bind canvas resize event to a method
+        self.img_canvas.bind("<Configure>", self.resize_image)
 
     def update_img_files(self):
         # Empty the list
@@ -449,18 +452,31 @@ class ChatbotGUI:
     def on_img_file_select(self, evt):
         # Get selected file name
         idxs = self.img_listbox.curselection()
-        if len(idxs)==1:
+        if len(idxs) == 1:
             idx = int(idxs[0])
             img_file = self.img_listbox.get(idx)
-            
+
             # Open and display the image file
             img_path = os.path.join(self.img_directory, img_file)
-            image = Image.open(img_path)
-            photo = ImageTk.PhotoImage(image)
-            self.img_canvas.create_image(0, 0, image=photo, anchor="nw")
+            self.image = Image.open(img_path)
+            self.photo = ImageTk.PhotoImage(self.image)
+            self.img_canvas.create_image(0, 0, image=self.photo, anchor="nw")
 
             # Keep a reference to the image object
-            self.img_canvas.image = photo
+            self.img_canvas.image = self.photo
+
+            # Call to make sure the image is resized appropriately
+            self.resize_image(None)
+
+    def resize_image(self, event):
+        # Get new dimensions
+        width = self.img_canvas.winfo_width()
+        height = self.img_canvas.winfo_height()
+
+        # Resize and display the image
+        resized_image = self.image.resize((width, height), Image.LANCZOS)
+        self.photo = ImageTk.PhotoImage(resized_image)
+        self.img_canvas.create_image(0, 0, image=self.photo, anchor="nw")
             
             
 
