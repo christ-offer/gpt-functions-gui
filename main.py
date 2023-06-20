@@ -31,6 +31,14 @@ class ChatbotGUI:
         self.md_directory = "kb/"  # Set path to markdown files
         self.history_directory = "history/"  # Set path to markdown files
         self.img_directory = "data/images/"  # Set path to image files
+        self.csv_directory = "data/csv/"  # Set path to csv files
+        
+
+        # Check if directories exist and create them if they don't
+        os.makedirs(self.md_directory, exist_ok=True)
+        os.makedirs(self.img_directory, exist_ok=True)
+        os.makedirs(self.csv_directory, exist_ok=True)
+        os.makedirs(self.history_directory, exist_ok=True)
         
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
