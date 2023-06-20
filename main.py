@@ -32,6 +32,7 @@ class ChatbotGUI:
         self.history_directory = "history/"  # Set path to markdown files
         self.img_directory = "data/images/"  # Set path to image files
         self.csv_directory = "data/csv/"  # Set path to csv files
+        self.root.option_add('*foreground', 'black')  # Setting default text color to black
         
 
         # Check if directories exist and create them if they don't

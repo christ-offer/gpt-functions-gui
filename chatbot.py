@@ -6,7 +6,6 @@ from typing import Optional, Dict, List, Tuple
 
 from functions import function_params, wikidata_sparql_query, scrape_webpage, write_file, knowledgebase_create_entry, knowledgebase_list_entries, knowledgebase_read_entry, python_repl, read_csv_columns, image_to_text, read_file, edit_file, list_history_entries, write_history_entry, read_history_entry, query_wolframalpha
 
-
 system_message = """
 PersonalAssistant:
 ===CONSTRAINTS===
