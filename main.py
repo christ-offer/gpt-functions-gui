@@ -311,9 +311,11 @@ class ChatbotGUI:
         self.is_loading = True
         self.loading_label = tk.Label(self.root, text="Loading...", bg="white", font=("Arial", 30))
         self.loading_label.grid(row=0, column=0, rowspan=2, columnspan=2, sticky="nsew")  # Place the loading label over the application window
-
+    
+        self.handle_model_response(user_input)
+        
         # Start a new thread to run the model and handle the response
-        threading.Thread(target=self.handle_model_response, args=(user_input,)).start()
+        #threading.Thread(target=self.handle_model_response, args=(user_input,)).start()
 
     def handle_model_response(self, user_input):
         try:
