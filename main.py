@@ -95,6 +95,8 @@ class ChatbotGUI:
                                                        sticky='nsew')  # Add this parameter
         self.create_md_sidebar(self.tab2)
         self.create_md_viewer(self.tab2)
+        self.refresh_md_button = ttk.Button(self.tab2, text="Refresh", command=self.refresh_files)
+        self.refresh_md_button.grid(row=1, column=0, sticky=E)
     
     def create_widgets_tab3(self):
         self.tab3.grid_rowconfigure(0, weight=1)
@@ -109,6 +111,8 @@ class ChatbotGUI:
                                                     sticky='nsew')
         self.create_history_sidebar(self.tab3)
         self.create_history_viewer(self.tab3)
+        self.refresh_md_button = ttk.Button(self.tab3, text="Refresh", command=self.refresh_files)
+        self.refresh_md_button.grid(row=1, column=0, sticky=E)
     
     def create_widgets_tab4(self):
         self.tab4.grid_rowconfigure(0, weight=1)
@@ -123,8 +127,26 @@ class ChatbotGUI:
                                                    sticky='nsew')
         self.create_img_sidebar(self.tab4)
         self.create_img_viewer(self.tab4)
+        self.refresh_md_button = ttk.Button(self.tab4, text="Refresh", command=self.refresh_files)
+        self.refresh_md_button.grid(row=1, column=0, sticky=E)
 
+    def refresh_files(self):
+        # Refresh Markdown files
+        self.md_listbox.delete(0, 'end')
+        self.update_md_files()
+        self.md_listbox.update_idletasks()
 
+        # Refresh Image files
+        self.img_listbox.delete(0, 'end')
+        self.update_img_files()
+        self.img_listbox.update_idletasks()
+        
+        # Refresh History files
+        self.history_listbox.delete(0, 'end')
+        self.update_history_files()
+        self.history_listbox.update_idletasks()
+
+    
     def create_sidebar(self, parent):
         self.sidebar = ttk.Frame(parent, width=200)
         self.sidebar.grid(row=0, column=0, sticky='nsew')
