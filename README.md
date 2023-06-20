@@ -8,6 +8,7 @@
   - [Help command](#help-command)
   - [Image to Text](#image-to-text)
   - [Read CSV and Plot with Python](#read-csv-and-use-python-to-plot-older-gui)
+  - [Tabs (Knowledgebase, History, Images)](#tabs-knowledgebase-history-images)
 - [Usage](#usage)
 - [System Messages](#system-messages)
 
