@@ -54,8 +54,8 @@ GUI chatbot playground with the new functions feature.
 
 ## GUI Screenshots
 
-### Help command
-![Help Command](image.png)
+### Chat UI
+![ChatUI](image-7.png)
 
 ### Image to Text
 ![Image to Text](image-1.png)
