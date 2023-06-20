@@ -5,13 +5,13 @@ import threading
 import shutil
 import markdown
 import tkinter as tk
-from tkinter import ttk, Listbox, Scrollbar, N, S, E, W, scrolledtext, messagebox, filedialog
+from tkinter import ttk, Listbox, Scrollbar, N, S, E, W, scrolledtext, messagebox, filedialog, Canvas
 from ttkthemes import ThemedTk
 from tkhtmlview import HTMLLabel
 from PIL import Image, ImageTk
 
 from chatbot import run_conversation
-
+from functions import image_to_text, read_csv_columns
 #conversation = []
 
 # Initialize logging
@@ -30,6 +30,7 @@ class ChatbotGUI:
         self.style.configure('TButton', font=('Ubuntu', 14))
         self.md_directory = "kb/"  # Set path to markdown files
         self.history_directory = "history/"  # Set path to markdown files
+        self.img_directory = "data/images/"  # Set path to image files
         
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
@@ -61,6 +62,13 @@ class ChatbotGUI:
         
         # Create widgets in Tab 3
         self.create_widgets_tab3()
+        
+        # Tab 4
+        self.tab4 = ttk.Frame(self.tabControl)
+        self.tabControl.add(self.tab4, text='Images')
+        
+        # Create widgets in Tab 4
+        self.create_widgets_tab4()
     
     def create_widgets_tab1(self):
         self.tab1.grid_rowconfigure(0, weight=1)  # Add this line
@@ -101,6 +109,20 @@ class ChatbotGUI:
                                                     sticky='nsew')
         self.create_history_sidebar(self.tab3)
         self.create_history_viewer(self.tab3)
+    
+    def create_widgets_tab4(self):
+        self.tab4.grid_rowconfigure(0, weight=1)
+        self.tab4.grid_columnconfigure(0, weight=1)
+        self.tab4.grid_columnconfigure(1, weight=0)
+        self.tab4.grid_columnconfigure(2, weight=4)
+        
+        ttk.Label(self.tab4, text ="Images").grid(column = 0,
+                                                   row = 0,
+                                                   padx = 30,
+                                                   pady = 30,
+                                                   sticky='nsew')
+        self.create_img_sidebar(self.tab4)
+        self.create_img_viewer(self.tab4)
 
 
     def create_sidebar(self, parent):
@@ -387,6 +409,58 @@ class ChatbotGUI:
             
             # Display HTML in the viewer
             self.history_viewer.set_html(html)
+    
+    def create_img_sidebar(self, parent):
+        self.img_listbox = Listbox(parent)
+        self.img_listbox.grid(row=0, 
+                              column=0, 
+                              sticky=N+S+E+W)
+
+        scrollbar = Scrollbar(parent, orient="vertical", command=self.img_listbox.yview)
+        scrollbar.grid(row=0, 
+                       column=1, 
+                       sticky=N+S)  
+        self.img_listbox.config(yscrollcommand=scrollbar.set)
+
+        # Load the list of image files
+        self.update_img_files()
+
+        # Add event handler for selecting an item
+        self.img_listbox.bind('<<ListboxSelect>>', self.on_img_file_select)
+
+    def create_img_viewer(self, parent):
+        self.img_canvas = Canvas(parent)
+        self.img_canvas.grid(row=0, 
+                             column=2, 
+                             sticky=N+S+E+W)
+
+    def update_img_files(self):
+        # Empty the list
+        self.img_listbox.delete(0, 'end')
+
+        # Get list of files in directory
+        files = os.listdir(self.img_directory)
+        img_files = [file for file in files if file.endswith('.png') or file.endswith('.jpg')]
+
+        # Add files to listbox
+        for file in img_files:
+            self.img_listbox.insert('end', file)
+
+    def on_img_file_select(self, evt):
+        # Get selected file name
+        idxs = self.img_listbox.curselection()
+        if len(idxs)==1:
+            idx = int(idxs[0])
+            img_file = self.img_listbox.get(idx)
+            
+            # Open and display the image file
+            img_path = os.path.join(self.img_directory, img_file)
+            image = Image.open(img_path)
+            photo = ImageTk.PhotoImage(image)
+            self.img_canvas.create_image(0, 0, image=photo, anchor="nw")
+
+            # Keep a reference to the image object
+            self.img_canvas.image = photo
             
             
 
