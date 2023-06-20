@@ -5,4 +5,8 @@ bs4
 markdown
 pandas
 torch
+tkhtmlview
+open_clip_torch
 PIL
+pandas
+wolframalpha
