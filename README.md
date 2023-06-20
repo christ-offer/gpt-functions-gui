@@ -62,6 +62,13 @@ GUI chatbot playground with the new functions feature.
 ### Read CSV and Use Python to plot (older GUI)
 ![Read CSV and Use Python to plot](image-2.png)
 
+### Tabs (Knowledgebase, History, Images)
+![KnowledgeBase](image-4.png)
+
+![History](image-5.png)
+
+![Images](image-6.png)
+
 
 ## Usage
 
