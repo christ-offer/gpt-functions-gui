@@ -97,6 +97,8 @@ class ChatbotGUI:
         self.create_md_viewer(self.tab2)
         self.refresh_md_button = ttk.Button(self.tab2, text="Refresh", command=self.refresh_files)
         self.refresh_md_button.grid(row=1, column=0, sticky=E)
+        self.add_to_chat_button = ttk.Button(self.tab2, text="Add to Chat History", command=self.add_to_chat_history)
+        self.add_to_chat_button.grid(row=2, column=0, sticky=E)
     
     def create_widgets_tab3(self):
         self.tab3.grid_rowconfigure(0, weight=1)
@@ -113,6 +115,8 @@ class ChatbotGUI:
         self.create_history_viewer(self.tab3)
         self.refresh_md_button = ttk.Button(self.tab3, text="Refresh", command=self.refresh_files)
         self.refresh_md_button.grid(row=1, column=0, sticky=E)
+        self.add_to_chat_button = ttk.Button(self.tab3, text="Add to Chat History", command=self.add_to_chat_history)
+        self.add_to_chat_button.grid(row=2, column=0, sticky=E)
     
     def create_widgets_tab4(self):
         self.tab4.grid_rowconfigure(0, weight=1)
@@ -499,7 +503,29 @@ class ChatbotGUI:
         resized_image = self.image.resize((width, height), Image.LANCZOS)
         self.photo = ImageTk.PhotoImage(resized_image)
         self.img_canvas.create_image(0, 0, image=self.photo, anchor="nw")
-            
+    
+    def add_to_chat_history(self):
+        # Get the currently selected file
+        selection = self.md_listbox.curselection()
+
+        if selection:
+            selected_file = self.md_listbox.get(selection[0])
+
+            # Open and read the file
+            with open(os.path.join(self.md_directory, selected_file), 'r') as file:
+                content = file.read()
+
+            # Append to chat history
+            self.conversation.append({
+                "role": "user",
+                "content": f'{content}\n',
+            })
+
+            # Insert the file content to the text_area as a user message
+            self.text_area.insert(tk.INSERT, f'You: Content loaded:\n {content}\n', "user")
+
+            # You may want to automatically scroll to the end of the text area
+            self.text_area.see('end')
             
 
     def run(self):
