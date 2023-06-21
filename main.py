@@ -427,13 +427,15 @@ class ChatbotGUI:
     
     def add_to_chat_history(self):
         # Get the currently selected file
-        selection = self.md_listbox.curselection()
+        selected_item_id = self.tree.selection()[0]
+        selected_file = self.tree.item(selected_item_id, 'text')
 
-        if selection:
-            selected_file = self.md_listbox.get(selection[0])
+        file_path = self.get_full_path(selected_item_id)
 
+        # Check if it's a file and not a directory
+        if os.path.isfile(file_path):
             # Open and read the file
-            with open(os.path.join(self.md_directory, selected_file), 'r') as file:
+            with open(file_path, 'r') as file:
                 content = file.read()
 
             # Append to chat history
