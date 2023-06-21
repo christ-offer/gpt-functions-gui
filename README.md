@@ -62,18 +62,14 @@ Example Usecase: /read_file code.ts/py/rs/etc -> /review -> /edit_file code.ts/p
 ### Chat UI
 ![UI](image.png)
 
+### File Manager
+![Filemanager](image-1.png)
+
 ### Image to Text (Older GUI)
 ![Image to Text](screenshots/image-1.png)
 
 ### Read CSV and Use Python to plot (older GUI)
 ![Read CSV and Use Python to plot](screenshots/image-2.png)
-
-### Tabs (Knowledgebase, History, Images)
-![KnowledgeBase](screenshots/image-4.png)
-
-![History](screenshots/image-5.png)
-
-![Images](screenshots/image-8.png)
 
 
 ## Usage
