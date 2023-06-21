@@ -55,8 +55,8 @@ def wikidata_sparql_query(query: str) -> str:
 
 def query_wolframalpha(query_str):
     try:
-        #wolfram_id = os.environ.get('WOLFRAM_APP_ID')
-        client = wolframalpha.Client('JE4W7V-H3R6PWJ7LH')
+        wolfram_id = os.environ.get('WOLFRAM_APP_ID')
+        client = wolframalpha.Client(wolfram_id)
         res = client.query(query_str)
 
         response = ''
