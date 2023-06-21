@@ -135,12 +135,18 @@ def image_to_text(image_path_or_url, seq_len=20):
 
 def wolfram_language_query(query: str) -> str:
     url = "http://api.wolframalpha.com/v1/result"
-    params = {"appid": os.environ.get("WOLFRAM_APP_ID"), "i": query}
+    #appid = os.environ.get("WOLFRAM_APP_ID")
+    appid = "JE4W7V-H3R6PWJ7LH"
+    
+    if appid is None:
+        return "The environment variable 'WOLFRAM_APP_ID' is not set."
+    
+    params = {"appid": appid, "i": query}
     
     try:
         response = requests.get(url, params=params)
         response.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xx
-
+        print(response)
         return response.text
     except requests.HTTPError as e:
         return f"A HTTP error occurred: {str(e)}"
@@ -148,6 +154,7 @@ def wolfram_language_query(query: str) -> str:
         return f"A request exception occurred: {str(e)}"
     except Exception as e:
         return f"An error occurred: {e}"
+
 
 def write_file(filename: str, content: str) -> str:
     if not is_valid_filename(filename):
@@ -505,15 +512,4 @@ function_params = [
             "required": ["filename"],
         },
     },
-    #{
-    #    "name": "wolfram_language_query",
-    #    "description": "Executes a Wolfram Language query and returns the result as a JSON string.",
-    #    "parameters": {
-    #        "type": "object",
-    #        "properties": {
-    #            "query": {"type": "string", "description": "The Wolfram Language query to execute. Must be a SINGLE LINE STRING!"},
-    #        },
-    #        "required": ["query"],
-    #    },
-    #},
 ]
