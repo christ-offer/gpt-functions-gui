@@ -99,8 +99,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         function_args = json.loads(message["function_call"]["arguments"])
         print(f"Function name: {function_name}")
         print(f"Function arguments: {function_args}")
-
-        function_response = call_function(function_name, function_args)
+        
+        if function_name in FUNCTION_MAP:
+            function_response = call_function(function_name, function_args)
+        else:
+            function_response = f"Function {function_name} not found."
         
         if function_name in FUNCTIONS_THAT_APPEND_TO_CONVERSATION:
             conversation.append({
