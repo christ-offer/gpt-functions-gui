@@ -11,6 +11,8 @@ import open_clip
 from PIL import Image
 import urllib
 import wolframalpha
+import subprocess
+
 
 from utils import is_valid_filename, ensure_directory_exists
 
@@ -22,6 +24,8 @@ IMAGE_DIR = "./data/images"
 CSV_DIR = "./data/csv"
 CODE_DIR = "./data/code"
 SCRAPE_DIR = "./data/scrape"
+PROJECTS_DIR = "data/code/projects/"
+
 
 def wikidata_sparql_query(query: str) -> str:
     url = "https://query.wikidata.org/sparql"

@@ -38,6 +38,7 @@ Review:
 /python [idea] - Calls the python_repl function.
 /wolfram [request] - Calls the query_wolframalpha function.
 /wikidata [request] - Calls the wikidata_sparql_query function.
+/gpt-engineer [spec-file] - Calls the gpt_engineer function with the spec-file 'main_prompt' without extension.
 /scrape [url] - Calls the scrape_webpage function.
 /write_file [filename] [content] - Calls the write_file function.
 /write_code [filename from Ticket | idea] - Calls the write_code function - Writes the *ENTIRE CODE* to the file.

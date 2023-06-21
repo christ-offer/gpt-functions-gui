@@ -23,7 +23,7 @@ from functions import (
     write_history_entry, 
     read_history_entry, 
     query_wolframalpha,
-    write_code
+    write_code,
 )
 
 FUNCTIONS_THAT_APPEND_TO_CONVERSATION = {
