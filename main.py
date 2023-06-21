@@ -59,23 +59,16 @@ class FileManager:
             
             caption = image_to_text(image_file_path)
             
-            # Load image
-            img = Image.open(image_file_path)
-            img.thumbnail((500,500)) # Limit the size of the image to 200x200 pixels
-            img = ImageTk.PhotoImage(img)
-            image_label = tk.Label(image=img) # Create a label to hold the image
-            image_label.image = img # Keep a reference to the image to prevent it from being garbage collected
+            # Create HTML for the bot's message
+            message_html = f'<p style="background-color: lightblue;">Bot: {os.path.basename(image_file_path)} was added to image folder<br/>The caption is: {caption}</p><br/>'
 
-            # Add image to text area
-            chatbot_gui.text_area.window_create(tk.END, window=image_label)
-            chatbot_gui.text_area.insert(tk.END, '\n')
-            
-            # Insert message into text area
-            chatbot_gui.text_area.insert(tk.INSERT, f'Bot: {os.path.basename(image_file_path)} was added to image folder\n The caption is: {caption}\n', "bot")
-            
+            # Append the new message to the existing HTML content and update the widget
+            self.current_html += message_html
+            self.text_area.set_html(self.current_html)
+
             chatbot_gui.conversation.append({
                 "role": "assistant",
-                "content": f'Bot: {os.path.basename(image_file_path)} was added to image folder\nThe capition is: {caption}\n',  # directly add function response to the conversation
+                "content": f'Bot: Image: {os.path.basename(image_file_path)} was added to image folder\nThe capition is: {caption}\n',  # directly add function response to the conversation
             })
             
     def upload_csv(self):
