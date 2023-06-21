@@ -220,20 +220,29 @@ class ChatbotGUI:
         self.add_to_chat_button.grid(row=2, column=0, sticky=E)
     
     def refresh_files(self):
-        # Refresh Markdown files
-        self.md_listbox.delete(0, 'end')
-        self.update_md_files()
-        self.md_listbox.update_idletasks()
+        for i in self.tree.get_children():
+            self.tree.delete(i)
 
-        # Refresh Image files
-        self.img_listbox.delete(0, 'end')
-        self.update_img_files()
-        self.img_listbox.update_idletasks()
+        # Refresh data directory
+        root = self.tree.insert('', 'end', text=self.data_directory, open=True)
+        self.process_directory(root, self.data_directory)
+
+        # Refresh KB directory
+        root = self.tree.insert('', 'end', text=self.md_directory, open=True)
+        self.process_directory(root, self.md_directory)
         
-        # Refresh History files
-        self.history_listbox.delete(0, 'end')
-        self.update_history_files()
-        self.history_listbox.update_idletasks()
+        # Refresh history directory
+        root = self.tree.insert('', 'end', text=self.history_directory, open=True)
+        self.process_directory(root, self.history_directory)
+        
+        # Refresh images directory
+        root = self.tree.insert('', 'end', text=self.img_directory, open=True)
+        self.process_directory(root, self.img_directory)
+        
+        # Refresh csv directory
+        root = self.tree.insert('', 'end', text=self.csv_directory, open=True)
+        self.process_directory(root, self.csv_directory)
+
 
     def create_sidebar(self, parent):
         self.sidebar = ttk.Frame(parent, width=200)
