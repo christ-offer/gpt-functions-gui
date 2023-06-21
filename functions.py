@@ -135,8 +135,7 @@ def image_to_text(image_path_or_url, seq_len=20):
 
 def wolfram_language_query(query: str) -> str:
     url = "http://api.wolframalpha.com/v1/result"
-    #appid = os.environ.get("WOLFRAM_APP_ID")
-    appid = "JE4W7V-H3R6PWJ7LH"
+    appid = os.environ.get("WOLFRAM_APP_ID")
     
     if appid is None:
         return "The environment variable 'WOLFRAM_APP_ID' is not set."
