@@ -85,7 +85,44 @@ def scrape_webpage(url: str) -> str:
         # Remove any existing <img> tags (images)
         for img in soup.find_all('img', src=True):
             img.decompose()
-
+        
+        # Remove any existing <script> tags (JavaScript)
+        for script in soup.find_all('script'):
+            script.decompose()
+        
+        # Remove any existing <style> tags (CSS)
+        for style in soup.find_all('style'):
+            style.decompose()
+            
+        # Remove any existing <svg> tags (SVG)
+        for svg in soup.find_all('svg'):
+            svg.decompose()
+        
+        # Remove any existing <iframe> tags (iFrames)
+        for iframe in soup.find_all('iframe'):
+            iframe.decompose()
+        
+        # Remove any existing <canvas> tags (Canvas)
+        for canvas in soup.find_all('canvas'):
+            canvas.decompose()
+            
+        # Remove any existing <video> tags (Video)
+        for video in soup.find_all('video'):
+            video.decompose()
+            
+        # Remove any existing <audio> tags (Audio)
+        for audio in soup.find_all('audio'):
+            audio.decompose()
+            
+        # Remove any existing <map> tags (Image maps)
+        for map in soup.find_all('map'):
+            map.decompose()
+            
+        # Remove any existing <noscript> tags (JavaScript)
+        for noscript in soup.find_all('noscript'):
+            noscript.decompose()
+            
+            
         # Extract text from the parsed HTML
         text = soup.get_text()
 
@@ -138,9 +175,12 @@ def write_file(filename: str, content: str) -> str:
     if not is_valid_filename(filename):
         return f"Invalid filename: {filename}"
     # directory = os.path.dirname(filename)
-    # ensure_directory_exists(directory)
+    # ensure_directory_exists(directory)    
+    if not filename.startswith('data/'):
+        filename = 'data/' + filename
     try:
         with open(filename, 'w') as f:
+            
             f.write(content)
         return f"File '{filename}' has been successfully written."
     except Exception as e:

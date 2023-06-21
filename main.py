@@ -59,23 +59,16 @@ class FileManager:
             
             caption = image_to_text(image_file_path)
             
-            # Load image
-            img = Image.open(image_file_path)
-            img.thumbnail((500,500)) # Limit the size of the image to 200x200 pixels
-            img = ImageTk.PhotoImage(img)
-            image_label = tk.Label(image=img) # Create a label to hold the image
-            image_label.image = img # Keep a reference to the image to prevent it from being garbage collected
+            # Create HTML for the bot's message
+            message_html = f'<p style="background-color: lightblue;">Bot: {os.path.basename(image_file_path)} was added to image folder<br/>The caption is: {caption}</p><br/>'
 
-            # Add image to text area
-            chatbot_gui.text_area.window_create(tk.END, window=image_label)
-            chatbot_gui.text_area.insert(tk.END, '\n')
-            
-            # Insert message into text area
-            chatbot_gui.text_area.insert(tk.INSERT, f'Bot: {os.path.basename(image_file_path)} was added to image folder\n The caption is: {caption}\n', "bot")
-            
+            # Append the new message to the existing HTML content and update the widget
+            self.current_html += message_html
+            self.text_area.set_html(self.current_html)
+
             chatbot_gui.conversation.append({
                 "role": "assistant",
-                "content": f'Bot: {os.path.basename(image_file_path)} was added to image folder\nThe capition is: {caption}\n',  # directly add function response to the conversation
+                "content": f'Bot: Image: {os.path.basename(image_file_path)} was added to image folder\nThe capition is: {caption}\n',  # directly add function response to the conversation
             })
             
     def upload_csv(self):
@@ -99,7 +92,14 @@ class FileManager:
 class AIManager:
     def run_chat(self, event=None):
         user_input = chatbot_gui.user_input_text.get("1.0", tk.END).strip()
-        chatbot_gui.text_area.insert(tk.INSERT, f'You: {user_input}\n\n', "user")  # For the user's message
+        html = markdown.markdown(user_input)
+        # Create HTML for the user's input
+        user_input_html = f'<p style="background-color: lightgray;">You: {html}</p><br/>'
+
+        # Append the new message to the existing HTML content and update the widget
+        chatbot_gui.current_html += user_input_html
+        chatbot_gui.text_area.set_html(chatbot_gui.current_html)
+
         chatbot_gui.user_input_text.delete("1.0", tk.END)
 
         # Start the loading animation
@@ -328,11 +328,9 @@ class ChatbotGUI:
         self.create_input_area(main_frame)
 
     def create_text_area(self, frame):
-        self.text_area = scrolledtext.ScrolledText(frame, wrap='word', background="oldlace", font=('Ubuntu', 16))
-        self.text_area.tag_configure("code", background="#f5f5f5", foreground="#333333")
-        self.text_area.tag_configure("user", background="lightgray", spacing1=30, spacing3=10)  # style for user text
-        self.text_area.tag_configure("bot", background="lightblue", spacing1=30, spacing3=10)  # style for bot text
+        self.text_area = HTMLLabel(frame, html="<p>Welcome to the chat!</p>", background="oldlace", font=('Ubuntu', 16))
         self.text_area.grid(row=0, column=0, sticky='nsew')
+        self.current_html = "<p>Welcome to the chat!</p>"  # Initialize with the same content as the label
 
     def create_input_area(self, frame):
         bottom_frame = ttk.Frame(frame)
@@ -348,14 +346,22 @@ class ChatbotGUI:
         
     def update_text_area(self, response):
         # Stop the loading animation
+        html = markdown.markdown(response)
         self.is_loading = False
         self.loading_label.grid_remove()  # Remove the loading label from the application window
+        # Create HTML for the response
+        response_html = f'<p style="background-color: lightblue;">Bot: {html}</p><br/>'
 
-        self.text_area.insert(tk.INSERT, f'Bot: {response}\n\n', "bot")  # For the bot's response
+        # Append the new message to the existing HTML content and update the widget
+        self.current_html += response_html
+        self.text_area.set_html(self.current_html)
+
 
     def reset_conversation(self):
         self.conversation = []
-        self.text_area.delete('1.0', tk.END)
+        reset_html = "<p>Conversation reset.</p>"
+        self.text_area.set_html(reset_html)
+        self.current_html = reset_html
         
     # TAB 2
     
@@ -447,7 +453,7 @@ class ChatbotGUI:
         # Add files to listbox
         for file in history_files:
             self.history_listbox.insert('end', file)
-            
+
     def on_history_file_select(self, evt):
         # Get selected file name
         idxs = self.history_listbox.curselection()
@@ -461,6 +467,8 @@ class ChatbotGUI:
             html = markdown.markdown(history_text)
             
             # Display HTML in the viewer
+            
+            
             self.history_viewer.set_html(html)
     
     def create_img_sidebar(self, parent):
@@ -548,8 +556,10 @@ class ChatbotGUI:
                 "content": f'{content}\n',
             })
 
-            # Insert the file content to the text_area as a user message
-            self.text_area.insert(tk.INSERT, f'You: Content loaded:\n {content}\n', "user")
+            # Create HTML for the loaded content and append to the current HTML
+            content_html = f'<p style="background-color: lightgray;">You: Content loaded:<br/>{content}</p><br/>'
+            self.current_html += content_html
+            self.text_area.set_html(self.current_html)
 
             # You may want to automatically scroll to the end of the text area
             self.text_area.see('end')
