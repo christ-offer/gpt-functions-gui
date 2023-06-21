@@ -33,6 +33,7 @@ class Styles:
         ChatbotGUI.data_directory = "data/"  # Set path to markdown files
         ChatbotGUI.img_directory = "data/images/"  # Set path to image files
         ChatbotGUI.csv_directory = "data/csv/"  # Set path to csv files
+        ChatbotGUI.code_directory = "data/code/"  # Set path to code files
         ChatbotGUI.root.option_add('*foreground', 'black')  # Setting default text color to black
 
     def apply_default_style(self, widget):
@@ -302,7 +303,7 @@ class ChatbotGUI:
         self.tree.config(yscrollcommand=scrollbar.set)
 
         # List of directories
-        directories = [self.data_directory, self.md_directory, self.history_directory, self.img_directory, self.csv_directory]
+        directories = [self.data_directory, self.md_directory, self.history_directory, self.img_directory, self.csv_directory, self.code_directory]
 
         # Add directories to tree
         for directory in directories:

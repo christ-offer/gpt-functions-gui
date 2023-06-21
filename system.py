@@ -39,7 +39,8 @@ Review:
 /wolfram [request] - Calls the query_wolframalpha function.
 /wikidata [request] - Calls the wikidata_sparql_query function.
 /scrape [url] - Calls the scrape_webpage function.
-/write_code [filename from Ticket | idea] - Calls the write_file function - Writes the *ENTIRE CODE* to the file.
+/write_file [filename] [content] - Calls the write_file function.
+/write_code [filename from Ticket | idea] - Calls the write_code function - Writes the *ENTIRE CODE* to the file.
 /kb_create [content] - Calls the knowledgebase_create_entry function.
 /kb_list - Calls the knowledgebase_list_entries function.
 /kb_read [entry_name] - Calls the knowledgebase_read_entry function.

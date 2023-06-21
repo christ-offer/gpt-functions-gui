@@ -22,8 +22,8 @@ from functions import (
     list_history_entries, 
     write_history_entry, 
     read_history_entry, 
-    query_wolframalpha, 
-    knowledgebase_update_entry
+    query_wolframalpha,
+    write_code
 )
 
 FUNCTIONS_THAT_APPEND_TO_CONVERSATION = {
@@ -45,14 +45,14 @@ FUNCTION_MAP = {
     "list_history_entries": list_history_entries,
     "knowledgebase_list_entries": knowledgebase_list_entries,
     "knowledgebase_create_entry": knowledgebase_create_entry,
-    "knowledgebase_update_entry": knowledgebase_update_entry,
     "read_csv_columns": read_csv_columns,
     "write_file": write_file,
     "wikidata_sparql_query": wikidata_sparql_query,
     "scrape_webpage": scrape_webpage,
     "image_to_text": image_to_text,
     "read_file": read_file,
-    "edit_file": edit_file
+    "edit_file": edit_file,
+    "write_code": write_code,
 }
 
 def call_function(function_name, function_args):

@@ -20,6 +20,8 @@ HISTORY_DIR = "./history"
 DATA_DIR = "./data"
 IMAGE_DIR = "./data/images"
 CSV_DIR = "./data/csv"
+CODE_DIR = "./data/code"
+SCRAPE_DIR = "./data/scrape"
 
 def wikidata_sparql_query(query: str) -> str:
     url = "https://query.wikidata.org/sparql"
@@ -128,7 +130,7 @@ def scrape_webpage(url: str) -> str:
 
         # Remove extra whitespace
         text = ' '.join(text.split())
-
+        
         return text
     except requests.HTTPError as e:
         return f"A HTTP error occurred: {str(e)}"
@@ -171,34 +173,33 @@ def image_to_text(image_path_or_url, seq_len=20):
         return f"An error occurred: {str(e)}"
 
 
-def write_file(filename: str, content: str) -> str:
+def write_file(filename: str, content: str, directory: str = DATA_DIR) -> str:
     if not is_valid_filename(filename):
         return f"Invalid filename: {filename}"
-    # directory = os.path.dirname(filename)
-    # ensure_directory_exists(directory)    
-    if not filename.startswith('data/'):
-        filename = 'data/' + filename
-    try:
-        with open(filename, 'w') as f:
-            
-            f.write(content)
-        return f"File '{filename}' has been successfully written."
-    except Exception as e:
-        return f"An error occurred while writing the file: {str(e)}"
-
-def knowledgebase_create_entry(filename: str, content: str) -> str:
-    if not is_valid_filename(filename):
-        return "The provided filename is not valid."
     
-    ensure_directory_exists(KB_DIR)
-    filepath = os.path.join(KB_DIR, filename)
-    
+    ensure_directory_exists(directory)    
+    filepath = os.path.join(directory, filename)
     try:
         with open(filepath, 'w') as f:
             f.write(content)
-        return f"Entry '{filename}' has been successfully created."
+        return f"File '{filename}' has been successfully written to {directory}."
     except Exception as e:
-        return f"An error occurred while creating the entry: {str(e)}"
+        return f"An error occurred while writing the file: {str(e)}"
+
+def write_code(filename: str, content: str) -> str:
+    return write_file(filename, content, directory=CODE_DIR)
+
+def knowledgebase_create_entry(filename: str, content: str) -> str:
+    return write_file(filename, content, directory=KB_DIR)
+
+def knowledgebase_list_entries() -> str:
+    ensure_directory_exists(KB_DIR)
+    try:
+        entries = os.listdir(KB_DIR)
+        entries_str = '\n'.join(entries)
+        return f"The knowledgebase contains the following entries:\n{entries_str}"
+    except Exception as e:
+        return f"An error occurred while listing the entries: {str(e)}"
 
 def knowledgebase_read_entry(filename: str) -> str:
     if not is_valid_filename(filename):
@@ -213,45 +214,8 @@ def knowledgebase_read_entry(filename: str) -> str:
     except Exception as e:
         return f"An error occurred while reading the entry: {str(e)}"
 
-
-def knowledgebase_update_entry(filename: str, content: str) -> str:
-    if not is_valid_filename(filename):
-        return "The provided filename is not valid."
-    
-    filepath = os.path.join(KB_DIR, filename)
-    
-    if not os.path.exists(filepath):
-        return "The specified entry does not exist."
-    
-    try:
-        with open(filepath, 'w') as f:
-            f.write(content)
-        return f"Entry '{filename}' has been successfully updated."
-    except Exception as e:
-        return f"An error occurred while updating the entry: {str(e)}"
-
-def knowledgebase_list_entries() -> str:
-    ensure_directory_exists(KB_DIR)
-    try:
-        entries = os.listdir(KB_DIR)
-        entries_str = '\n'.join(entries)
-        return f"The knowledgebase contains the following entries:\n{entries_str}"
-    except Exception as e:
-        return f"An error occurred while listing the entries: {str(e)}"
-
 def write_history_entry(filename: str, content: str) -> str:
-    if not is_valid_filename(filename):
-        return "The provided filename is not valid."
-    
-    ensure_directory_exists(HISTORY_DIR)
-    filepath = os.path.join(HISTORY_DIR, filename)
-    
-    try:
-        with open(filepath, 'w') as f:
-            f.write(content)
-        return f"Entry '{filename}' has been successfully created."
-    except Exception as e:
-        return f"An error occurred while creating the entry: {str(e)}"
+    return write_file(filename, content, directory=HISTORY_DIR)
     
 def read_history_entry(filename: str) -> str:
     if not is_valid_filename(filename):
@@ -455,18 +419,6 @@ function_params = [
         },
     },
     {
-        "name": "knowledgebase_update_entry",
-        "description": "Updates an existing knowledge base entry",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "filename": {"type": "string", "description": "The filename of the entry to update."},
-                "content": {"type": "string", "description": "The new content for the entry. Format: Markdown."},
-            },
-            "required": ["filename", "content"],
-        },
-    },
-    {
         "name": "knowledgebase_list_entries",
         "description": "Lists all entries in the knowledge base",
         "parameters": {
@@ -493,6 +445,18 @@ function_params = [
             "properties": {
                 "filename": {"type": "string", "description": "The filename for the new entry."},
                 "content": {"type": "string", "description": "The content for the new entry."},
+            },
+            "required": ["filename", "content"],
+        },
+    },
+    {
+        "name": "write_code",
+        "description": "Writes a code file to the system",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "filename": {"type": "string", "description": "The filename for the new entry."},
+                "content": {"type": "string", "description": "The code content for the new entry."},
             },
             "required": ["filename", "content"],
         },
