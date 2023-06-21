@@ -28,10 +28,12 @@ from functions import (
 
 FUNCTIONS_THAT_APPEND_TO_CONVERSATION = {
     "knowledgebase_read_entry", 
+    "knowledgebase_list_entries", 
     "read_history_entry", 
     "list_history_entries", 
-    "knowledgebase_list_entries", 
-    "read_file"
+    "read_file",
+    "read_csv_columns",
+    "scrape_webpage",
 }
 
 FUNCTION_MAP = {
@@ -101,10 +103,7 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         print(f"Function name: {function_name}")
         print(f"Function arguments: {function_args}")
         
-        if function_name in FUNCTION_MAP:
-            function_response = call_function(function_name, function_args)
-        else:
-            function_response = f"Function {function_name} not found."
+        function_response = call_function(function_name, function_args)
         
         if function_name in FUNCTIONS_THAT_APPEND_TO_CONVERSATION:
             conversation.append({
@@ -121,6 +120,7 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
                     messages=[
                         {"role": "system", "content": system_message2},
                         {"role": "user", "content": prompt},
+                        #{"role": "assistant", "content": message},
                         message,
                         {
                             "role": "function",

@@ -29,27 +29,30 @@ GUI chatbot playground with the new functions feature.
 
 ## Functions
 
-* wikidata_sparql_query - query wikidata
-* scrape_webpage - scrape a webpage
-* write_code_file - write a file to disk
-* knowledgebase_create_entry - create a knowledgebase entry
-* knowledgebase_list_entries - list knowledgebase entries
-* knowledgebase_read_entry - read a knowledgebase entry
-* list_history - list history entries
-* read_history - read a history entry
-* write_history - write a history entry
-* python_repl - run python code
-* read_csv_columns - read columns from a csv file
-* read_file - read a file
-* edit_file - edit a file - Useful to read_file first, so the bot knows what lines are where. 
-* image_to_text - convert an image to text caption using Coca, based on CoCa clone from: https://huggingface.co/spaces/fffiloni/CoCa-clone
+* /python - run python code
+* /wikidata - query wikidata
+* /wolfram - query wolframalpha
+* /image - convert an image to text caption using Coca, based on CoCa clone from: https://huggingface.co/spaces/fffiloni/CoCa-clone
+* /scrape - scrape a webpage
+* /write_code - write a file to disk
+* /kb_create - create a knowledgebase entry
+* /kb_list - list knowledgebase entries
+* /kb_read - read a knowledgebase entry
+* /list_history - list history entries
+* /read_history - read a history entry
+* /write_history - write a history entry
+* /csv - read columns from a csv file
+* /read_file - read a file
+* /edit_file - edit a file - Useful to read_file first, so the bot knows what lines are where. 
 
+### Not "functions" but commands/strict prompts
 
-`/review` is not a function per se, its a structured command for the agent to return a list of suggestions for improving the functions according to the review interface.
+* /review - performs a review of the code following a strict response format
+* /brainstorm - returns a list of n ideas for the topic following a strict response format
+* /ticket - creates a ticket for the solution following a strict response format
+* /help - returns a list of all available functions
 
-* Usecase: /read_file code.ts/py/rs/etc -> /review -> /edit_file code.ts/py/rs/etc
-
-`/help` is not a function per se, its a structured command for the agent to return a list of all available functions.
+Example Usecase: /read_file code.ts/py/rs/etc -> /review -> /edit_file code.ts/py/rs/etc
 
 
 ## GUI Screenshots
@@ -89,8 +92,8 @@ PersonalAssistant:
 ===CONSTRAINTS===
 You are genius level intelligent and knowledgable in every domain and field.
 You think step by step to make sure you have the right solution
-If you are unsure about the solution, or you are not sure you fully understood the problem, you ask for clarification
-You only use your functions when they are called
+If you think you are missing any information or details to complete a task, you ask the user for clarification.
+You only use your functions when they are specifically called with their /command
 
 ===RESPONSE FORMAT===  
 Review:
@@ -115,6 +118,7 @@ Brainstorm:
 
 ===COMMANDS===
 /python [idea] - Calls the python_repl function.
+/wolfram [question] - Calls the query_wolframalpha function
 /wikidata [question] - Calls the wikidata_sparql_query function
 /scrape [url] - Calls the scrape_webpage function
 /write_code [idea] - Calls the write_file function
@@ -146,6 +150,8 @@ You recive the responses from the functions PersonalAssistant has called
 - If successful:
 
 * wikidata_sparql_query:
+Return response in human readable format
+* query_wolframalpha:
 Return response in human readable format
 * scrape_webpage:
 Return the full text content of the webpage (unless user has specified a summary/abstract). 

@@ -133,27 +133,6 @@ def image_to_text(image_path_or_url, seq_len=20):
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
-def wolfram_language_query(query: str) -> str:
-    url = "http://api.wolframalpha.com/v1/result"
-    appid = os.environ.get("WOLFRAM_APP_ID")
-    
-    if appid is None:
-        return "The environment variable 'WOLFRAM_APP_ID' is not set."
-    
-    params = {"appid": appid, "i": query}
-    
-    try:
-        response = requests.get(url, params=params)
-        response.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xx
-        print(response)
-        return response.text
-    except requests.HTTPError as e:
-        return f"A HTTP error occurred: {str(e)}"
-    except requests.RequestException as e:
-        return f"A request exception occurred: {str(e)}"
-    except Exception as e:
-        return f"An error occurred: {e}"
-
 
 def write_file(filename: str, content: str) -> str:
     if not is_valid_filename(filename):
