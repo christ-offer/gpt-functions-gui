@@ -25,6 +25,7 @@ GUI chatbot playground with the new functions feature.
 ### Limitations
 
 * Very much single threaded so the GUI freezes when the bot is thinking.
+* Can not copy from the chat window. (Workaround, ask it to write to file)
 * I don't know python.
 * Probably many more.
 
@@ -59,9 +60,9 @@ Example Usecase: /read_file code.ts/py/rs/etc -> /review -> /edit_file code.ts/p
 ## GUI Screenshots
 
 ### Chat UI
-![ChatUI](screenshots/image-7.png)
+![UI](image.png)
 
-### Image to Text
+### Image to Text (Older GUI)
 ![Image to Text](screenshots/image-1.png)
 
 ### Read CSV and Use Python to plot (older GUI)
