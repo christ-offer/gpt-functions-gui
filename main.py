@@ -64,8 +64,8 @@ class FileManager:
             message_html = f'<p style="background-color: lightblue;">Bot: {os.path.basename(image_file_path)} was added to image folder<br/>The caption is: {caption}</p><br/>'
 
             # Append the new message to the existing HTML content and update the widget
-            self.current_html += message_html
-            self.text_area.set_html(self.current_html)
+            chatbot_gui.current_html += message_html
+            chatbot_gui.text_area.set_html(chatbot_gui.current_html)
 
             chatbot_gui.conversation.append({
                 "role": "assistant",
