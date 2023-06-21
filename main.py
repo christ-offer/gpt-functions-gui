@@ -30,6 +30,7 @@ class Styles:
         ChatbotGUI.style.configure('TButton', font=('Ubuntu', 14))
         ChatbotGUI.md_directory = "kb/"  # Set path to markdown files
         ChatbotGUI.history_directory = "history/"  # Set path to markdown files
+        ChatbotGUI.data_directory = "data/"  # Set path to markdown files
         ChatbotGUI.img_directory = "data/images/"  # Set path to image files
         ChatbotGUI.csv_directory = "data/csv/"  # Set path to csv files
         ChatbotGUI.root.option_add('*foreground', 'black')  # Setting default text color to black
@@ -152,9 +153,6 @@ class SettingsManager:
         # Export OPENAI_API_KEY as an environment variable
         os.environ['OPENAI_API_KEY'] = self.api_key_var.get()
 
-        # Inform the user that changes have been applied
-        #messagebox.showinfo("Settings", "Settings have been applied successfully.")
-
         # Close the settings window
         self.settings_window.destroy()
 
@@ -190,20 +188,6 @@ class ChatbotGUI:
         self.create_widgets_tab2()
         
         self.is_loading = False
-        
-        # Create Tab 3
-        self.tab3 = ttk.Frame(self.tabControl)
-        self.tabControl.add(self.tab3, text='History')
-        
-        # Create widgets in Tab 3
-        self.create_widgets_tab3()
-        
-        # Tab 4
-        self.tab4 = ttk.Frame(self.tabControl)
-        self.tabControl.add(self.tab4, text='Images')
-        
-        # Create widgets in Tab 4
-        self.create_widgets_tab4()
     
     def create_widgets_tab1(self):
         self.tab1.grid_rowconfigure(0, weight=1)  # Add this line
@@ -235,57 +219,22 @@ class ChatbotGUI:
         self.add_to_chat_button = ttk.Button(self.tab2, text="Add to Chat History", command=self.add_to_chat_history)
         self.add_to_chat_button.grid(row=2, column=0, sticky=E)
     
-    def create_widgets_tab3(self):
-        self.tab3.grid_rowconfigure(0, weight=1)
-        self.tab3.grid_columnconfigure(0, weight=1)
-        self.tab3.grid_columnconfigure(1, weight=0)
-        self.tab3.grid_columnconfigure(2, weight=4)
-        
-        ttk.Label(self.tab3, text ="History").grid(column = 0,
-                                                    row = 0,
-                                                    padx = 30,
-                                                    pady = 30,
-                                                    sticky='nsew')
-        self.create_history_sidebar(self.tab3)
-        self.create_history_viewer(self.tab3)
-        self.refresh_md_button = ttk.Button(self.tab3, text="Refresh", command=self.refresh_files)
-        self.refresh_md_button.grid(row=1, column=0, sticky=E)
-        self.add_to_chat_button = ttk.Button(self.tab3, text="Add to Chat History", command=self.add_to_chat_history)
-        self.add_to_chat_button.grid(row=2, column=0, sticky=E)
-    
-    def create_widgets_tab4(self):
-        self.tab4.grid_rowconfigure(0, weight=1)
-        self.tab4.grid_columnconfigure(0, weight=1)
-        self.tab4.grid_columnconfigure(1, weight=0)
-        self.tab4.grid_columnconfigure(2, weight=4)
-        
-        ttk.Label(self.tab4, text ="Images").grid(column = 0,
-                                                  row = 0,
-                                                  padx = 30,
-                                                  pady = 30,
-                                                  sticky='nsew')
-        self.create_img_sidebar(self.tab4)
-        self.create_img_viewer(self.tab4)
-        self.refresh_md_button = ttk.Button(self.tab4, text="Refresh", command=self.refresh_files)
-        self.refresh_md_button.grid(row=1, column=0, sticky=E)
-    
     def refresh_files(self):
-          # Refresh Markdown files
-          self.md_listbox.delete(0, 'end')
-          self.update_md_files()
-          self.md_listbox.update_idletasks()
+        # Refresh Markdown files
+        self.md_listbox.delete(0, 'end')
+        self.update_md_files()
+        self.md_listbox.update_idletasks()
 
-          # Refresh Image files
-          self.img_listbox.delete(0, 'end')
-          self.update_img_files()
-          self.img_listbox.update_idletasks()
-          
-          # Refresh History files
-          self.history_listbox.delete(0, 'end')
-          self.update_history_files()
-          self.history_listbox.update_idletasks()
+        # Refresh Image files
+        self.img_listbox.delete(0, 'end')
+        self.update_img_files()
+        self.img_listbox.update_idletasks()
+        
+        # Refresh History files
+        self.history_listbox.delete(0, 'end')
+        self.update_history_files()
+        self.history_listbox.update_idletasks()
 
-      
     def create_sidebar(self, parent):
         self.sidebar = ttk.Frame(parent, width=200)
         self.sidebar.grid(row=0, column=0, sticky='nsew')
@@ -366,178 +315,115 @@ class ChatbotGUI:
     # TAB 2
     
     def create_md_sidebar(self, parent):
-        self.md_listbox = Listbox(parent)
-        self.md_listbox.grid(row=0, 
-                            column=0, 
-                            sticky=N+S+E+W)  # Add these parameters
+        self.tree = ttk.Treeview(parent)
+        self.tree.grid(row=0, column=0, sticky=N+S+E+W)
 
-        scrollbar = Scrollbar(parent, orient="vertical", command=self.md_listbox.yview)
-        scrollbar.grid(row=0, 
-                      column=1, 
-                      sticky=N+S)  
-        self.md_listbox.config(yscrollcommand=scrollbar.set)
+        scrollbar = ttk.Scrollbar(parent, orient="vertical", command=self.tree.yview)
+        scrollbar.grid(row=0, column=1, sticky=N+S)
+        self.tree.config(yscrollcommand=scrollbar.set)
 
-        # Load the list of markdown files
-        self.update_md_files()
+        # Add root directory to tree
+        root = self.tree.insert('', 'end', text=self.data_directory, open=True)
+        self.process_directory(root, self.data_directory)
+        
+        # Add KB directory to tree
+        root = self.tree.insert('', 'end', text=self.md_directory, open=True)
+        self.process_directory(root, self.md_directory)
+        
+        # Add history directory to tree
+        root = self.tree.insert('', 'end', text=self.history_directory, open=True)
+        self.process_directory(root, self.history_directory)
+        
+        # Add images directory to tree
+        root = self.tree.insert('', 'end', text=self.img_directory, open=True)
+        self.process_directory(root, self.img_directory)
+        
+        # Add csv directory to tree
+        root = self.tree.insert('', 'end', text=self.csv_directory, open=True)
+        self.process_directory(root, self.csv_directory)
 
         # Add event handler for selecting an item
-        self.md_listbox.bind('<<ListboxSelect>>', self.on_md_file_select)
+        self.tree.bind('<<TreeviewSelect>>', self.on_md_file_select)
+
+        # Add event handler for opening a directory
+        self.tree.bind('<<TreeviewOpen>>', self.on_directory_open)
+
+    def process_directory(self, parent, path):
+        # Get all sub directories and files
+        for p in os.scandir(path):
+            # If file, add file
+            if p.is_file():
+                # Add only supported files
+                if p.name.endswith(('.ts', '.csv', '.py', '.js', '.rs', '.c', '.cpp', '.java', '.cs', '.rb', '.php', '.swift', '.go', '.lua', '.groovy', '.kotlin', '.dart', '.f', '.f90', '.f95', '.f03', '.f08', '.for', '.h', '.hh', '.hpp', '.hxx', '.pl', '.asm', '.sh', '.bat', '.html', '.css', '.scss', '.sass', '.less', '.json', '.xml', '.yaml', '.yml', '.sql', '.md', '.markdown', '.r', '.Rmd', '.m', '.mm', '.p', '.pas', '.pli', '.pl1', '.cob', '.cbl', '.j', '.jl', '.erl', '.hs', '.elm', '.scala', '.sc', '.clj', '.cljs', '.edn', '.coffee', '.kt', '.hx', '.pde', '.ino', '.cls', '.bas', '.frm', '.vba', '.vbs', '.d', '.ada', '.adb', '.ads', '.ml', '.mli', '.fs', '.fsi', '.fsx', '.v', '.vh', '.vhd', '.vhdl', '.tex', '.sty', '.cls', '.clojure', '.png', '.jpg', '.jpeg')):
+                    self.tree.insert(parent, 'end', text=p.name)
+
 
     def create_md_viewer(self, parent):
-        self.md_viewer = HTMLLabel(parent, html="<h1>Select a file from the list</h1>")
-        self.md_viewer.grid(row=0, 
-                            column=2, 
-                            sticky=N+S+E+W)  # Add these parameters
-
-    def update_md_files(self):
-        # Empty the list
-        self.md_listbox.delete(0, 'end')
-
-        # Get list of files in directory
-        files = os.listdir(self.md_directory)
-        md_files = [file for file in files if file.endswith('.md')]
-
-        # Add files to listbox
-        for file in md_files:
-            self.md_listbox.insert('end', file)
+        self.viewer_frame = ttk.Frame(parent)
+        self.viewer_frame.grid(row=0, column=2, sticky=N+S+E+W)
+        
+        self.md_viewer = HTMLLabel(self.viewer_frame, html="<h1>Select a file from the list</h1>")
+        self.md_viewer.pack(fill='both', expand=True)
+        
+        # Create a label for images
+        self.image_label = ttk.Label(self.viewer_frame)
+        self.image_label.pack(fill='both', expand=True)
 
     def on_md_file_select(self, evt):
         # Get selected file name
-        idxs = self.md_listbox.curselection()
-        if len(idxs)==1:
-            idx = int(idxs[0])
-            md_file = self.md_listbox.get(idx)
-            
-            # Read and convert the markdown file to HTML
-            with open(os.path.join(self.md_directory, md_file), 'r') as f:
-                md_text = f.read()
-            html = markdown.markdown(md_text)
-            
-            # Display HTML in the viewer
-            self.md_viewer.set_html(html)
-    
-    # TAB 3
-    def create_history_sidebar(self, parent):
-        self.history_listbox = Listbox(parent)
-        self.history_listbox.grid(row=0, 
-                            column=0, 
-                            sticky=N+S+E+W)
+        selected_item_id = self.tree.selection()[0]
+        file_name = self.tree.item(selected_item_id, 'text')
         
-        scrollbar = Scrollbar(parent, orient="vertical", command=self.history_listbox.yview)
-        scrollbar.grid(row=0,
-                          column=1,
-                          sticky=N+S)
-        self.history_listbox.config(yscrollcommand=scrollbar.set)
-        
-        # Load the list of markdown files
-        self.update_history_files()
-        
-        # Add event handler for selecting an item
-        
-        self.history_listbox.bind('<<ListboxSelect>>', self.on_history_file_select)
-        
-    def create_history_viewer(self, parent):
-        self.history_viewer = HTMLLabel(parent, html="<h1>Select a file from the list</h1>")
-        self.history_viewer.grid(row=0,
-                                column=2,
-                                sticky=N+S+E+W)
-        
-    def update_history_files(self):
-        # Empty the list
-        self.history_listbox.delete(0, 'end')
-        
-        # Get list of files in directory
-        files = os.listdir(self.history_directory)
-        history_files = [file for file in files if file.endswith('.md')]
-        
-        # Add files to listbox
-        for file in history_files:
-            self.history_listbox.insert('end', file)
+        file_path = self.get_full_path(selected_item_id)
 
-    def on_history_file_select(self, evt):
-        # Get selected file name
-        idxs = self.history_listbox.curselection()
-        if len(idxs)==1:
-            idx = int(idxs[0])
-            history_file = self.history_listbox.get(idx)
-            
-            # Read and convert the markdown file to HTML
-            with open(os.path.join(self.history_directory, history_file), 'r') as f:
-                history_text = f.read()
-            html = markdown.markdown(history_text)
-            
-            # Display HTML in the viewer
-            
-            
-            self.history_viewer.set_html(html)
-    
-    def create_img_sidebar(self, parent):
-        self.img_listbox = Listbox(parent)
-        self.img_listbox.grid(row=0, 
-                              column=0, 
-                              sticky=N+S+E+W)
+        # Check if it's a file and not a directory
+        if os.path.isfile(file_path):
+            # Read the file
+            if file_name.endswith('.md'):
+                with open(file_path, 'r') as f:
+                    file_content = f.read()
+                html = markdown.markdown(file_content)
+                self.md_viewer.set_html(html)
+                self.md_viewer.pack(fill='both', expand=True)  # Make sure it's visible
+                self.image_label.pack_forget()  # Hide the image label
+            elif file_name.endswith(('.ts', 'csv', '.py', '.js', '.rs', '.c', '.cpp', '.java', '.cs', '.rb', '.php', '.swift', '.go', '.lua', '.groovy', '.kotlin', '.dart', '.f', '.f90', '.f95', '.f03', '.f08', '.for', '.h', '.hh', '.hpp', '.hxx', '.pl', '.asm', '.sh', '.bat', '.html', '.css', '.scss', '.sass', '.less', '.json', '.xml', '.yaml', '.yml', '.sql', '.md', '.markdown', '.r', '.Rmd', '.m', '.mm', '.p', '.pas', '.pli', '.pl1', '.cob', '.cbl', '.j', '.jl', '.erl', '.hs', '.elm', '.scala', '.sc', '.clj', '.cljs', '.edn', '.coffee', '.kt', '.hx', '.pde', '.ino', '.cls', '.bas', '.frm', '.vba', '.vbs', '.d', '.ada', '.adb', '.ads', '.ml', '.mli', '.fs', '.fsi', '.fsx', '.v', '.vh', '.vhd', '.vhdl', '.tex', '.sty', '.cls', '.clojure')):
+                with open(file_path, 'r') as f:
+                    file_content = f.read()
+                html = '<pre>{}</pre>'.format(file_content)
+                self.md_viewer.set_html(html)
+                self.md_viewer.pack(fill='both', expand=True)  # Make sure it's visible
+                self.image_label.pack_forget()  # Hide the image label
+            elif file_name.lower().endswith(('.png', '.jpg', '.jpeg')):
+                image = Image.open(file_path)
+                photo = ImageTk.PhotoImage(image)
+                self.image_label.config(image=photo)
+                self.image_label.image = photo  # Keep a reference to prevent garbage collection
+                self.image_label.pack(fill='both', expand=True)  # Make sure it's visible
+                self.md_viewer.pack_forget()  # Hide the HTMLLabel
+            else:
+                html = '<p>Unsupported file type</p>'
+                self.md_viewer.set_html(html)
+                self.md_viewer.pack(fill='both', expand=True)  # Make sure it's visible
+                self.image_label.pack_forget()  # Hide the image label
 
-        scrollbar = Scrollbar(parent, orient="vertical", command=self.img_listbox.yview)
-        scrollbar.grid(row=0, 
-                      column=1, 
-                      sticky=N+S)  
-        self.img_listbox.config(yscrollcommand=scrollbar.set)
+    def get_full_path(self, item_id):
+        parent_id = self.tree.parent(item_id)
+        if parent_id:  # if item has a parent
+            return os.path.join(self.get_full_path(parent_id), self.tree.item(item_id, 'text'))
+        else:  # if item has no parent
+            return self.tree.item(item_id, 'text')
 
-        # Load the list of image files
-        self.update_img_files()
+    def on_directory_open(self, event):
+        # Get the directory that's being opened
+        directory_id = self.tree.focus()
 
-        # Add event handler for selecting an item
-        self.img_listbox.bind('<<ListboxSelect>>', self.on_img_file_select)
+        # Delete the old contents of the directory
+        for child_id in self.tree.get_children(directory_id):
+            self.tree.delete(child_id)
 
-    def create_img_viewer(self, parent):
-        self.img_canvas = Canvas(parent)
-        self.img_canvas.grid(row=0,
-                            column=2,
-                            sticky=N + S + E + W)
-
-        # bind canvas resize event to a method
-        self.img_canvas.bind("<Configure>", self.resize_image)
-
-    def update_img_files(self):
-        # Empty the list
-        self.img_listbox.delete(0, 'end')
-
-        # Get list of files in directory
-        files = os.listdir(self.img_directory)
-        img_files = [file for file in files if file.endswith('.png') or file.endswith('.jpg')]
-
-        # Add files to listbox
-        for file in img_files:
-            self.img_listbox.insert('end', file)
-
-    def on_img_file_select(self, evt):
-        # Get selected file name
-        idxs = self.img_listbox.curselection()
-        if len(idxs) == 1:
-            idx = int(idxs[0])
-            img_file = self.img_listbox.get(idx)
-
-            # Open and display the image file
-            img_path = os.path.join(self.img_directory, img_file)
-            self.image = Image.open(img_path)
-            self.photo = ImageTk.PhotoImage(self.image)
-            self.img_canvas.create_image(0, 0, image=self.photo, anchor="nw")
-
-            # Keep a reference to the image object
-            self.img_canvas.image = self.photo
-
-            # Call to make sure the image is resized appropriately
-            self.resize_image(None)
-
-    def resize_image(self, event):
-        # Get new dimensions
-        width = self.img_canvas.winfo_width()
-        height = self.img_canvas.winfo_height()
-
-        # Resize and display the image
-        resized_image = self.image.resize((width, height), Image.LANCZOS)
-        self.photo = ImageTk.PhotoImage(resized_image)
-        self.img_canvas.create_image(0, 0, image=self.photo, anchor="nw")
+        # Populate the directory with its subdirectories and files
+        directory_path = self.get_full_path(directory_id)
+        self.process_directory(directory_id, directory_path)
     
     def add_to_chat_history(self):
         # Get the currently selected file

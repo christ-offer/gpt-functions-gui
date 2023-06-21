@@ -2,6 +2,7 @@ import openai
 import json
 import logging
 from typing import Optional, Dict, List, Tuple
+import PySimpleGUI as sg
 
 from system import system_message, system_message2
 from functions import function_params, wikidata_sparql_query, scrape_webpage, write_file, knowledgebase_create_entry, knowledgebase_list_entries, knowledgebase_read_entry, python_repl, read_csv_columns, image_to_text, read_file, edit_file, list_history_entries, write_history_entry, read_history_entry, query_wolframalpha
@@ -122,3 +123,37 @@ def main():
             print(f"An error occurred: {e}")
 if __name__ == "__main__":
     main()
+
+
+#def main():
+#    # Define the window's contents
+#    layout = [[sg.Text("What's your next move?")],
+#              [sg.Input(key='-INPUT-')],
+#              [sg.Button('Ok'), sg.Button('Quit')],
+#              [sg.Text(size=(40,20), key='-OUTPUT-')]]
+
+    # Create the window
+#    window = sg.Window('Chat Window', layout)
+#    conversation = []
+
+    # Display and interact with the Window using an Event Loop
+#    while True:
+#        event, values = window.read()
+#        # See if user wants to quit or window was closed
+#        if event == sg.WINDOW_CLOSED or event == 'Quit':
+#            break
+#        elif event == 'Ok':
+#            user_input = values['-INPUT-']
+#            try:
+#                response, conversation = run_conversation(user_input, conversation)
+#                window['-OUTPUT-'].update(f"You: {user_input}\nBot: {response}")
+#            except Exception as e:
+#                window['-OUTPUT-'].update(f"An error occurred: {e}")
+#
+#        window['-INPUT-'].update('')
+
+    ## Finish up by removing window from the screen
+#    window.close()
+
+#if __name__ == "__main__":
+#    main()

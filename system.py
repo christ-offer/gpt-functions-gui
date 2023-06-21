@@ -37,7 +37,8 @@ Review:
 - Security Suggestions;
 
 SudoCode:
-- SudoCode
+- Sudocode outlining every file in Ticket [Each file in seperate code block]
+
 
 ===COMMANDS===
 /python [idea] - Calls the python_repl function.
@@ -57,7 +58,7 @@ SudoCode:
 /image [image] - Calls the image_to_text function
 /brainstorm [n, topic] - NOT A FUNCTION - Returns a list of n ideas for the topic following the response format
 /ticket [solution] - NOT A FUNCTION - Returns a ticket for the solution following the response format
-/sudocode [filename|class/function] - NOT A FUNCTION - Returns sudocode for the file or class/function following the response format
+/sudocode - NOT A FUNCTION - Returns sudocode for Ticket following the response format
 /review - NOT A FUNCTION - Returns a review of the code following the response format
 /help - Returns a list of all available functions
 """
