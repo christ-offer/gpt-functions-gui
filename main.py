@@ -301,31 +301,20 @@ class ChatbotGUI:
         scrollbar.grid(row=0, column=1, sticky=N+S)
         self.tree.config(yscrollcommand=scrollbar.set)
 
-        # Add root directory to tree
-        root = self.tree.insert('', 'end', text=self.data_directory, open=True)
-        self.process_directory(root, self.data_directory)
-        
-        # Add KB directory to tree
-        root = self.tree.insert('', 'end', text=self.md_directory, open=True)
-        self.process_directory(root, self.md_directory)
-        
-        # Add history directory to tree
-        root = self.tree.insert('', 'end', text=self.history_directory, open=True)
-        self.process_directory(root, self.history_directory)
-        
-        # Add images directory to tree
-        root = self.tree.insert('', 'end', text=self.img_directory, open=True)
-        self.process_directory(root, self.img_directory)
-        
-        # Add csv directory to tree
-        root = self.tree.insert('', 'end', text=self.csv_directory, open=True)
-        self.process_directory(root, self.csv_directory)
+        # List of directories
+        directories = [self.data_directory, self.md_directory, self.history_directory, self.img_directory, self.csv_directory]
+
+        # Add directories to tree
+        for directory in directories:
+            root = self.tree.insert('', 'end', text=directory, open=True)
+            self.process_directory(root, directory)
 
         # Add event handler for selecting an item
         self.tree.bind('<<TreeviewSelect>>', self.on_md_file_select)
 
         # Add event handler for opening a directory
         self.tree.bind('<<TreeviewOpen>>', self.on_directory_open)
+
 
     def process_directory(self, parent, path):
         # Get all sub directories and files
@@ -408,25 +397,13 @@ class ChatbotGUI:
         for i in self.tree.get_children():
             self.tree.delete(i)
 
-        # Refresh data directory
-        root = self.tree.insert('', 'end', text=self.data_directory, open=True)
-        self.process_directory(root, self.data_directory)
+        # List of directories
+        directories = [self.data_directory, self.md_directory, self.history_directory, self.img_directory, self.csv_directory]
 
-        # Refresh KB directory
-        root = self.tree.insert('', 'end', text=self.md_directory, open=True)
-        self.process_directory(root, self.md_directory)
-        
-        # Refresh history directory
-        root = self.tree.insert('', 'end', text=self.history_directory, open=True)
-        self.process_directory(root, self.history_directory)
-        
-        # Refresh images directory
-        root = self.tree.insert('', 'end', text=self.img_directory, open=True)
-        self.process_directory(root, self.img_directory)
-        
-        # Refresh csv directory
-        root = self.tree.insert('', 'end', text=self.csv_directory, open=True)
-        self.process_directory(root, self.csv_directory)
+        # Refresh directories
+        for directory in directories:
+            root = self.tree.insert('', 'end', text=directory, open=True)
+            self.process_directory(root, directory)
     
     def add_to_chat_history(self):
         # Get the currently selected file
