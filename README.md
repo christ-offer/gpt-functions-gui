@@ -5,7 +5,7 @@
 - [Description](#description)
 - [Functions](#functions)
 - [Screenshots](#gui-screenshots)
-  - [ChatGUI](#help-command)
+  - [Chat UI](#chat-ui)
   - [File-Manager](#file-manager)
   - [Image to Text](#image-to-text)
   - [Read CSV and Plot with Python](#read-csv-and-use-python-to-plot-older-gui)
