@@ -60,10 +60,10 @@ Example Usecase: /read_file code.ts/py/rs/etc -> /review -> /edit_file code.ts/p
 ## GUI Screenshots
 
 ### Chat UI
-![Chat UI](image-2.png)
+![Chat UI](screenshots/image-4.png)
 
 ### File-Manager
-![File-manager](image-1.png)
+![File-manager](screenshots/image-3.png)
 
 ### Image to Text (Older GUI)
 ![Image to Text](screenshots/image-1.png)

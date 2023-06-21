@@ -25,7 +25,7 @@ class Styles:
         ChatbotGUI.root.grid_rowconfigure(0, weight=1)
         ChatbotGUI.root.grid_columnconfigure(0, weight=1)  # Give sidebar and main frame different weight
         ChatbotGUI.root.grid_columnconfigure(1, weight=4)
-        ChatbotGUI.conversation = []  # Add this line
+        ChatbotGUI.conversation = []  
         ChatbotGUI.style = ttk.Style()
         ChatbotGUI.style.configure('TButton', font=('Ubuntu', 14))
         ChatbotGUI.md_directory = "kb/"  # Set path to markdown files
@@ -190,60 +190,17 @@ class ChatbotGUI:
         self.is_loading = False
     
     def create_widgets_tab1(self):
-        self.tab1.grid_rowconfigure(0, weight=1)  # Add this line
-        self.tab1.grid_columnconfigure(0, weight=1)  # Add this line
-        self.tab1.grid_columnconfigure(1, weight=0)  # Add this line
-        self.tab1.grid_columnconfigure(2, weight=4)  # Add this line
-        ttk.Label(self.tab1, text ="Chatbot").grid(column = 0, row = 0, padx = 30, pady = 30, sticky='nsew')  # Add this parameter
+        self.tab1.grid_rowconfigure(0, weight=1)  
+        self.tab1.grid_columnconfigure(0, weight=1)  
+        self.tab1.grid_columnconfigure(1, weight=0)  
+        self.tab1.grid_columnconfigure(2, weight=4)  
+        ttk.Label(self.tab1, text ="Chatbot").grid(column = 0, row = 0, padx = 30, pady = 30, sticky='nsew') 
         self.create_sidebar(self.tab1)
         self.create_main_area(self.tab1)
 
         # bind 'Enter' to run_chat function in Tab 1 only
         self.tab1.bind('<Return>', self.ai_manager.run_chat)
-
-    def create_widgets_tab2(self):
-        self.tab2.grid_rowconfigure(0, weight=1)  # Add this line
-        self.tab2.grid_columnconfigure(0, weight=1)  # Add this line
-        self.tab2.grid_columnconfigure(1, weight=0)  # Add this line
-        self.tab2.grid_columnconfigure(2, weight=4)  # Add this line
-
-        ttk.Label(self.tab2, text ="KnowledgeBase").grid(column = 0, 
-                                                        row = 0, 
-                                                        padx = 30, 
-                                                        pady = 30, 
-                                                        sticky='nsew')  # Add this parameter
-        self.create_md_sidebar(self.tab2)
-        self.create_md_viewer(self.tab2)
-        self.refresh_md_button = ttk.Button(self.tab2, text="Refresh", command=self.refresh_files)
-        self.refresh_md_button.grid(row=1, column=0, sticky=E)
-        self.add_to_chat_button = ttk.Button(self.tab2, text="Add to Chat History", command=self.add_to_chat_history)
-        self.add_to_chat_button.grid(row=2, column=0, sticky=E)
     
-    def refresh_files(self):
-        for i in self.tree.get_children():
-            self.tree.delete(i)
-
-        # Refresh data directory
-        root = self.tree.insert('', 'end', text=self.data_directory, open=True)
-        self.process_directory(root, self.data_directory)
-
-        # Refresh KB directory
-        root = self.tree.insert('', 'end', text=self.md_directory, open=True)
-        self.process_directory(root, self.md_directory)
-        
-        # Refresh history directory
-        root = self.tree.insert('', 'end', text=self.history_directory, open=True)
-        self.process_directory(root, self.history_directory)
-        
-        # Refresh images directory
-        root = self.tree.insert('', 'end', text=self.img_directory, open=True)
-        self.process_directory(root, self.img_directory)
-        
-        # Refresh csv directory
-        root = self.tree.insert('', 'end', text=self.csv_directory, open=True)
-        self.process_directory(root, self.csv_directory)
-
-
     def create_sidebar(self, parent):
         self.sidebar = ttk.Frame(parent, width=200)
         self.sidebar.grid(row=0, column=0, sticky='nsew')
@@ -320,8 +277,21 @@ class ChatbotGUI:
         reset_html = "<p>Conversation reset.</p>"
         self.text_area.set_html(reset_html)
         self.current_html = reset_html
-        
+    
     # TAB 2
+    def create_widgets_tab2(self):
+        self.tab2.grid_rowconfigure(0, weight=1)  
+        self.tab2.grid_columnconfigure(0, weight=1)  
+        self.tab2.grid_columnconfigure(1, weight=0)  
+        self.tab2.grid_columnconfigure(2, weight=4)  
+
+        ttk.Label(self.tab2, text ="Files").grid(column = 0, row = 0, padx = 30, pady = 30, sticky='nsew') 
+        self.create_md_sidebar(self.tab2)
+        self.create_md_viewer(self.tab2)
+        self.refresh_md_button = ttk.Button(self.tab2, text="Refresh", command=self.refresh_files)
+        self.refresh_md_button.grid(row=1, column=0, sticky=E)
+        self.add_to_chat_button = ttk.Button(self.tab2, text="Add to Chat History", command=self.add_to_chat_history)
+        self.add_to_chat_button.grid(row=2, column=0, sticky=E)
     
     def create_md_sidebar(self, parent):
         self.tree = ttk.Treeview(parent)
@@ -433,6 +403,30 @@ class ChatbotGUI:
         # Populate the directory with its subdirectories and files
         directory_path = self.get_full_path(directory_id)
         self.process_directory(directory_id, directory_path)
+    
+    def refresh_files(self):
+        for i in self.tree.get_children():
+            self.tree.delete(i)
+
+        # Refresh data directory
+        root = self.tree.insert('', 'end', text=self.data_directory, open=True)
+        self.process_directory(root, self.data_directory)
+
+        # Refresh KB directory
+        root = self.tree.insert('', 'end', text=self.md_directory, open=True)
+        self.process_directory(root, self.md_directory)
+        
+        # Refresh history directory
+        root = self.tree.insert('', 'end', text=self.history_directory, open=True)
+        self.process_directory(root, self.history_directory)
+        
+        # Refresh images directory
+        root = self.tree.insert('', 'end', text=self.img_directory, open=True)
+        self.process_directory(root, self.img_directory)
+        
+        # Refresh csv directory
+        root = self.tree.insert('', 'end', text=self.csv_directory, open=True)
+        self.process_directory(root, self.csv_directory)
     
     def add_to_chat_history(self):
         # Get the currently selected file
