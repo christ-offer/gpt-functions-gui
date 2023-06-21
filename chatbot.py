@@ -68,13 +68,14 @@ def call_function(function_name, function_args):
 
 
 def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[str, List[Dict[str, str]]]:
-    conversation.append({"role": "system", "content": system_message})
-    conversation.append({"role": "user", "content": prompt})
-    
     try:
         response = openai.ChatCompletion.create(
             model="gpt-4-0613",
-            messages=conversation,
+            messages=[
+                {"role": "system", "content": system_message}
+            ] + conversation + [
+                {"role": "user", "content": prompt}
+            ],
             functions=function_params,
             function_call="auto",
         )
@@ -131,18 +132,25 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             except OpenAIError as error:
                 # Log the detailed error for debugging, but only return a generic message to the user
                 logging.error(f"OpenAI API call failed: {str(error)}")
-                return "OpenAI API call failed due to an internal server error.", conversation
+                return "OpenAI API call failed due to an internal server error." + function_response, conversation
             except openai.error.APIConnectionError as e:
                 #Handle connection error here
                 print(f"Failed to connect to OpenAI API: {e}")
-                return "Failed to connect to OpenAI.", conversation
+                return "Failed to connect to OpenAI." + function_response, conversation
                 
             except openai.error.RateLimitError as e:
                 #Handle rate limit error (we recommend using exponential backoff)
                 print(f"OpenAI API request exceeded rate limit: {e}")
-                return "Requests exceed OpenAI rate limit.", conversation
-            conversation.append(second_response["choices"][0]["message"]) 
+                return "Requests exceed OpenAI rate limit." + function_response, conversation
+            
+            conversation.append({
+                "role": "assistant",
+                "content": second_response["choices"][0]["message"]["content"],
+            }) 
             return second_response["choices"][0]["message"]["content"], conversation  # Return the conversation here
     else:
-        conversation.append(message)
+        conversation.append({
+            "role": "assistant",
+            "content": message["content"],
+        })
         return message["content"], conversation
