@@ -437,6 +437,22 @@ class ChatbotGUI:
 
         # Check if it's a file and not a directory
         if os.path.isfile(file_path):
+            # If csv file, get columns
+            if file_path.endswith('.csv'):
+                columns = read_csv_columns(file_path)
+                self.conversation.append({
+                    "role": "bot",
+                    "content": f'Columns: {columns}\n',
+                })
+                content_html = f'<p style="background-color: lightgray;">You: Content loaded:<br/>{columns}</p><br/>'
+                self.current_html += content_html
+                self.text_area.set_html(self.current_html)
+                return
+            # If image file, say no
+            elif file_path.endswith(('.png', '.jpg', '.jpeg')):
+                logging.info('Image not supported')
+                return
+            
             # Open and read the file
             with open(file_path, 'r') as file:
                 content = file.read()
@@ -446,7 +462,7 @@ class ChatbotGUI:
                 "role": "user",
                 "content": f'{content}\n',
             })
-
+            
             # Create HTML for the loaded content and append to the current HTML
             content_html = f'<p style="background-color: lightgray;">You: Content loaded:<br/>{content}</p><br/>'
             self.current_html += content_html
