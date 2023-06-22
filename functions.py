@@ -77,6 +77,7 @@ wikidata_system_message = """
 This agent executes a SPARQL query on Wikidata and returns the result as a JSON string.
 Always think step by step to be certain that you have the correct query.
 If anything is unclear, please ask the user for clarification.
+Always include the wikipedia article in the query.
 """
 
 # SCRAPE
@@ -277,6 +278,11 @@ write_code_params = [
         },
     }
 ]
+
+write_code_system_message = """
+# Write Code Agent
+This agent writes a code file to the system.
+"""
 
 # KNOWLEDGEBASE
 # Define function, params and system message for handling the knowledgebase
@@ -590,15 +596,16 @@ You are responsible for editing files.
 def help() -> str:
     return """Available commands:
     /help
-    /python
-    /kb
-    /history
-    /csv
-    /code
-    /scrape
-    /projects
-    /images
-    /data
+    /csv - csv handler
+    /python - python interpreter
+    /kb - knowledge base handler
+    /history - history handler
+    /write - file writer
+    /read - file reader
+    /edit - file editor
+    /wikidata - wikidata sparql handler
+    /image - image to text captioner
+    /scrape - web scraper
     """
 
 help_params = [
@@ -633,15 +640,18 @@ print('Hello World')
 Brainstorm:
 - Problem;
 - Approach;
-- Technology;
 
 Ticket:
 - Title;
 - Description;
 - Requirements;
 - File Structure;
-- Classes/Functions;
 - Acceptance Criteria;
+
+Whiteboard:
+- Problem;
+- Approach;
+- Psuedo Code;
 
 Review:
 - Error-handling Suggestions;
@@ -655,5 +665,6 @@ Review:
 ===COMMANDS[STRICT - ONLY WHEN SPECIFICALLY CALLED]===
 - brainstorm [n, topic] - Returns a list of n ideas for the topic following the response format.
 - ticket [solution] - Returns a ticket for the solution following the response format.
+- whiteboard [n, brainstorm|ticket] - Returns a whiteboard for the brainstorm|ticket following the response format.
 - review [code|ticket] - Returns a review of the code|ticket following the response format.
 """

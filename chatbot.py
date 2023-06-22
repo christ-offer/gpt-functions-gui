@@ -6,6 +6,50 @@ import logging
 from typing import Optional, Dict, List, Tuple
 import re
 
+MODEL = "gpt-4-0613"
+TEMPERATURE = 0.3
+TOP_P = 1.0
+FREQUENCY_PENALTY = 0.0
+PRESENCE_PENALTY = 0.0
+
+def function_call_agent(
+        prompt, 
+        conversation, 
+        system_message,
+        function_params,
+        model = MODEL, 
+        temperature = TEMPERATURE, 
+        top_p = TOP_P, 
+        frequency_penalty = FREQUENCY_PENALTY, 
+        presence_penalty = PRESENCE_PENALTY):
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4-0613",
+            temperature=0.3,
+            messages=[
+                {"role": "system", "content": system_message}
+            ] + conversation + [
+                {"role": "user", "content": prompt}
+            ],
+            functions=function_params,
+            function_call="auto",
+        )
+    except OpenAIError as error:
+        # Log the detailed error for debugging, but only return a generic message to the user
+        logging.error(f"OpenAI API call failed: {str(error)}")
+        return "OpenAI API call failed due to an internal server error.", conversation
+    except openai.error.APIConnectionError as e:
+        #Handle connection error here
+        print(f"Failed to connect to OpenAI API: {e}")
+        return "Failed to connect to OpenAI.", conversation
+        
+    except openai.error.RateLimitError as e:
+        #Handle rate limit error (we recommend using exponential backoff)
+        print(f"OpenAI API request exceeded rate limit: {e}")
+        return "Requests exceed OpenAI rate limit.", conversation
+    return response["choices"][0]["message"], conversation
+
+
 from system import system_message2
 from functions import (
     # Function parameters
@@ -106,88 +150,58 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
     if get_command(prompt) == "/csv":
         print("CSV Agent")
         prompt = prompt[5:].strip()
-        function_params = read_csv_columns_params
-        system_message = csv_system_message
+        response = function_call_agent(prompt=prompt, conversation=conversation, system_message=csv_system_message, function_params=read_csv_columns_params)
+        message = response[0]
     elif get_command(prompt) == "/python":
         print("Python Agent")
         prompt = prompt[8:].strip()
-        function_params = python_repl_params
-        system_message = python_repl_system_message
+        response = function_call_agent(prompt=prompt, conversation=conversation, system_message=python_repl_system_message, function_params=python_repl_params)
+        message = response[0]
     elif get_command(prompt) == "/kb":
         print("Knowledge Base Agent")
         prompt = prompt[3:].strip()
-        function_params = knowledgebase_params
-        system_message = knowledgebase_system_message
+        response = function_call_agent(prompt=prompt, conversation=conversation, system_message=knowledgebase_system_message, function_params=knowledgebase_params)
+        message = response[0]
     elif get_command(prompt) == "/history":
         print("History Agent")
         prompt = prompt[8:].strip()
-        function_params = history_params
-        system_message = history_system_message
+        response = function_call_agent(prompt=prompt, conversation=conversation, system_message=history_system_message, function_params=history_params)
+        message = response[0]
     elif get_command(prompt) == "/write":
         print("Write Code Agent")
         prompt = prompt[6:].strip()
-        function_params = write_file_params
-        system_message = write_file_system_message
+        response = function_call_agent(prompt=prompt, conversation=conversation, system_message=write_file_system_message, function_params=write_file_params)
+        message = response[0]
     elif get_command(prompt) == "/read":
         print("Read File Agent")
         prompt = prompt[5:].strip()
-        function_params = read_file_params
-        system_message = read_file_system_message
+        response = function_call_agent(prompt=prompt, conversation=conversation, system_message=read_file_system_message, function_params=read_file_params)
+        message = response[0]
     elif get_command(prompt) == "/edit":
         print("Edit File Agent")
         prompt = prompt[5:].strip()
-        function_params = edit_file_params
-        system_message = edit_file_system_message
+        response = function_call_agent(prompt=prompt, conversation=conversation, system_message=edit_file_system_message, function_params=edit_file_params)
+        message = response[0]
     elif get_command(prompt) == "/wikidata":
         print("Wikidata Agent")
         prompt = prompt[9:].strip()
-        function_params = wikidata_sparql_query_params
-        system_message = wikidata_system_message
+        response = function_call_agent(prompt=prompt, conversation=conversation, system_message=wikidata_system_message, function_params=wikidata_sparql_query_params)
+        message = response[0]
     elif get_command(prompt) == "/scrape":
         print("Scrape Webpage Agent")
         prompt = prompt[8:].strip()
-        function_params = scrape_webpage_params
-        system_message = scrape_system_message
+        response = function_call_agent(prompt=prompt, conversation=conversation, system_message=scrape_system_message, function_params=scrape_webpage_params)
+        message = response[0]
     elif get_command(prompt) == "/image":
         print("Image to Text Agent")
         prompt = prompt[7:].strip()
-        function_params = image_to_text_params
-        system_message = image_to_text_system_message
+        response = function_call_agent(prompt=prompt, conversation=conversation, system_message=image_to_text_system_message, function_params=image_to_text_params)
+        message = response[0]
     else:
         print('Personal Assistant')
-        function_params = help_params
-        system_message = help_system_message
-    
-    
-    #print(f"Function parameters: {function_params}")
-    
-    try:
-        response = openai.ChatCompletion.create(
-            model="gpt-4-0613",
-            temperature=0.3,
-            messages=[
-                {"role": "system", "content": system_message}
-            ] + conversation + [
-                {"role": "user", "content": prompt}
-            ],
-            functions=function_params,
-            function_call="auto",
-        )
-    except OpenAIError as error:
-        # Log the detailed error for debugging, but only return a generic message to the user
-        logging.error(f"OpenAI API call failed: {str(error)}")
-        return "OpenAI API call failed due to an internal server error.", conversation
-    except openai.error.APIConnectionError as e:
-        #Handle connection error here
-        print(f"Failed to connect to OpenAI API: {e}")
-        return "Failed to connect to OpenAI.", conversation
-        
-    except openai.error.RateLimitError as e:
-        #Handle rate limit error (we recommend using exponential backoff)
-        print(f"OpenAI API request exceeded rate limit: {e}")
-        return "Requests exceed OpenAI rate limit.", conversation
-    
-    message = response["choices"][0]["message"]
+        response = function_call_agent(prompt=prompt, conversation=conversation, system_message=help_system_message, function_params=help_params)
+        message = response[0]    
+
     if message.get("function_call"):
         function_name = message["function_call"]["name"]
         function_args = json.loads(message["function_call"]["arguments"])
