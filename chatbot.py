@@ -95,31 +95,24 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         #Handle rate limit error (we recommend using exponential backoff)
         print(f"OpenAI API request exceeded rate limit: {e}")
         return "Requests exceed OpenAI rate limit.", conversation
-    # I want to print the response real time, but it seems that the response is not in order
     
-    #print(response)
-    #print(response["choices"][0]["message"])
+    #function_name = None
+    #function_args = []
     
-    #print(response["choices"][0]["delta"]["content"])
-    #asd = []
-    #print(response)
     #for chunk in response:
-            #print(chunk)
-    #        delta = chunk["choices"][0]["delta"]
-    #        if delta.get("function_call"):
-    #           print(delta)
-    #          function = delta["function_call"]
-    #          msg = function.get('arguments', '')
-                
-                
-        
+    #    delta = chunk["choices"][0]["delta"]
+    #    if delta["function_call"]:
+    #        function = delta["function_call"]
+            #print(function["arguments"])
+            #function_name = delta.get("name", "")
+    #        function_args.append(function.get("arguments", ""))
+    #        joined = "".join(function_args)
+    #        print(joined)
+    #"".join(function_args)
     
-    #message = "".join(asd)
-    #print(message)
-    #print(message)
+    
     
     message = response["choices"][0]["message"]
-    #return message, conversation + [{"role": "assistant", "content": message}]
     if message.get("function_call"):
         function_name = message["function_call"]["name"]
         function_args = json.loads(message["function_call"]["arguments"])
