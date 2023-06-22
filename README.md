@@ -61,7 +61,7 @@ Example Usecase: /read_file code.ts/py/rs/etc -> /review -> /edit_file code.ts/p
 * `python main.py` to run the chatbot
 * To use as CLI tool:
 
-In `main.py` comment out the entire GUI section and uncomment the CLI section.
+run `cli-version.py` instead of `main.py`
 
 
 ## GUI Screenshots
