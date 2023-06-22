@@ -35,12 +35,13 @@ print('Hello World')
 
 * wikidata_sparql_query:
 Return response in human readable format
-STRICT Example:
+FORMAT:
 ```markdown
-## [TOPIC]
-for each answer:
-#### [Label](wikipedia_article) - [Entry](wikidata_entry)
-* data: [data]
+### [TOPIC]
+For each Entry:
+#### [Label](if wikipedia_article else wikidata_entry)
+
+* query results
 ```
 * query_wolframalpha:
 Return response in human readable format

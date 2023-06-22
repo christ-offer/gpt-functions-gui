@@ -20,6 +20,7 @@ class FunctionCallAgent:
             "read_file",
             "read_csv_columns",
             "scrape_webpage",
+            "help"
         }
 
         self.function_map = {

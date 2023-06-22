@@ -77,7 +77,6 @@ wikidata_system_message = """
 This agent executes a SPARQL query on Wikidata and returns the result as a JSON string.
 Always think step by step to be certain that you have the correct query.
 If anything is unclear, please ask the user for clarification.
-Always include the wikipedia article in the query.
 """
 
 # SCRAPE
@@ -597,28 +596,28 @@ You are responsible for editing files.
 # HELP
 # Define function, params and system message for displaying help
 def help() -> str:
-    return """Available commands:
-    /help
-    /csv - csv handler
-    /python - python interpreter
-    /kb - knowledge base handler
-    /history - history handler
-    /write - file writer
-    /read - file reader
-    /edit - file editor
-    /wikidata - wikidata sparql handler
-    /image - image to text captioner
-    /scrape - web scraper
-    """
+    return """
+### Available commands:
+* /help
+* /csv - csv handler
+* /python - python interpreter
+* /kb - knowledge base handler
+* /history - history handler
+* /write - file writer
+* /read - file reader
+* /edit - file editor
+* /wikidata - wikidata sparql handler
+* /image - image to text captioner
+* /scrape - web scraper
+"""
 
 help_params = [
     {
         "name": "help",
-        "description": "Displays this help message",
+        "description": "Displays help message",
         "parameters": {
             "type": "object",
             "properties": {},
-            "required": [],
         },
     },
 ]
@@ -626,5 +625,5 @@ help_params = [
 
 help_system_message = """
 # Help Agent
-You call the help function
+You call the help function and return the list of available commands.
 """
