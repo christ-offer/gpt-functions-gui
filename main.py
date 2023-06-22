@@ -170,6 +170,7 @@ class ChatbotGUI:
         self.ai_manager = AIManager()
         self.settings_manager = SettingsManager()
         
+        # Initialize Pinecone
         pinecone.init()
 
         # Create the root window
