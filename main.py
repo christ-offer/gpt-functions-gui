@@ -419,10 +419,10 @@ class ChatbotGUI:
             if file_path.endswith('.csv'):
                 columns = read_csv_columns(file_path)
                 self.conversation.append({
-                    "role": "assistant",
+                    "role": "user",
                     "content": f'Columns: {columns}\n',
                 })
-                content_html = f'<p style="background-color: lightgray;">You: Content loaded:<br/>{columns}</p><br/>'
+                content_html = f'<p style="background-color: lightgray;">You: These are the columns contained in {file_path} :<br/><br/>{columns}</p><br/>'
                 self.current_html += content_html
                 self.text_area.set_html(self.current_html)
                 return
