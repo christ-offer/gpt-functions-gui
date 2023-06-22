@@ -10,3 +10,5 @@ open_clip_torch
 PIL
 pandas
 wolframalpha
+python-dotenv
+pinecone-client
