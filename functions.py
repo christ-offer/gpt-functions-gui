@@ -656,9 +656,3 @@ Review:
 - ticket [solution] - Returns a ticket for the solution following the response format.
 - review [code|ticket] - Returns a review of the code|ticket following the response format.
 """
-
-
-
-
-
-
