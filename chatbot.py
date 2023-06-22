@@ -105,6 +105,7 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
     })
     if get_command(prompt) == "/csv":
         print("CSV Agent")
+        # renive the command and whitespace from the prompt
         prompt = prompt[5:].strip()
         function_params = read_csv_columns_params
         system_message = csv_system_message
@@ -154,15 +155,17 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         function_params = image_to_text_params
         system_message = image_to_text_system_message
     else:
+        print('Personal Assistant')
         function_params = help_params
         system_message = help_system_message
     
-    print(f"Function name: {function_params['function_name']}")
-    print(f"Function parameters: {function_params}")
+    
+    #print(f"Function parameters: {function_params}")
     
     try:
         response = openai.ChatCompletion.create(
             model="gpt-4-0613",
+            temperature=0.3,
             messages=[
                 {"role": "system", "content": system_message}
             ] + conversation + [
