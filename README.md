@@ -43,10 +43,10 @@ GUI chatbot playground with the new functions feature.
 
 ### Not "functions" but commands/strict prompts
 
-* /review - performs a review of the code following a strict response format
-* /brainstorm - returns a list of n ideas for the topic following a strict response format
-* /ticket - creates a ticket for the solution following a strict response format
-* /help - returns a list of all available functions
+* review - performs a review of the code following a strict response format
+* brainstorm [n] - returns a list of n ideas for the topic following a strict response format
+* ticket - creates a ticket for the brainstorm following a strict response format
+* help - returns a list of all available functions
 
 Example Usecase: /read_file code.ts/py/rs/etc -> /review -> /edit_file code.ts/py/rs/etc
 
