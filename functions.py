@@ -11,8 +11,6 @@ import open_clip
 from PIL import Image
 import urllib
 import wolframalpha
-import subprocess
-
 
 from utils import is_valid_filename, ensure_directory_exists
 

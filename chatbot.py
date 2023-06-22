@@ -4,6 +4,7 @@ from openai.error import OpenAIError
 import json
 import logging
 from typing import Optional, Dict, List, Tuple
+import threading
 
 from system import system_message, system_message2
 from functions import (
@@ -68,7 +69,6 @@ def call_function(function_name, function_args):
     return FUNCTION_MAP[function_name](*function_args.values())
 
 
-
 def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[str, List[Dict[str, str]]]:
     try:
         response = openai.ChatCompletion.create(
@@ -80,6 +80,7 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             ],
             functions=function_params,
             function_call="auto",
+            #stream=True,
         )
     except OpenAIError as error:
         # Log the detailed error for debugging, but only return a generic message to the user
@@ -94,9 +95,31 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         #Handle rate limit error (we recommend using exponential backoff)
         print(f"OpenAI API request exceeded rate limit: {e}")
         return "Requests exceed OpenAI rate limit.", conversation
-
+    # I want to print the response real time, but it seems that the response is not in order
+    
+    #print(response)
+    #print(response["choices"][0]["message"])
+    
+    #print(response["choices"][0]["delta"]["content"])
+    #asd = []
+    #print(response)
+    #for chunk in response:
+            #print(chunk)
+    #        delta = chunk["choices"][0]["delta"]
+    #        if delta.get("function_call"):
+    #           print(delta)
+    #          function = delta["function_call"]
+    #          msg = function.get('arguments', '')
+                
+                
+        
+    
+    #message = "".join(asd)
+    #print(message)
+    #print(message)
+    
     message = response["choices"][0]["message"]
-
+    #return message, conversation + [{"role": "assistant", "content": message}]
     if message.get("function_call"):
         function_name = message["function_call"]["name"]
         function_args = json.loads(message["function_call"]["arguments"])
