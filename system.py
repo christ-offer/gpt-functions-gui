@@ -37,7 +37,7 @@ Review:
 ===COMMANDS[STRICT - ONLY WHEN SPECIFICALLY CALLED]===
 /python [idea] - Calls the python_repl function.
 /wolfram [request] - Calls the query_wolframalpha function.
-/wikidata [request] - Calls the wikidata_sparql_query function.
+/wikidata [request + article] - Calls the wikidata_sparql_query function.
 /gpt-engineer [spec-file] - Calls the gpt_engineer function with the spec-file 'main_prompt' without extension.
 /scrape [url] - Calls the scrape_webpage function.
 /write_file [filename] [content] - Calls the write_file function.
@@ -78,6 +78,13 @@ print('Hello World')
 
 * wikidata_sparql_query:
 Return response in human readable format
+STRICT Example:
+```markdown
+## [TOPIC]
+for each answer:
+#### [Label](wikipedia_article) - [Entry](wikidata_entry)
+* data: [data]
+```
 * query_wolframalpha:
 Return response in human readable format
 * scrape_webpage:

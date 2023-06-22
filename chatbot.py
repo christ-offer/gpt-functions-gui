@@ -23,7 +23,6 @@ from functions import (
     list_history_entries, 
     write_history_entry, 
     read_history_entry, 
-    query_wolframalpha,
     write_code,
 )
 
@@ -39,7 +38,6 @@ FUNCTIONS_THAT_APPEND_TO_CONVERSATION = {
 
 FUNCTION_MAP = {
     "python_repl": python_repl,
-    "query_wolframalpha": query_wolframalpha,
     "knowledgebase_read_entry": knowledgebase_read_entry,
     "read_history_entry": read_history_entry,
     "write_history_entry": write_history_entry,
@@ -106,11 +104,7 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             #print(function["arguments"])
             #function_name = delta.get("name", "")
     #        function_args.append(function.get("arguments", ""))
-    #        joined = "".join(function_args)
-    #        print(joined)
-    #"".join(function_args)
-    
-    
+    #joined = "".join(function_args)
     
     message = response["choices"][0]["message"]
     if message.get("function_call"):
