@@ -8,6 +8,11 @@ from tkinter import ttk, Listbox, Scrollbar, N, S, E, W, scrolledtext, filedialo
 from ttkthemes import ThemedTk
 from tkhtmlview import HTMLLabel
 from PIL import Image, ImageTk
+import pinecone
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 from chatbot import run_conversation
 from functions import image_to_text, read_csv_columns
@@ -164,6 +169,8 @@ class ChatbotGUI:
         self.file_manager = FileManager()
         self.ai_manager = AIManager()
         self.settings_manager = SettingsManager()
+        
+        pinecone.init()
 
         # Create the root window
         self.root.grid_rowconfigure(0, weight=1)
@@ -187,6 +194,12 @@ class ChatbotGUI:
 
         # Create widgets in Tab 2
         self.create_widgets_tab2()
+        
+        # Create Tab 3
+        self.tab3 = ttk.Frame(self.tabControl)
+        self.tabControl.add(self.tab3, text='Pinecone')
+        self.create_widgets_tab3()
+        
         
         self.is_loading = False
     
@@ -405,6 +418,70 @@ class ChatbotGUI:
         for directory in directories:
             root = self.tree.insert('', 'end', text=directory, open=True)
             self.process_directory(root, directory)
+    
+    def fetch_indexes(self):
+        active_indexes = pinecone.list_indexes()
+        return active_indexes
+    
+    def create_widgets_tab3(self):
+        self.tab3.grid_rowconfigure(0, weight=1)
+        self.tab3.grid_columnconfigure(0, weight=1)
+        self.tab3.grid_columnconfigure(1, weight=0)
+        self.tab3.grid_columnconfigure(2, weight=4)
+        ttk.Label(self.tab3, text="Pinecone").grid(column=0, row=0, padx=30, pady=30, sticky='nsew')
+        self.create_sidebar_tab3(self.tab3)
+        self.create_main_area3(self.tab3)
+
+    def create_sidebar_tab3(self, parent):
+        self.sidebar_tab3 = ttk.Frame(parent, width=200)
+        self.sidebar_tab3.grid(row=0, column=0, sticky='nsew')
+
+        sidebar_label = ttk.Label(self.sidebar_tab3, text="Indexes")
+        sidebar_label.pack()
+        
+        indexes = self.fetch_indexes()
+        self.index_list = tk.Listbox(self.sidebar_tab3)
+        for index in indexes:
+            self.index_list.insert(tk.END, index)
+        self.index_list.pack()
+        
+    def create_main_area3(self, parent):
+        main_frame = ttk.Frame(parent)
+        main_frame.grid(row=0, column=2, sticky='nsew')
+        main_frame.grid_rowconfigure(0, weight=1)
+        main_frame.grid_columnconfigure(0, weight=1)
+
+        self.create_text_area_tab3(main_frame)
+        self.create_input_area_tab3(main_frame)
+
+    def create_text_area_tab3(self, frame):
+        self.text_area_tab3 = tk.Text(frame, wrap='word', background="oldlace", height=10, font=('Ubuntu', 16)) 
+        self.text_area_tab3.grid(row=0, column=0, sticky='nsew')
+
+    def create_input_area_tab3(self, frame):
+        bottom_frame = ttk.Frame(frame)
+        bottom_frame.grid(sticky='nsew')
+
+        self.user_input_text_tab3 = tk.Entry(bottom_frame, background="oldlace", font=('Ubuntu', 16)) 
+        self.user_input_text_tab3.grid(row=0, column=0, sticky='nsew')
+
+        search_button = ttk.Button(bottom_frame, text='Search', command=self.run_search, style='TButton')
+        search_button.grid(row=0, column=1)
+
+        bottom_frame.grid_columnconfigure(0, weight=1)
+
+    def run_search(self):
+        query = self.user_input_text_tab3.get()  # get the query from the input field
+        #results = search_index(query)  # perform the search. Replace this with your function.
+        
+        # clear the text area
+        self.text_area_tab3.delete('1.0', tk.END)
+        
+        # display the results in the text area
+        #for result in results:
+        #    self.text_area_tab3.insert(tk.END, f"{result}\n")
+
+    
     
     def add_to_chat_history(self):
         # Get the currently selected file

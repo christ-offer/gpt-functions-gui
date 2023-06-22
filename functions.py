@@ -439,10 +439,11 @@ python_repl_params = [
 
 python_repl_system_message = """
 # Python REPL Agent
-You are responsible for handling the Python REPL.
+You have access to a Python Interpreter through you python_repl function.
 Make sure the code you execute does not contain any malicious commands!
 Think steps ahead and make sure the code you execute correctly handles the users request.
 If anything is unclear, ask the user for clarification.
+When you are certain that the code is safe to execute, use the python_repl function to execute it.
 """
 
 

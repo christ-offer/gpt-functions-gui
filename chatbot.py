@@ -105,7 +105,6 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
     })
     if get_command(prompt) == "/csv":
         print("CSV Agent")
-        # renive the command and whitespace from the prompt
         prompt = prompt[5:].strip()
         function_params = read_csv_columns_params
         system_message = csv_system_message
