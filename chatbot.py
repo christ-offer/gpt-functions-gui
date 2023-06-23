@@ -6,13 +6,10 @@ import logging
 from typing import Optional, Dict, List, Tuple
 import re
 
-
-from agents.function_call_agent import FunctionCallAgent
-
 from system_messages.system import function_response_agent, review_agent, brainstorm_agent, ticket_agent, base_system_message
 
+from agents.function_call_agent import FunctionCallAgent
 agents = FunctionCallAgent()
-
 
 
 def get_command(prompt):
