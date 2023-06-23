@@ -30,16 +30,17 @@ GUI chatbot playground with the new functions feature.
 
 ## Functions
 
-* /python - run python code
-* /wikidata - query wikidata
-* /image - convert an image to text caption using Coca, based on CoCa clone from: https://huggingface.co/spaces/fffiloni/CoCa-clone
-* /scrape - scrape a webpage
-* /write_code - write a file to disk
-* /kb [list/read/create] - knowledgebase interaction
-* /history [list/read/write] - history interaction
-* /csv - read columns from a csv file
-* /read_file - read a file
-* /edit_file - edit a file - Useful to read_file first, so the bot knows what lines are where. 
+* /help - lists these commands
+* /csv - csv handler
+* /python - python interpreter
+* /kb - knowledge base handler [read, write, list]
+* /history - history handler [read, write, list]
+* /write - file writer (can be used to save history, code, etc)
+* /read - file reader
+* /edit - file editor
+* /wikidata - wikidata sparql handler
+* /image - image to text captioner
+* /scrape - web scraper 
 
 ### Not "functions" but commands/strict prompts
 
