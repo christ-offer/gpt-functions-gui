@@ -2,6 +2,7 @@ import os
 import logging
 import requests
 import shutil
+import io
 import markdown
 import tkinter as tk
 from tkinter import ttk, Listbox, Scrollbar, N, S, E, W, CENTER, scrolledtext, filedialog, Canvas, StringVar, OptionMenu, LabelFrame, Label, Entry, Button, Frame, messagebox, Menu, Text
@@ -9,6 +10,7 @@ from ttkthemes import ThemedTk
 from tkhtmlview import HTMLLabel
 from PIL import Image, ImageTk
 from dotenv import load_dotenv
+import fitz
 
 from chatbot import run_conversation
 from agents.image_agent import ImageAgent
@@ -296,7 +298,7 @@ class ChatbotGUI:
             # If file, add file
             if p.is_file():
                 # Add only supported files
-                if p.name.endswith(('.ts', '.txt', '.csv', '.py', '.js', '.rs', '.c', '.cpp', '.java', '.cs', '.rb', '.php', '.swift', '.go', '.lua', '.groovy', '.kotlin', '.dart', '.f', '.f90', '.f95', '.f03', '.f08', '.for', '.h', '.hh', '.hpp', '.hxx', '.pl', '.asm', '.sh', '.bat', '.html', '.css', '.scss', '.sass', '.less', '.json', '.xml', '.yaml', '.yml', '.sql', '.md', '.markdown', '.r', '.Rmd', '.m', '.mm', '.p', '.pas', '.pli', '.pl1', '.cob', '.cbl', '.j', '.jl', '.erl', '.hs', '.elm', '.scala', '.sc', '.clj', '.cljs', '.edn', '.coffee', '.kt', '.hx', '.pde', '.ino', '.cls', '.bas', '.frm', '.vba', '.vbs', '.d', '.ada', '.adb', '.ads', '.ml', '.mli', '.fs', '.fsi', '.fsx', '.v', '.vh', '.vhd', '.vhdl', '.tex', '.sty', '.cls', '.clojure', '.png', '.jpg', '.jpeg')):
+                if p.name.endswith(('.ts', '.txt', 'pdf', '.csv', '.py', '.js', '.rs', '.c', '.cpp', '.java', '.cs', '.rb', '.php', '.swift', '.go', '.lua', '.groovy', '.kotlin', '.dart', '.f', '.f90', '.f95', '.f03', '.f08', '.for', '.h', '.hh', '.hpp', '.hxx', '.pl', '.asm', '.sh', '.bat', '.html', '.css', '.scss', '.sass', '.less', '.json', '.xml', '.yaml', '.yml', '.sql', '.md', '.markdown', '.r', '.Rmd', '.m', '.mm', '.p', '.pas', '.pli', '.pl1', '.cob', '.cbl', '.j', '.jl', '.erl', '.hs', '.elm', '.scala', '.sc', '.clj', '.cljs', '.edn', '.coffee', '.kt', '.hx', '.pde', '.ino', '.cls', '.bas', '.frm', '.vba', '.vbs', '.d', '.ada', '.adb', '.ads', '.ml', '.mli', '.fs', '.fsi', '.fsx', '.v', '.vh', '.vhd', '.vhdl', '.tex', '.sty', '.cls', '.clojure', '.png', '.jpg', '.jpeg')):
                     self.tree.insert(parent, 'end', text=p.name)
 
 
@@ -337,6 +339,17 @@ class ChatbotGUI:
                 self.image_label.pack_forget()  # Hide the image label
             elif file_name.lower().endswith(('.png', '.jpg', '.jpeg')):
                 image = Image.open(file_path)
+                photo = ImageTk.PhotoImage(image)
+                self.image_label.config(image=photo)
+                self.image_label.image = photo  # Keep a reference to prevent garbage collection
+                self.image_label.pack(fill='both', expand=True)  # Make sure it's visible
+                self.md_viewer.pack_forget()  # Hide the HTMLLabel
+            elif file_name.lower().endswith('.pdf'):  # Add support for PDF
+                doc = fitz.open(file_path)
+                page = doc.load_page(0)  # number of page
+                pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
+                raw = pix.samples  # get the raw pixel data
+                image = Image.frombytes("RGB", [pix.width, pix.height], raw)
                 photo = ImageTk.PhotoImage(image)
                 self.image_label.config(image=photo)
                 self.image_label.image = photo  # Keep a reference to prevent garbage collection
