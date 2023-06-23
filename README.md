@@ -10,8 +10,6 @@
   - [File-Manager](#file-manager)
   - [Image to Text](#image-to-text)
   - [Read CSV and Plot with Python](#read-csv-and-use-python-to-plot-older-gui)
-  - [Tabs (Knowledgebase, History, Images)](#tabs-knowledgebase-history-images)
-
 ## Description
 
 GUI chatbot playground with the new functions feature.
