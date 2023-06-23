@@ -59,6 +59,15 @@ class CSVHandler:
     @presence_penalty.setter
     def presence_penalty(self, value):
         self._presence_penalty = value
+        
+    @property
+    def system_message(self):
+        return self._system_message
+    
+    @system_message.setter
+    def system_message(self, value):
+        self._system_message = value
+    
     
     def read_csv_columns(self, file_path: str) -> str:
         try:

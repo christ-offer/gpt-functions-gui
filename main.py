@@ -4,7 +4,7 @@ import requests
 import shutil
 import markdown
 import tkinter as tk
-from tkinter import ttk, Listbox, Scrollbar, N, S, E, W, CENTER, scrolledtext, filedialog, Canvas, StringVar, OptionMenu, LabelFrame, Label, Entry, Button, Frame, messagebox, Menu
+from tkinter import ttk, Listbox, Scrollbar, N, S, E, W, CENTER, scrolledtext, filedialog, Canvas, StringVar, OptionMenu, LabelFrame, Label, Entry, Button, Frame, messagebox, Menu, Text
 from ttkthemes import ThemedTk
 from tkhtmlview import HTMLLabel
 from PIL import Image, ImageTk
@@ -458,7 +458,6 @@ class ChatbotGUI:
         config_frame = ttk.Frame(parent)
         config_frame.grid(row=0, column=1, sticky='nsew')
         
-
         # Create StringVar objects for the sliders
         self.temperature_var = StringVar(value=self.csv_agent.temperature)
         self.top_p_var = StringVar(value=self.csv_agent.top_p)
@@ -500,15 +499,17 @@ class ChatbotGUI:
         self.presence_penalty_label = ttk.Label(config_frame, textvariable=self.presence_penalty_var)
         self.presence_penalty_label.grid(row=7, column=1, padx=5, pady=5, sticky='n')
         self.presence_penalty_scale.grid(row=8, column=1, padx=5, pady=5, sticky='ew')
+        
+        # TODO Implement system messages text box
+        #self.system_message_text = Text(config_frame, width=40, height=10)
+        #self.system_message_text.grid(row=0, column=0, columnspan=2, padx=5, pady=5, sticky='ew')
 
-        # Button to apply changes
         apply_button = ttk.Button(config_frame, text='Apply', command=self.update_agent_settings)
         apply_button.grid(row=9, column=1, padx=5, pady=5, sticky='ew')
 
     def on_agent_selected(self, event):
         selected_agent = self.agent_select.get()
         self.agent = getattr(self, selected_agent)
-
         # Update the settings
         self.update_settings_from_agent()
 
@@ -531,8 +532,6 @@ class ChatbotGUI:
     
 
     def run(self):
-        # logic to create and manage tkinter root, e.g., root = tk.Tk()
-        # and then...
         self.root.mainloop()
 
 if __name__ == "__main__":
