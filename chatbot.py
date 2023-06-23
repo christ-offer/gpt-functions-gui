@@ -6,11 +6,21 @@ import logging
 from typing import Optional, Dict, List, Tuple
 import re
 
-from system_messages.system import function_response_agent, review_agent, brainstorm_agent, ticket_agent, base_system_message
-
-from agents.function_call_agent import FunctionCallAgent
+from system_messages.system import (
+    function_res_agent, 
+    base_system_message,
+    review_agent, 
+    brainstorm_agent, 
+    ticket_agent, 
+    spec_writer, 
+    code_writer
+    )
+from agents.function_mapper import FunctionMapper
+from agents.function_call_agent import function_call_agent
+from agents.base_agent import regular_agent
+from agents.function_response_agent import function_response_agent
 from constants import HISTORY_DIR
-agents = FunctionCallAgent()
+agents = FunctionMapper()
 
 
 def get_command(prompt):
@@ -26,124 +36,6 @@ def call_function(function_name, function_args):
     if function_args is None:
         return agents.function_map[function_name]()
     return agents.function_map[function_name](*function_args.values())
-
-
-def function_call_agent(
-        prompt, 
-        conversation, 
-        system_message,
-        function_params,
-        model: str = "gpt-4-0613", 
-        temperature: float = 0.3, 
-        top_p: float = 1.0, 
-        frequency_penalty: float = 0.0, 
-        presence_penalty: float = 0.0):
-    try:
-        response = openai.ChatCompletion.create(
-            model=model,
-            temperature=temperature,
-            top_p=top_p,
-            frequency_penalty=frequency_penalty,
-            presence_penalty=presence_penalty,
-            messages=[
-                {"role": "system", "content": system_message}
-            ] + conversation + [
-                {"role": "user", "content": prompt}
-            ],
-            functions=function_params,
-            function_call="auto",
-        )
-    except OpenAIError as error:
-        logging.error(f"OpenAI API call failed: {str(error)}")
-        return "OpenAI API call failed due to an internal server error.", conversation
-    except openai.error.APIConnectionError as e:
-        print(f"Failed to connect to OpenAI API: {e}")
-        return "Failed to connect to OpenAI.", conversation
-    except openai.error.RateLimitError as e:
-        print(f"OpenAI API request exceeded rate limit: {e}")
-        return "Requests exceed OpenAI rate limit.", conversation
-    return response["choices"][0]["message"], conversation
-
-
-def regular_agent(
-        prompt,
-        conversation,
-        system_message,
-        model: str = "gpt-4-0613",
-        temperature: float = 0.6,
-        top_p: float = 1.0,
-        frequency_penalty: float = 0.0,
-        presence_penalty: float = 0.0):
-    try:
-        response = openai.ChatCompletion.create(
-            model=model,
-            temperature=temperature,
-            top_p=top_p,
-            frequency_penalty=frequency_penalty,
-            presence_penalty=presence_penalty,
-            messages=[
-                {"role": "system", "content": system_message},
-            ] + conversation + [
-                {"role": "user", "content": prompt}
-            ],
-        )
-    except OpenAIError as error:
-        logging.error(f"OpenAI API call failed: {str(error)}")
-        return "OpenAI API call failed due to an internal server error.", conversation
-    except openai.error.APIConnectionError as e:
-        print(f"Failed to connect to OpenAI API: {e}")
-        return "Failed to connect to OpenAI.", conversation
-    except openai.error.RateLimitError as e:
-        print(f"OpenAI API request exceeded rate limit: {e}")
-        return "Requests exceed OpenAI rate limit.", conversation
-    return response["choices"][0]["message"], conversation
-
-def afunction_response_agent(
-        prompt,
-        conversation,
-        system_message,
-        model = "gpt-3.5-turbo-16k-0613",
-        temperature = 0.0,
-        top_p = 1.0,
-        frequency_penalty = 0.0,
-        presence_penalty = 0.0,
-        function_response: any = None,
-        function_name: str = None,
-        message: str = None
-        ):
-    try:
-        print(function_response)
-        response = openai.ChatCompletion.create(
-            model=model,
-                temperature=temperature,
-                top_p=top_p,
-                frequency_penalty=frequency_penalty,
-                presence_penalty=presence_penalty,
-                messages=[
-                    {"role": "system", "content": function_response_agent},
-                    {"role": "user", "content": prompt},
-                    message,
-                    {
-                        "role": "function",
-                        "name": function_name,
-                        "content": function_response,
-                    },
-                ],
-            )
-    except OpenAIError as error:
-        logging.error(f"OpenAI API call failed: {str(error)}")
-        return "OpenAI API call failed due to an internal server error." + function_response, conversation
-    except openai.error.APIConnectionError as e:
-        print(f"Failed to connect to OpenAI API: {e}")
-        return "Failed to connect to OpenAI." + function_response, conversation
-    except openai.error.RateLimitError as e:
-        print(f"OpenAI API request exceeded rate limit: {e}")
-        return "Requests exceed OpenAI rate limit." + function_response, conversation
-    conversation.append({
-                "role": "assistant",
-                "content": response["choices"][0]["message"]["content"],
-            }) 
-    return response["choices"][0]["message"], conversation
 
 def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[str, List[Dict[str, str]]]:
     conversation.append({
@@ -327,8 +219,26 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         prompt = prompt[7:].strip()
         response = regular_agent(
             prompt=prompt, 
-            conversation=conversation, 
+            conversation=conversation,
             system_message=ticket_agent
+            )
+        message = response[0]
+    elif get_command(prompt) == "/write_spec":
+        print("Write Spec Agent")
+        prompt = prompt[11:].strip()
+        response = regular_agent(
+            prompt=prompt, 
+            conversation=conversation, 
+            system_message=spec_writer
+            )
+        message = response[0]
+    elif get_command(prompt) == "/write_code":
+        print("Write Code Agent")
+        prompt = prompt[11:].strip()
+        response = regular_agent(
+            prompt=prompt, 
+            conversation=conversation, 
+            system_message=code_writer
             )
         message = response[0]
     elif get_command(prompt) == "/save":
@@ -373,38 +283,12 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             return function_response, conversation  # directly return function response
         else:
             logging.info(f"Function response: {function_response}")
-            #response = afunction_response_agent(prompt=prompt, conversation=conversation, system_message=function_response_agent, function_name=function_name, function_response=function_response)
-            #return response[0], response[1]
-            try:
-                second_response = openai.ChatCompletion.create(
-                    model="gpt-3.5-turbo-16k-0613",
-                    temperature=0.0,
-                    messages=[
-                        {"role": "system", "content": function_response_agent},
-                        {"role": "user", "content": prompt},
-                        message,
-                        {
-                            "role": "function",
-                            "name": function_name,
-                            "content": function_response,
-                        },
-                    ],
-                )
-            except OpenAIError as error:
-                logging.error(f"OpenAI API call failed: {str(error)}")
-                return "OpenAI API call failed due to an internal server error." + function_response, conversation
-            except openai.error.APIConnectionError as e:
-                print(f"Failed to connect to OpenAI API: {e}")
-                return "Failed to connect to OpenAI." + function_response, conversation
-            except openai.error.RateLimitError as e:
-                print(f"OpenAI API request exceeded rate limit: {e}")
-                return "Requests exceed OpenAI rate limit." + function_response, conversation
-            
+            second_response = function_response_agent(prompt=prompt, system_message=function_res_agent, function_name=function_name, function_response=function_response, message=message)
             conversation.append({
                 "role": "assistant",
-                "content": second_response["choices"][0]["message"]["content"],
+                "content": second_response["content"],
             }) 
-            return second_response["choices"][0]["message"]["content"], conversation
+            return second_response["content"], conversation
     else:
         conversation.append({
             "role": "assistant",

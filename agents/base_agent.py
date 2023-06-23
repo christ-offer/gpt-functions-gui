@@ -2,15 +2,14 @@ import openai
 from openai import OpenAIError
 import logging
 
-def function_call_agent(
-        prompt, 
-        conversation, 
+def regular_agent(
+        prompt,
+        conversation,
         system_message,
-        function_params,
-        model: str = "gpt-4-0613", 
-        temperature: float = 0.3, 
-        top_p: float = 1.0, 
-        frequency_penalty: float = 0.0, 
+        model: str = "gpt-4-0613",
+        temperature: float = 0.6,
+        top_p: float = 1.0,
+        frequency_penalty: float = 0.0,
         presence_penalty: float = 0.0):
     try:
         response = openai.ChatCompletion.create(
@@ -20,12 +19,10 @@ def function_call_agent(
             frequency_penalty=frequency_penalty,
             presence_penalty=presence_penalty,
             messages=[
-                {"role": "system", "content": system_message}
+                {"role": "system", "content": system_message},
             ] + conversation + [
                 {"role": "user", "content": prompt}
             ],
-            functions=function_params,
-            function_call="auto",
         )
     except OpenAIError as error:
         logging.error(f"OpenAI API call failed: {str(error)}")
