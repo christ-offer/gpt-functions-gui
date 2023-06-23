@@ -9,6 +9,7 @@ import re
 from system_messages.system import function_response_agent, review_agent, brainstorm_agent, ticket_agent, base_system_message
 
 from agents.function_call_agent import FunctionCallAgent
+from constants import HISTORY_DIR
 agents = FunctionCallAgent()
 
 
@@ -330,6 +331,23 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             system_message=ticket_agent
             )
         message = response[0]
+    elif get_command(prompt) == "/save":
+        print("Save Agent")
+        prompt = prompt[5:].strip()
+        
+        filename = prompt
+        conversation_string = ""
+        for entry in conversation:
+            conversation_string += f"{entry['role']}: {entry['content']}\n"
+        conversation_string += "\n"
+        # save conversation to file in HISTORY_DIR
+        with open(f"{HISTORY_DIR}/{filename}", "w") as f:
+            f.write(conversation_string)
+        # return message
+        message = {
+            "role": "assistant",
+            "content": f"Conversation saved to {filename} in {HISTORY_DIR}",
+        }
     else:
         print('Personal Assistant')
         response = regular_agent(

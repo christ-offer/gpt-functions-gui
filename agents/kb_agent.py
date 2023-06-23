@@ -3,6 +3,7 @@ from typing import List, Dict, Union
 from agents.file_write_agent import FileWriter
 from utils import ensure_directory_exists
 from utils import is_valid_filename
+from constants import KB_DIR
 
 file_writer = FileWriter()
 
@@ -23,7 +24,7 @@ class KnowledgebaseHandler:
         # Knowledgebase Agent
         You are responsible for handling the knowledgebase.
         """
-        self.KB_DIR = "data/kb/"
+        self.KB_DIR = KB_DIR
 
     def knowledgebase_create_entry(self, filename: str, content: str) -> str:
         return file_writer.write_file(filename, content, directory=self.KB_DIR)
