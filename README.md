@@ -8,7 +8,7 @@
 - [Screenshots](#gui-screenshots)
   - [Chat UI](#chat-ui)
   - [File-Manager](#file-manager)
-  - [Image to Text](#image-to-text)
+  - [Settings](#settings-tab)
   - [Read CSV and Plot with Python](#read-csv-and-use-python-to-plot-older-gui)
 - [TODO](#todo--wants--would-if-i-could)
 
@@ -71,8 +71,8 @@ Example Usecase: /read_file code.ts/py/rs/etc -> /review -> /edit_file code.ts/p
 ### File-Manager
 ![File-manager](screenshots/image-3.png)
 
-### Image to Text
-![Image to Text](screenshots/image.png)
+### Settings Tab
+![Settings Tab](image.png)
 
 ### Read CSV and Use Python to plot (older GUI)
 ![Read CSV and Use Python to plot](screenshots/image-2.png)
