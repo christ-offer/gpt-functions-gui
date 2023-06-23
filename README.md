@@ -59,9 +59,6 @@ Example Usecase: /read_file code.ts/py/rs/etc -> /review -> /edit_file code.ts/p
   - PINECONE_ENVIRONMENT=your-environment
 * `pip install -r requirements.txt` to install dependencies
 * `python main.py` to run the chatbot
-* To use as CLI tool:
-
-run `cli-version.py` instead of `main.py`
 
 
 ## GUI Screenshots

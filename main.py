@@ -15,7 +15,12 @@ load_dotenv()
 
 
 from chatbot import run_conversation
-from functions import image_to_text, read_csv_columns
+from agents.image_agent import ImageAgent
+from agents.csv_agent import CSVHandler
+
+image_agent = ImageAgent()
+csv_agent = CSVHandler()
+
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
@@ -64,7 +69,7 @@ class FileManager:
             target_file_path = os.path.join(target_directory, os.path.basename(image_file_path))
             shutil.copy(image_file_path, target_file_path)
             
-            caption = image_to_text(image_file_path)
+            caption = image_agent.image_to_text(image_file_path)
             
             # Create HTML for the bot's message
             message_html = f'<p style="background-color: lightblue;">Bot: {os.path.basename(image_file_path)} was added to image folder<br/>The caption is: {caption}</p><br/>'
@@ -86,10 +91,10 @@ class FileManager:
             target_file_path = os.path.join(target_directory, os.path.basename(csv_file_path))
             shutil.copy(csv_file_path, target_file_path)
             
-            columns = read_csv_columns(csv_file_path)
+            columns = csv_agent.read_csv_columns(csv_file_path)
 
             # Insert message into text area
-            chatbot_gui.text_area.insert(tk.INSERT, f'Bot: {os.path.basename(csv_file_path)} was added to CSV folder\nThe columns are: {columns}\n', "bot")
+            chatbot_gui.text_area.insert(tk.INSERT, f'{columns}\n', "bot")
             # add same text to conversation
             chatbot_gui.conversation.append({
                 "role": "assistant",
@@ -535,7 +540,12 @@ class ChatbotGUI:
                     "role": "user",
                     "content": f'Columns: {columns}\n',
                 })
-                content_html = f'<p style="background-color: lightgray;">You: These are the columns contained in {file_path} :<br/><br/>{columns}</p><br/>'
+
+                # Convert the column list to HTML format
+                columns_html = columns.replace('- ', '<li>').replace('\n', '</li>')
+                columns_html = f'<ul>{columns_html}</li></ul>'
+
+                content_html = f'<p style="background-color: lightgray;">You: <br/>{columns_html}</p><br/>'
                 self.current_html += content_html
                 self.text_area.set_html(self.current_html)
                 return
@@ -543,7 +553,7 @@ class ChatbotGUI:
             elif file_path.endswith(('.png', '.jpg', '.jpeg')):
                 logging.info('Image not supported')
                 return
-            
+
             # Open and read the file
             with open(file_path, 'r') as file:
                 content = file.read()
@@ -553,7 +563,7 @@ class ChatbotGUI:
                 "role": "user",
                 "content": f'{content}\n',
             })
-            
+
             # Create HTML for the loaded content and append to the current HTML
             content_html = f'<p style="background-color: lightgray;">You: Content loaded:<br/>{content}</p><br/>'
             self.current_html += content_html
@@ -561,6 +571,7 @@ class ChatbotGUI:
 
             # You may want to automatically scroll to the end of the text area
             self.text_area.see('end')
+
 
     def run(self):
         # logic to create and manage tkinter root, e.g., root = tk.Tk()

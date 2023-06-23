@@ -1,0 +1,151 @@
+from typing import List, Dict, Union
+import os
+from utils import ensure_directory_exists, is_valid_filename
+
+class FileWriter:
+    def __init__(
+            self, model: str = "gpt-4-0613", 
+            temperature: float = 0.3, 
+            top_p: float = 1.0, 
+            frequency_penalty: float = 0.0, 
+            presence_penalty: float = 0.0
+            ):
+        self.model = model
+        self.temperature = temperature
+        self.top_p = top_p
+        self.frequency_penalty = frequency_penalty
+        self.presence_penalty = presence_penalty
+        self.write_system_message = """
+        # Write File Agent
+        This agent is responsible for writing files.
+        """
+        self.read_system_message = """
+        # Read File Agent
+        This agent is responsible for reading files.
+        """
+        self.edit_system_message = """
+        # Edit File Agent
+        This agent is responsible for editing files.
+        """
+        self.DATA_DIR = "<your_data_directory>"
+
+    def write_file(self, filename: str, content: str, directory: str = None) -> str:
+        if not is_valid_filename(filename):
+            return f"Invalid filename: {filename}"
+
+        if directory is None:
+            directory = self.DATA_DIR
+
+        ensure_directory_exists(directory)    
+        filepath = os.path.join(directory, filename)
+        try:
+            with open(filepath, 'w') as f:
+                f.write(content)
+            return f"File '{filename}' has been successfully written to {directory}."
+        except Exception as e:
+            return f"An error occurred while writing the file: {str(e)}"
+
+    def read_file(self, filename: str) -> str:
+        content = None
+        try:
+            with open(filename, 'r', encoding='utf-8') as f:
+                content = f.read()
+        except FileNotFoundError:
+            content = f"The file '{filename}' does not exist."
+        except Exception as e:
+            content = f"An error occurred while reading the file: {str(e)}"
+        return content
+
+    def edit_file(self, filepath: str, changes: List[Dict]) -> str:
+        try:
+            # Read the file into a list of lines
+            with open(filepath, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+
+            # Apply the changes
+            for change in changes:
+                for line_num in change['range']:
+                    if line_num <= len(lines):  # Ensure the line number is valid
+                        lines[line_num-1] = change['replacementcontent'] + '\n'
+                    else:
+                        return f"Line number {line_num} is out of range in file {filepath}."
+
+            # Write the modified lines back to the file
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.writelines(lines)
+
+            return f"File '{filepath}' has been successfully edited."
+
+        except FileNotFoundError:
+            return f"The file '{filepath}' does not exist."
+        except Exception as e:
+            return f"An error occurred while editing the file: {str(e)}"
+
+    @property
+    def write_file_params(self) -> List[Dict[str, Union[str, Dict]]]:
+        return [
+            {
+                "name": "write_file",
+                "description": "Writes a file to the system",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "filename": {"type": "string", "description": "The filename for the new entry."},
+                        "content": {"type": "string", "description": "The content for the new entry."},
+                        "directory": {"type": "string", "description": "The directory to write the file to. Defaults to DATA_DIR."}
+                    },
+                    "required": ["filename", "content"],
+                },
+            }
+        ]
+    
+    @property
+    def read_file_params(self) -> List[Dict[str, Union[str, Dict]]]:
+        return [
+            {
+                "name": "read_file",
+                "description": "Reads a file from the system",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "filename": {"type": "string", "description": "The filename to read."},
+                    },
+                    "required": ["filename"],
+                },
+            }
+        ]
+    
+    @property
+    def edit_file_params(self) -> List[Dict[str, Union[str, Dict]]]:
+        return [
+          {
+              "name": "edit_file",
+              "description": "Edits the provided file by replacing the specified lines with the provided content.",
+              "parameters": {
+                  "type": "object",
+                  "properties": {
+                      "filepath": {"type": "string", "description": "The path to the file to edit."},
+                      "changes": {
+                          "type": "array",
+                          "description": "The changes to apply to the file.",
+                          "items": {
+                              "type": "object",
+                              "properties": {
+                                  "range": {
+                                      "type": "array",
+                                      "description": "The line numbers to replace.",
+                                      "items": {"type": "integer"},
+                                  },
+                                  "replacementcontent": {
+                                      "type": "string",
+                                      "description": "The content to replace the lines with.",
+                                  },
+                              },
+                              "required": ["range", "replacementcontent"],
+                          },
+                      },
+                  },
+                  "required": ["filepath", "changes"],
+              },
+          }
+      ]
