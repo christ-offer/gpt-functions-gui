@@ -418,7 +418,7 @@ class ChatbotGUI:
                 self.text_area.set_html(self.current_html)
                 return
             # If image file, say no
-            elif file_path.endswith(('.png', '.jpg', '.jpeg')):
+            elif file_path.endswith(('.png', '.jpg', '.jpeg', '.pdf')):
                 logging.info('Image not supported')
                 return
 
