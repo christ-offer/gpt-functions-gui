@@ -6,29 +6,13 @@ import logging
 from typing import Optional, Dict, List, Tuple
 import re
 
-from agents.csv_agent import CSVHandler
-from agents.python_agent import PythonRepl
-from agents.kb_agent import KnowledgebaseHandler
-from agents.history_agent import HistoryHandler
-from agents.file_write_agent import FileWriter
-from agents.scrape_agent import Scraper
-from agents.wikidata_agent import WikidataAgent
-from agents.image_agent import ImageAgent
-from agents.help_agent import HelpAgent
+
 from agents.function_call_agent import FunctionCallAgent
 
 from system_messages.system import function_response_agent, review_agent, brainstorm_agent, ticket_agent, base_system_message
 
-csv_handler = CSVHandler()
-python_repl = PythonRepl()
-kb_handler = KnowledgebaseHandler()
-history_handler = HistoryHandler()
-file_handler = FileWriter()
-scraper = Scraper()
-wikidata_agent = WikidataAgent()
-image_agent = ImageAgent()
-help_agent = HelpAgent()
-functions = FunctionCallAgent()
+agents = FunctionCallAgent()
+
 
 
 def get_command(prompt):
@@ -39,11 +23,11 @@ def get_command(prompt):
     return None
 
 def call_function(function_name, function_args):
-    if function_name not in functions.function_map:
+    if function_name not in agents.function_map:
         raise Exception(f"Function {function_name} not found.")
     if function_args is None:
-        return functions.function_map[function_name]()
-    return functions.function_map[function_name](*function_args.values())
+        return agents.function_map[function_name]()
+    return agents.function_map[function_name](*function_args.values())
 
 
 def function_call_agent(
@@ -174,12 +158,12 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         response = function_call_agent(
             prompt=prompt, 
             conversation=conversation, 
-            system_message=csv_handler.system_message, 
-            function_params=csv_handler.read_csv_columns_params,
-            temperature=csv_handler.temperature,
-            top_p=csv_handler.top_p,
-            frequency_penalty=csv_handler.frequency_penalty,
-            model=csv_handler.model,
+            system_message=agents.csv_handler.system_message, 
+            function_params=agents.csv_handler.read_csv_columns_params,
+            temperature=agents.csv_handler.temperature,
+            top_p=agents.csv_handler.top_p,
+            frequency_penalty=agents.csv_handler.frequency_penalty,
+            model=agents.csv_handler.model,
             )
         message = response[0]
     elif get_command(prompt) == "/python":
@@ -188,12 +172,12 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         response = function_call_agent(
             prompt=prompt, 
             conversation=conversation, 
-            system_message=python_repl.system_message, 
-            function_params=python_repl.python_repl_params,
-            temperature=python_repl.temperature,
-            top_p=python_repl.top_p,
-            frequency_penalty=python_repl.frequency_penalty,
-            model=python_repl.model,
+            system_message=agents.python_repl.system_message, 
+            function_params=agents.python_repl.python_repl_params,
+            temperature=agents.python_repl.temperature,
+            top_p=agents.python_repl.top_p,
+            frequency_penalty=agents.python_repl.frequency_penalty,
+            model=agents.python_repl.model,
             )
         message = response[0]
     elif get_command(prompt) == "/kb":
@@ -202,12 +186,12 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         response = function_call_agent(
             prompt=prompt, 
             conversation=conversation, 
-            system_message=kb_handler.system_message, 
-            function_params=kb_handler.knowledgebase_params,
-            temperature=kb_handler.temperature,
-            top_p=kb_handler.top_p,
-            frequency_penalty=kb_handler.frequency_penalty,
-            model=kb_handler.model,
+            system_message=agents.kb_handler.system_message, 
+            function_params=agents.kb_handler.knowledgebase_params,
+            temperature=agents.kb_handler.temperature,
+            top_p=agents.kb_handler.top_p,
+            frequency_penalty=agents.kb_handler.frequency_penalty,
+            model=agents.kb_handler.model,
             )
         message = response[0]
     elif get_command(prompt) == "/history":
@@ -216,12 +200,12 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         response = function_call_agent(
             prompt=prompt, 
             conversation=conversation, 
-            system_message=history_handler.system_message, 
-            function_params=history_handler.history_params,
-            temperature=history_handler.temperature,
-            top_p=history_handler.top_p,
-            frequency_penalty=history_handler.frequency_penalty,
-            model=history_handler.model,
+            system_message=agents.history_handler.system_message, 
+            function_params=agents.history_handler.history_params,
+            temperature=agents.history_handler.temperature,
+            top_p=agents.history_handler.top_p,
+            frequency_penalty=agents.history_handler.frequency_penalty,
+            model=agents.history_handler.model,
             )
         message = response[0]
     elif get_command(prompt) == "/write":
@@ -230,12 +214,12 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         response = function_call_agent(
             prompt=prompt, 
             conversation=conversation, 
-            system_message=file_handler.write_system_message, 
-            function_params=file_handler.write_file_params,
-            temperature=file_handler.temperature,
-            top_p=file_handler.top_p,
-            frequency_penalty=file_handler.frequency_penalty,
-            model=file_handler.model,
+            system_message=agents.file_handler.write_system_message, 
+            function_params=agents.file_handler.write_file_params,
+            temperature=agents.file_handler.temperature,
+            top_p=agents.file_handler.top_p,
+            frequency_penalty=agents.file_handler.frequency_penalty,
+            model=agents.file_handler.model,
             )
         message = response[0]
     elif get_command(prompt) == "/read":
@@ -244,12 +228,12 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         response = function_call_agent(
             prompt=prompt, 
             conversation=conversation, 
-            system_message=file_handler.read_system_message, 
-            function_params=file_handler.read_file_params,
-            temperature=file_handler.temperature,
-            top_p=file_handler.top_p,
-            frequency_penalty=file_handler.frequency_penalty,
-            model=file_handler.model,
+            system_message=agents.file_handler.read_system_message, 
+            function_params=agents.file_handler.read_file_params,
+            temperature=agents.file_handler.temperature,
+            top_p=agents.file_handler.top_p,
+            frequency_penalty=agents.file_handler.frequency_penalty,
+            model=agents.file_handler.model,
             )
         message = response[0]
     elif get_command(prompt) == "/edit":
@@ -258,12 +242,12 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         response = function_call_agent(
             prompt=prompt, 
             conversation=conversation, 
-            system_message=file_handler.edit_system_message, 
-            function_params=file_handler.edit_file_params,
-            temperature=file_handler.temperature,
-            top_p=file_handler.top_p,
-            frequency_penalty=file_handler.frequency_penalty,
-            model=file_handler.model,
+            system_message=agents.file_handler.edit_system_message, 
+            function_params=agents.file_handler.edit_file_params,
+            temperature=agents.file_handler.temperature,
+            top_p=agents.file_handler.top_p,
+            frequency_penalty=agents.file_handler.frequency_penalty,
+            model=agents.file_handler.model,
             )
         message = response[0]
     elif get_command(prompt) == "/wikidata":
@@ -272,12 +256,12 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         response = function_call_agent(
             prompt=prompt, 
             conversation=conversation, 
-            system_message=wikidata_agent.system_message, 
-            function_params=wikidata_agent.wikidata_sparql_query_params,
-            temperature=wikidata_agent.temperature,
-            top_p=wikidata_agent.top_p,
-            frequency_penalty=wikidata_agent.frequency_penalty,
-            model=wikidata_agent.model,
+            system_message=agents.wikidata_agent.system_message, 
+            function_params=agents.wikidata_agent.wikidata_sparql_query_params,
+            temperature=agents.wikidata_agent.temperature,
+            top_p=agents.wikidata_agent.top_p,
+            frequency_penalty=agents.wikidata_agent.frequency_penalty,
+            model=agents.wikidata_agent.model,
             )
         message = response[0]
     elif get_command(prompt) == "/scrape":
@@ -286,12 +270,12 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         response = function_call_agent(
             prompt=prompt, 
             conversation=conversation, 
-            system_message=scraper.system_message, 
-            function_params=scraper.scrape_webpage_params,
-            temperature=scraper.temperature,
-            top_p=scraper.top_p,
-            frequency_penalty=scraper.frequency_penalty,
-            model=scraper.model,
+            system_message=agents.scraper.system_message, 
+            function_params=agents.scraper.scrape_webpage_params,
+            temperature=agents.scraper.temperature,
+            top_p=agents.scraper.top_p,
+            frequency_penalty=agents.scraper.frequency_penalty,
+            model=agents.scraper.model,
             )
         message = response[0]
     elif get_command(prompt) == "/image":
@@ -300,12 +284,12 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         response = function_call_agent(
             prompt=prompt, 
             conversation=conversation, 
-            system_message=image_agent.system_message, 
-            function_params=image_agent.image_to_text_params,
-            temperature=image_agent.temperature,
-            top_p=image_agent.top_p,
-            frequency_penalty=image_agent.frequency_penalty,
-            model=image_agent.model,
+            system_message=agents.image_agent.system_message, 
+            function_params=agents.image_agent.image_to_text_params,
+            temperature=agents.image_agent.temperature,
+            top_p=agents.image_agent.top_p,
+            frequency_penalty=agents.image_agent.frequency_penalty,
+            model=agents.image_agent.model,
             )
         message = response[0]
     elif get_command(prompt) == "/help":
@@ -314,12 +298,12 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         response = function_call_agent(
             prompt=prompt, 
             conversation=conversation, 
-            system_message=help_agent.system_message, 
-            function_params=help_agent.help_params,
-            temperature=help_agent.temperature,
-            top_p=help_agent.top_p,
-            frequency_penalty=help_agent.frequency_penalty,
-            model=help_agent.model,
+            system_message=agents.help_agent.system_message, 
+            function_params=agents.help_agent.help_params,
+            temperature=agents.help_agent.temperature,
+            top_p=agents.help_agent.top_p,
+            frequency_penalty=agents.help_agent.frequency_penalty,
+            model=agents.help_agent.model,
             )
         message = response[0]
     elif get_command(prompt) == "/review":
@@ -366,7 +350,7 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         
         function_response = call_function(function_name, function_args)
         
-        if function_name in functions.functions_that_append_to_conversation:
+        if function_name in agents.functions_that_append_to_conversation:
             conversation.append({
                 "role": "assistant",
                 "content": function_response,  # directly add function response to the conversation
