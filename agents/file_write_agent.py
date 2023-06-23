@@ -36,7 +36,47 @@ class FileWriter:
         # Edit File Agent
         This agent is responsible for editing files.
         """
+    
+    @property
+    def model(self):
+        return self._model
 
+    @model.setter
+    def model(self, value):
+        self._model = value
+
+    @property
+    def temperature(self):
+        return self._temperature
+
+    @temperature.setter
+    def temperature(self, value):
+        self._temperature = value
+
+    @property
+    def top_p(self):
+        return self._top_p
+
+    @top_p.setter
+    def top_p(self, value):
+        self._top_p = value
+
+    @property
+    def frequency_penalty(self):
+        return self._frequency_penalty
+
+    @frequency_penalty.setter
+    def frequency_penalty(self, value):
+        self._frequency_penalty = value
+
+    @property
+    def presence_penalty(self):
+        return self._presence_penalty
+
+    @presence_penalty.setter
+    def presence_penalty(self, value):
+        self._presence_penalty = value
+    
     def write_file(self, filename: str, content: str, directory: str = None) -> str:
         if not is_valid_filename(filename):
             return f"Invalid filename: {filename}"

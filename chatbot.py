@@ -338,7 +338,7 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         filename = prompt
         conversation_string = ""
         for entry in conversation:
-            conversation_string += f"{entry['role']}: {entry['content']}\n"
+            conversation_string += f"{entry['role']}:\n{entry['content']}\n\n"
         conversation_string += "\n"
         # save conversation to file in HISTORY_DIR
         with open(f"{HISTORY_DIR}/{filename}", "w") as f:

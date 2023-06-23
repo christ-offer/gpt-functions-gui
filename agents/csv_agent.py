@@ -19,7 +19,47 @@ class CSVHandler:
         # CSV Agent
         You are responsible for handling CSV files.
         """
-        
+    
+    @property
+    def model(self):
+        return self._model
+
+    @model.setter
+    def model(self, value):
+        self._model = value
+
+    @property
+    def temperature(self):
+        return self._temperature
+
+    @temperature.setter
+    def temperature(self, value):
+        self._temperature = value
+
+    @property
+    def top_p(self):
+        return self._top_p
+
+    @top_p.setter
+    def top_p(self, value):
+        self._top_p = value
+
+    @property
+    def frequency_penalty(self):
+        return self._frequency_penalty
+
+    @frequency_penalty.setter
+    def frequency_penalty(self, value):
+        self._frequency_penalty = value
+
+    @property
+    def presence_penalty(self):
+        return self._presence_penalty
+
+    @presence_penalty.setter
+    def presence_penalty(self, value):
+        self._presence_penalty = value
+    
     def read_csv_columns(self, file_path: str) -> str:
         try:
             df = pd.read_csv(file_path, nrows=0)

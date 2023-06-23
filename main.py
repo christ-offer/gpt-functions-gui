@@ -13,6 +13,13 @@ from dotenv import load_dotenv
 from chatbot import run_conversation
 from agents.image_agent import ImageAgent
 from agents.csv_agent import CSVHandler
+from agents.file_write_agent import FileWriter
+from agents.help_agent import HelpAgent
+from agents.history_agent import HistoryHandler
+from agents.kb_agent import KnowledgebaseHandler
+from agents.scrape_agent import Scraper
+from agents.python_agent import PythonRepl
+from agents.wikidata_agent import WikidataAgent
 from constants import *
 
 # Initialize logging
@@ -121,6 +128,19 @@ class ChatbotGUI:
         self.styles = Styles()
         self.file_manager = FileManager()
         self.ai_manager = AIManager()
+        
+        
+        # Agents
+        self.image_agent = ImageAgent()
+        self.csv_agent = CSVHandler()
+        self.file_write_agent = FileWriter()
+        self.help_agent = HelpAgent()
+        self.history_agent = HistoryHandler()
+        self.kb_agent = KnowledgebaseHandler()
+        self.scrape_agent = Scraper()
+        self.wikidata_agent = WikidataAgent()
+        self.python_agent = PythonRepl()
+        
         # Initialize Pinecone
         #pinecone.init()
 
@@ -142,6 +162,11 @@ class ChatbotGUI:
         self.file_manager = ttk.Frame(self.tabControl)
         self.tabControl.add(self.file_manager, text='KnowledgeBase')
         self.create_widgets_file_manager()
+        
+        # Create Tab 3
+        self.settings = ttk.Frame(self.tabControl)
+        self.tabControl.add(self.settings, text='Settings')
+        self.create_widgets_settings()
 
         self.is_loading = False
     
@@ -402,6 +427,130 @@ class ChatbotGUI:
             # You may want to automatically scroll to the end of the text area
             self.text_area.see('end')
 
+        
+    def create_widgets_settings(self):
+        self.settings.grid_rowconfigure(0, weight=1)
+        self.settings.grid_columnconfigure(0, weight=1)
+        self.settings.grid_columnconfigure(1, weight=0)
+        self.settings.grid_columnconfigure(2, weight=4)
+        
+        ttk.Label(self.settings, text="Agent Configuration", justify=CENTER).grid(column=0, row=0, padx=30, pady=30, sticky='nsew')
+        self.create_settings_main(self.settings)
+        self.create_settings_sidebar(self.settings)
+
+    def create_settings_sidebar(self, parent):
+        self.sidebar_settings = ttk.Frame(parent, width=200)
+        self.sidebar_settings.grid(row=0, column=0, sticky='nsew')
+
+        sidebar_label = ttk.Label(self.sidebar_settings, text="Settings")
+        sidebar_label.pack()
+        
+        # Get agents from the agents folder
+        agents_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "agents")  # Directory of agents
+        agents = [f[:-3] for f in os.listdir(agents_dir) if f.endswith('.py') and f != "__init__.py" and f != "function_call_agent.py"]  # Remove '.py' from file name
+
+        
+        self.agent_select = ttk.Combobox(self.sidebar_settings, values=agents)
+        self.agent_select.set('Select Agent')  # Default text
+        self.agent_select.pack(pady=10)  # Add some padding around the combobox
+        self.agent_select.bind("<<ComboboxSelected>>", self.on_agent_selected)  # Bind the on_agent_selected function to the combobox
+
+
+    def update_temperature(self, value):
+        rounded_value = round(float(value) * 10) / 10
+        self.temperature_scale.set(rounded_value)
+        self.temperature_var.set(str(rounded_value))
+
+    def update_top_p(self, value):
+        rounded_value = round(float(value) * 10) / 10
+        self.top_p_scale.set(rounded_value)
+        self.top_p_var.set(str(rounded_value))
+
+    def update_frequency_penalty(self, value):
+        rounded_value = round(float(value) * 10) / 10
+        self.frequency_penalty_scale.set(rounded_value)
+        self.frequency_penalty_var.set(str(rounded_value))
+
+    def update_presence_penalty(self, value):
+        rounded_value = round(float(value) * 10) / 10
+        self.presence_penalty_scale.set(rounded_value)
+        self.presence_penalty_var.set(str(rounded_value))
+
+    def create_settings_main(self, parent):
+        config_frame = ttk.Frame(parent)
+        config_frame.grid(row=1, column=0, sticky='nsew')
+        
+
+        # Create StringVar objects for the sliders
+        self.temperature_var = StringVar(value=self.csv_agent.temperature)
+        self.top_p_var = StringVar(value=self.csv_agent.top_p)
+        self.frequency_penalty_var = StringVar(value=self.csv_agent.frequency_penalty)
+        self.presence_penalty_var = StringVar(value=self.csv_agent.presence_penalty)
+
+        # For Model
+        ttk.Label(config_frame, text="Model", anchor='e').grid(row=0, column=0, padx=5, pady=5, sticky='ew')
+        self.model_entry = ttk.Entry(config_frame)
+        self.model_entry.insert(0, self.csv_agent.model)  # Set from CSVHandler
+        self.model_entry.grid(row=0, column=1, padx=5, pady=5, sticky='ew')
+
+        
+        # For Temperature
+        ttk.Label(config_frame, text="Temperature", anchor='e').grid(row=1, column=0, padx=5, pady=5, sticky='ew')
+        self.temperature_label = ttk.Label(config_frame, textvariable=self.temperature_var) # Create a label with textvariable
+        self.temperature_label.grid(row=1, column=1, padx=5, pady=5, sticky='n')
+        self.temperature_scale = ttk.Scale(config_frame, from_=0.0, to=1.0, variable=self.temperature_var)
+        self.temperature_scale.grid(row=2, column=1, padx=5, pady=5, sticky='ew')
+
+        # For Top_p
+        ttk.Label(config_frame, text="Top_p", anchor='e').grid(row=3, column=0, padx=5, pady=5, sticky='ew')
+        self.top_p_scale = ttk.Scale(config_frame, from_=0.0, to=1.0, variable=self.top_p_var)
+        self.top_p_label = ttk.Label(config_frame, textvariable=self.top_p_var)
+        self.top_p_label.grid(row=3, column=1, padx=5, pady=5, sticky='n')
+        self.top_p_scale.grid(row=4, column=1, padx=5, pady=5, sticky='ew')
+
+        # For Frequency Penalty
+        ttk.Label(config_frame, text="Frequency Penalty", anchor='e').grid(row=5, column=0, padx=5, pady=5, sticky='ew')
+        self.frequency_penalty_scale = ttk.Scale(config_frame, from_=0.0, to=1.0, variable=self.frequency_penalty_var)
+        self.frequency_penalty_label = ttk.Label(config_frame, textvariable=self.frequency_penalty_var)
+        self.frequency_penalty_label.grid(row=5, column=1, padx=5, pady=5, sticky='n')
+        self.frequency_penalty_scale.grid(row=6, column=1, padx=5, pady=5, sticky='ew')
+
+
+        # For Presence Penalty
+        ttk.Label(config_frame, text="Presence Penalty", anchor='e').grid(row=7, column=0, padx=5, pady=5, sticky='ew')
+        self.presence_penalty_scale = ttk.Scale(config_frame, from_=0.0, to=1.0, variable=self.presence_penalty_var)
+        self.presence_penalty_label = ttk.Label(config_frame, textvariable=self.presence_penalty_var)
+        self.presence_penalty_label.grid(row=7, column=1, padx=5, pady=5, sticky='n')
+        self.presence_penalty_scale.grid(row=8, column=1, padx=5, pady=5, sticky='ew')
+
+        # Button to apply changes
+        apply_button = ttk.Button(config_frame, text='Apply', command=self.update_agent_settings)
+        apply_button.grid(row=9, column=1, padx=5, pady=5, sticky='ew')
+
+    def on_agent_selected(self, event):
+        selected_agent = self.agent_select.get()
+        self.agent = getattr(self, selected_agent)
+
+        # Update the settings
+        self.update_settings_from_agent()
+
+    def update_settings_from_agent(self):
+        self.model_entry.delete(0, 'end')
+        self.model_entry.insert(0, self.agent.model)
+        self.temperature_var.set(self.agent.temperature)
+        self.top_p_var.set(self.agent.top_p)
+        self.frequency_penalty_var.set(self.agent.frequency_penalty)
+        self.presence_penalty_var.set(self.agent.presence_penalty)
+
+    def update_agent_settings(self):
+        self.agent.model = self.model_entry.get() or "gpt-4-0613"
+        self.agent.temperature = float(self.temperature_var.get() or 0.3)
+        self.agent.top_p = float(self.top_p_var.get() or 1.0)
+        self.agent.frequency_penalty = float(self.frequency_penalty_var.get() or 0.0)
+        self.agent.presence_penalty = float(self.presence_penalty_var.get() or 0.0)
+
+
+    
 
     def run(self):
         # logic to create and manage tkinter root, e.g., root = tk.Tk()
