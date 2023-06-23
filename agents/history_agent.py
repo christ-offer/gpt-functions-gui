@@ -3,6 +3,7 @@ from typing import List, Dict, Union
 from agents.file_write_agent import FileWriter
 from utils import ensure_directory_exists
 from utils import is_valid_filename
+from constants import HISTORY_DIR
 
 file_writer = FileWriter()
 
@@ -12,20 +13,22 @@ class HistoryHandler:
             temperature: float = 0.3, 
             top_p: float = 1.0, 
             frequency_penalty: float = 0.0, 
-            presence_penalty: float = 0.0
+            presence_penalty: float = 0.0,
+            conversation = []
             ):
         self.model = model
         self.temperature = temperature
         self.top_p = top_p
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
+        self.conversation = conversation,
         self.system_message = """
         # History Agent
         You are responsible for handling the history.
         """
-        self.HISTORY_DIR = "data/history/"
+        self.HISTORY_DIR = HISTORY_DIR
 
-    def history_create_entry(self, filename: str, content: str) -> str:
+    def history_create_entry(self, filename: str, content) -> str:
         return file_writer.write_file(filename, content, directory=self.HISTORY_DIR)
 
     def history_list_entries(self) -> str:

@@ -2,6 +2,8 @@ from typing import List, Dict, Union
 import os
 from utils import ensure_directory_exists, is_valid_filename
 
+from constants import DATA_DIR
+
 class FileWriter:
     def __init__(
             self, model: str = "gpt-4-0613", 
@@ -18,6 +20,13 @@ class FileWriter:
         self.write_system_message = """
         # Write File Agent
         This agent is responsible for writing files.
+        Available directories:
+        For general files:
+        'data/'
+        For general code files:
+        'data/code/'
+        For code projects:
+        'data/code/projects/'
         """
         self.read_system_message = """
         # Read File Agent
@@ -27,14 +36,13 @@ class FileWriter:
         # Edit File Agent
         This agent is responsible for editing files.
         """
-        self.DATA_DIR = "<your_data_directory>"
 
     def write_file(self, filename: str, content: str, directory: str = None) -> str:
         if not is_valid_filename(filename):
             return f"Invalid filename: {filename}"
 
         if directory is None:
-            directory = self.DATA_DIR
+            directory = DATA_DIR
 
         ensure_directory_exists(directory)    
         filepath = os.path.join(directory, filename)
@@ -92,7 +100,7 @@ class FileWriter:
                     "properties": {
                         "filename": {"type": "string", "description": "The filename for the new entry."},
                         "content": {"type": "string", "description": "The content for the new entry."},
-                        "directory": {"type": "string", "description": "The directory to write the file to. Defaults to DATA_DIR."}
+                        "directory": {"type": "string", "description": "The directory to write the file to. The directories 'data/', 'data/code/', and 'data/code/projects/' are available."}
                     },
                     "required": ["filename", "content"],
                 },
@@ -118,34 +126,34 @@ class FileWriter:
     @property
     def edit_file_params(self) -> List[Dict[str, Union[str, Dict]]]:
         return [
-          {
-              "name": "edit_file",
-              "description": "Edits the provided file by replacing the specified lines with the provided content.",
-              "parameters": {
-                  "type": "object",
-                  "properties": {
-                      "filepath": {"type": "string", "description": "The path to the file to edit."},
-                      "changes": {
-                          "type": "array",
-                          "description": "The changes to apply to the file.",
-                          "items": {
-                              "type": "object",
-                              "properties": {
-                                  "range": {
-                                      "type": "array",
-                                      "description": "The line numbers to replace.",
-                                      "items": {"type": "integer"},
-                                  },
-                                  "replacementcontent": {
-                                      "type": "string",
-                                      "description": "The content to replace the lines with.",
-                                  },
-                              },
-                              "required": ["range", "replacementcontent"],
-                          },
-                      },
-                  },
-                  "required": ["filepath", "changes"],
-              },
-          }
-      ]
+            {
+                "name": "edit_file",
+                "description": "Edits the provided file by replacing the specified lines with the provided content.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "filepath": {"type": "string", "description": "The path to the file to edit."},
+                        "changes": {
+                            "type": "array",
+                            "description": "The changes to apply to the file.",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "range": {
+                                        "type": "array",
+                                        "description": "The line numbers to replace.",
+                                        "items": {"type": "integer"},
+                                    },
+                                    "replacementcontent": {
+                                        "type": "string",
+                                        "description": "The content to replace the lines with.",
+                                    },
+                                },
+                                "required": ["range", "replacementcontent"],
+                            },
+                        },
+                    },
+                    "required": ["filepath", "changes"],
+                },
+            }
+        ]
