@@ -351,7 +351,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         message = response[0]
     else:
         print('Personal Assistant')
-        response = regular_agent(prompt=prompt, conversation=conversation, system_message=base_system_message)
+        response = regular_agent(
+            prompt=prompt, 
+            conversation=conversation, 
+            system_message=base_system_message
+            )
         message = response[0]    
 
     if message.get("function_call"):
