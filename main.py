@@ -431,54 +431,32 @@ class ChatbotGUI:
     def create_widgets_settings(self):
         self.settings.grid_rowconfigure(0, weight=1)
         self.settings.grid_columnconfigure(0, weight=1)
-        self.settings.grid_columnconfigure(1, weight=0)
-        self.settings.grid_columnconfigure(2, weight=4)
-        
-        ttk.Label(self.settings, text="Agent Configuration", justify=CENTER).grid(column=0, row=0, padx=30, pady=30, sticky='nsew')
-        self.create_settings_main(self.settings)
+        self.settings.grid_columnconfigure(1, weight=5)
+
+        #ttk.Label(self.settings, text="Agent Configuration", justify=CENTER).grid(columnspan=2, row=0, padx=30, pady=30, sticky='nsew')
         self.create_settings_sidebar(self.settings)
+        self.create_settings_main(self.settings)
+
 
     def create_settings_sidebar(self, parent):
         self.sidebar_settings = ttk.Frame(parent, width=200)
         self.sidebar_settings.grid(row=0, column=0, sticky='nsew')
+        self.sidebar_settings.grid_columnconfigure(0, weight=1)
 
         sidebar_label = ttk.Label(self.sidebar_settings, text="Settings")
-        sidebar_label.pack()
-        
-        # Get agents from the agents folder
+        sidebar_label.grid(row=0, column=0, padx=5, pady=5, sticky='w')
+
         agents_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "agents")  # Directory of agents
         agents = [f[:-3] for f in os.listdir(agents_dir) if f.endswith('.py') and f != "__init__.py" and f != "function_call_agent.py"]  # Remove '.py' from file name
 
-        
         self.agent_select = ttk.Combobox(self.sidebar_settings, values=agents)
         self.agent_select.set('Select Agent')  # Default text
-        self.agent_select.pack(pady=10)  # Add some padding around the combobox
+        self.agent_select.grid(row=1, column=0, padx=5, pady=5, sticky='ew')
         self.agent_select.bind("<<ComboboxSelected>>", self.on_agent_selected)  # Bind the on_agent_selected function to the combobox
-
-
-    def update_temperature(self, value):
-        rounded_value = round(float(value) * 10) / 10
-        self.temperature_scale.set(rounded_value)
-        self.temperature_var.set(str(rounded_value))
-
-    def update_top_p(self, value):
-        rounded_value = round(float(value) * 10) / 10
-        self.top_p_scale.set(rounded_value)
-        self.top_p_var.set(str(rounded_value))
-
-    def update_frequency_penalty(self, value):
-        rounded_value = round(float(value) * 10) / 10
-        self.frequency_penalty_scale.set(rounded_value)
-        self.frequency_penalty_var.set(str(rounded_value))
-
-    def update_presence_penalty(self, value):
-        rounded_value = round(float(value) * 10) / 10
-        self.presence_penalty_scale.set(rounded_value)
-        self.presence_penalty_var.set(str(rounded_value))
 
     def create_settings_main(self, parent):
         config_frame = ttk.Frame(parent)
-        config_frame.grid(row=1, column=0, sticky='nsew')
+        config_frame.grid(row=0, column=1, sticky='nsew')
         
 
         # Create StringVar objects for the sliders
