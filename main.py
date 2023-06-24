@@ -26,7 +26,7 @@ from agents.python_agent import PythonRepl
 from agents.wikidata_agent import WikidataAgent
 from constants import *
 
-from tokenizer.tokens import num_tokens_from_messages, calculate_cost
+from tokenizer.tokens import calculate_cost
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')

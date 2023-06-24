@@ -383,17 +383,17 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
                 "content": second_response["content"],
             }) 
             model = "gpt-3.5-turbo-16k-0613"
-            print(f'About to calculate the cost of the response')
+
             tokens = num_tokens_from_messages(second_response, model=model)
             cost = calculate_cost(tokens, model=model)
             token_count += tokens
             conversation_cost += cost
-            print(f'Cost of run: {conversation_cost}')
+            print(f'Cost of run: {conversation_cost}$')
             return second_response["content"], conversation, token_count, conversation_cost
     else:
         conversation.append({
             "role": "assistant",
             "content": message["content"],
         })
-        print(f'Cost of run: {conversation_cost}')
+        print(f'Cost of run: {conversation_cost}$')
         return message["content"], conversation, token_count, conversation_cost
