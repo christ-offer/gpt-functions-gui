@@ -1,6 +1,6 @@
-# GPT-ASSISTANT GUI
+# GPT-Assistant(GUI)
 
-_Your friendly neighborhood GTK GUI chatbot with a bunch bells and whistles._
+_Your friendly neighborhood GTK GUI chatbot, now with bells and whistles (functions)._
 
 ## Table of Contents
 
@@ -20,16 +20,12 @@ _Your friendly neighborhood GTK GUI chatbot with a bunch bells and whistles._
 
 Chatbot built with TKinter GUI and a bunch of functions.
 
-* Somewhat basic GUI - Not threaded, so it freezes when the bot is thinking.
-* History is in practice in memory (though you can save files with functions so, summarize and save)
-* I have begun an attempt at adding a tab for Pinecone indexe, where you can search and view results. (very early days)
-* File manager - can load file content into  chat history, to "talk to files" - supports most text based files.
-
-
+* History is in practice in memory. (save to file with /save)
+* File manager - View saved files, load text files into the chat.
 
 ### Limitations
 
-* Very much single threaded so the GUI freezes when the bot is thinking.
+* Pretty basic GUI - Not threaded, so it freezes when the bot is thinking.
 * Can not copy from the chat window. (Workaround, ask it to write to file)
 * I don't know python.
 * Probably many more.
@@ -37,8 +33,7 @@ Chatbot built with TKinter GUI and a bunch of functions.
 ### TODO / Wants / Would if I could
 
 - [ ] Integration with Vector DB (A tab for it in the UI with upload/search/embed/etc)
-- [x] Settings tab for configuring the parameters of the different agents (slightly done)
-- [ ] gpt-engineer function to start a new gpt-engineer interaction
+- [x] Settings tab for configuring the parameters of the different agents (somewhat done)
 - [ ] Streamed responses live updated in UI. Not sure how to get around threading (or how to do it generally), especially for running python code.
 - [ ] Refactor the UI code to be more modular and less spaghetti
 - [ ] Probably more
