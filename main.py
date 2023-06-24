@@ -11,6 +11,8 @@ from tkhtmlview import HTMLLabel
 from PIL import Image, ImageTk
 from dotenv import load_dotenv
 import fitz
+import tiktoken
+import json
 
 from chatbot import run_conversation
 from agents.image_agent import ImageAgent
@@ -120,9 +122,16 @@ class AIManager:
             print(e)
         except Exception as e:
             response = f"Oops! An error occurred: {str(e)}"
-
+            
         chatbot_gui.root.after(0, chatbot_gui.update_text_area, response)
         chatbot_gui.text_area.see("end")  # Scrolls to the end of the text_area
+        
+        # Update total token count and cost
+        total_token_count, total_input_cost = chatbot_gui.num_tokens_from_messages(chatbot_gui.conversation)
+        formatted_total_input_cost = format(total_input_cost, '.6f')
+        ## Add tokens and cost to chat sidebar
+        chatbot_gui.total_token_count.set(f"Total tokens: {total_token_count}")
+        chatbot_gui.total_cost_of_input.set(f"Total cost: {formatted_total_input_cost}$")
 
 
 class ChatbotGUI:
@@ -206,6 +215,17 @@ class ChatbotGUI:
         upload_csv_button = ttk.Button(self.sidebar, text='Upload CSV', command=self.file_manager.upload_csv, style='TButton')
         upload_csv_button.pack()
         
+        # Add a display for total token count and cost
+        self.total_token_count = tk.StringVar()
+        self.total_token_count.set("Total tokens: 0")
+        total_token_count_label = ttk.Label(self.sidebar, textvariable=self.total_token_count)
+        total_token_count_label.pack()
+        
+        self.total_cost_of_input = tk.StringVar()
+        self.total_cost_of_input.set("Total cost: 0$")
+        total_cost_of_input_label = ttk.Label(self.sidebar, textvariable=self.total_cost_of_input)
+        total_cost_of_input_label.pack()
+        
         # Add a theme dropdown
         available_themes = self.root.get_themes()  # get the list of themes
         self.theme_var = tk.StringVar()  # create a StringVar to hold selected theme
@@ -227,6 +247,89 @@ class ChatbotGUI:
         self.text_area = HTMLLabel(frame, html="<p>Welcome to the chat!</p>", background="oldlace", font=('Ubuntu', 16))
         self.text_area.grid(row=0, column=0, sticky='nsew')
         self.current_html = "<p>Welcome to the chat!</p>"  # Initialize with the same content as the label
+    
+        
+    def update_token_count(self, event):
+        # First, we reset the modified flag so the function doesn't run in a loop
+        self.user_input_text.edit_modified(False)
+
+        # Get the content of the text field
+        content = self.user_input_text.get('1.0', 'end-1c')
+
+        if content.strip() == "":
+            # If the content is empty, manually set the token count and cost to 0
+            token_count = 0
+            input_cost = 0.0
+        else:
+            # Otherwise, calculate the token count and input cost
+            token_count, input_cost = self.num_tokens_from_messages([{"content": content}])
+
+        # Update the token_count StringVar
+        self.token_count.set(f"Input token count: {token_count}")
+
+        # Update the cost StringVar
+        self.cost_of_input.set(f"Cost of input: {input_cost:.6f}$")
+        
+        
+    def num_tokens_from_messages(self, messages, model="gpt-4-0613"):
+        """Return the number of tokens used by a list of messages."""
+        try:
+            encoding = tiktoken.encoding_for_model(model)
+        except KeyError:
+            print("Warning: model not found. Using cl100k_base encoding.")
+            encoding = tiktoken.get_encoding("cl100k_base")
+        if model in {
+            "gpt-3.5-turbo-0613",
+            "gpt-3.5-turbo-16k-0613",
+            "gpt-4-0314",
+            "gpt-4-32k-0314",
+            "gpt-4-0613",
+            "gpt-4-32k-0613",
+            }:
+            tokens_per_message = 3
+            tokens_per_name = 1
+        elif model == "gpt-3.5-turbo-0301":
+            tokens_per_message = 4  # every message follows <|start|>{role/name}\n{content}<|end|>\n
+            tokens_per_name = -1  # if there's a name, the role is omitted
+        elif "gpt-3.5-turbo" in model:
+            print("Warning: gpt-3.5-turbo may update over time. Returning num tokens assuming gpt-3.5-turbo-0613.")
+            return self.num_tokens_from_messages(messages, model="gpt-3.5-turbo-0613")
+        elif "gpt-4" in model:
+            print("Warning: gpt-4 may update over time. Returning num tokens assuming gpt-4-0613.")
+            return self.num_tokens_from_messages(messages, model="gpt-4-0613")
+        else:
+            raise NotImplementedError(
+                f"""num_tokens_from_messages() is not implemented for model {model}. See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens."""
+            )
+        num_tokens = 0
+        for message in messages:
+            num_tokens += tokens_per_message
+            for key, value in message.items():
+                num_tokens += len(encoding.encode(value))
+                if key == "name":
+                    num_tokens += tokens_per_name
+        num_tokens += 3  # every reply is primed with <|start|>assistant<|message|>
+        # Calculate cost of tokens
+        if model is not None:
+            if model == "gpt-3.5-turbo-0613":
+                cost_per_token = 0.00000000000000000
+            elif model == "gpt-3.5-turbo-16k-0613":
+                cost_per_token = 0.0000015
+            elif model == "gpt-4-0314":
+                cost_per_token = 0.00003
+            elif model == "gpt-4-32k-0314":
+                cost_per_token = 0.00000000000000000
+            elif model == "gpt-4-0613":
+                cost_per_token = 0.00003
+            elif model == "gpt-4-32k-0613":
+                cost_per_token = 0.00000000000000000
+            else:
+                raise NotImplementedError(
+                    f"""num_tokens_from_messages() is not implemented for model {model}."""
+                )
+            cost = num_tokens * cost_per_token
+        # Return an object with the number of tokens and the cost
+        return num_tokens, cost
 
     def create_input_area(self, frame):
         bottom_frame = ttk.Frame(frame)
@@ -234,9 +337,26 @@ class ChatbotGUI:
 
         self.user_input_text = scrolledtext.ScrolledText(bottom_frame, wrap='word', background="oldlace", height=2, font=('Ubuntu', 16)) # Set the font size and height
         self.user_input_text.grid(row=0, column=0, sticky='nsew')
+        
+        # Bind the user_input_text widget to the Modified event
+        self.user_input_text.bind('<<Modified>>', self.update_token_count)
+
+        # Create a new frame for the counters
+        counter_frame = ttk.Frame(bottom_frame)
+        counter_frame.grid(row=2, column=0, sticky='nsew')
+
+        # Move token and cost labels to counter_frame
+        self.token_count = tk.StringVar()
+        self.cost_of_input = tk.StringVar()
+        self.token_count.set("Input token count: 0")
+        self.cost_of_input.set("Cost of input: 0$")
+        token_label = tk.Label(counter_frame, textvariable=self.token_count)
+        cost_label = tk.Label(counter_frame, textvariable=self.cost_of_input)
+        token_label.pack(side='top')
+        cost_label.pack(side='top')
 
         send_button = ttk.Button(bottom_frame, text='Send', command=self.ai_manager.run_chat, style='TButton')
-        send_button.grid(row=0, column=1)
+        send_button.grid(row=1, column=0)
 
         bottom_frame.grid_columnconfigure(0, weight=1)
         
@@ -258,6 +378,8 @@ class ChatbotGUI:
         reset_html = "<p>Conversation reset.</p>"
         self.text_area.set_html(reset_html)
         self.current_html = reset_html
+        chatbot_gui.total_token_count.set(f"Total tokens: 0")
+        chatbot_gui.total_cost_of_input.set(f"Total cost: 0$")
     
     # FILE MANAGER TAB
     def create_widgets_file_manager(self):
