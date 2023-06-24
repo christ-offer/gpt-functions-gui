@@ -1,9 +1,12 @@
-# GPT-UglyUI
+# GPT-ASSISTANT GUI
+
+_Your friendly neighborhood GTK GUI chatbot with a bunch bells and whistles._
 
 ## Table of Contents
 
 - [Description](#description)
-- [TODO](#todo--wants--would-if-i-could)
+  - [Limitations](#limitations)
+  - [TODO](#todo--wants--would-if-i-could)
 - [Functions](#functions)
 - [Usage](#usage)
 - [Screenshots](#gui-screenshots)
@@ -15,12 +18,14 @@
 
 ## Description
 
-GUI chatbot playground with the new functions feature.
+Chatbot built with TKinter GUI and a bunch of functions.
 
 * Somewhat basic GUI - Not threaded, so it freezes when the bot is thinking.
 * History is in practice in memory (though you can save files with functions so, summarize and save)
 * I have begun an attempt at adding a tab for Pinecone indexe, where you can search and view results. (very early days)
 * File manager - can load file content into  chat history, to "talk to files" - supports most text based files.
+
+
 
 ### Limitations
 
