@@ -22,6 +22,7 @@ Chatbot built with TKinter GUI and a bunch of functions.
 
 * History is in practice in memory. (save to file with /save)
 * File manager - View saved files, load text files into the chat.
+* Has tiktoken calculation for total tokens/cost for both the input field and the total conversation. (at the moment it assumes all messages are gpt-4 as I have no way atm to tell which agent is responding in that part of the app)
 
 ### Limitations
 
@@ -75,8 +76,8 @@ Example Usecase: /read_file code.ts/py/rs/etc -> /review -> /edit_file code.ts/p
 
 ## GUI Screenshots
 
-### Chat UI
-![Alt text](screenshots/ui.png)
+### Chat UI (With token and cost counters)
+![GUI with Token Count](screenshots/guui.png)
 
 ### File-Manager
 ![Alt text](screenshots/filemanager.png)
