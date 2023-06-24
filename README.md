@@ -37,7 +37,7 @@ Chatbot built with TKinter GUI and a bunch of functions.
 - [x] Settings tab for configuring the parameters of the different agents (somewhat done)
 - [ ] Streamed responses live updated in UI. Not sure how to get around threading (or how to do it generally), especially for running python code.
 - [ ] Refactor the UI code to be more modular and less spaghetti
-- [ ] Token counter / Cost counter
+- [x] Token counter / Cost counter
 - [ ] Probably more
 
 ## Functions
