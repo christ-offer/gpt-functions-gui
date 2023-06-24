@@ -75,10 +75,10 @@ Example Usecase: /read_file code.ts/py/rs/etc -> /review -> /edit_file code.ts/p
 ## GUI Screenshots
 
 ### Chat UI
-![Chat UI](screenshots/image-4.png)
+![Alt text](screenshots/ui.png)
 
 ### File-Manager
-![File-manager](screenshots/image-3.png)
+![Alt text](screenshots/filemanager.png)
 
 ### Settings Tab
 ![Settings tab](screenshots/setting.png)
