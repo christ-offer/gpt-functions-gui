@@ -60,6 +60,14 @@ This agent scrapes a webpage and returns the result as a JSON string.
     @presence_penalty.setter
     def presence_penalty(self, value):
         self._presence_penalty = value
+        
+    @property
+    def system_message(self) -> str:
+        return self._system_message
+    
+    @system_message.setter
+    def system_message(self, value):
+        self._system_message = value
 
     def scrape_webpage(self, url: str) -> str:
         try:

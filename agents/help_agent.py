@@ -57,6 +57,14 @@ You call the help function and return the list of available commands.
     @presence_penalty.setter
     def presence_penalty(self, value):
         self._presence_penalty = value
+        
+    @property
+    def system_message(self) -> str:
+        return self._system_message
+    
+    @system_message.setter
+    def system_message(self, value):
+        self._system_message = value
 
     def help(self) -> str:
         return """

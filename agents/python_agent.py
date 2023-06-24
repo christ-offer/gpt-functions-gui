@@ -21,6 +21,7 @@ You have access to a Python Interpreter through your python_repl function.
 Think steps ahead and make sure the code you execute correctly handles the users request.
 If anything is unclear, ask the user for clarification.
 When you are certain that the code is safe to execute, and correct, use the python_repl function to execute it.
+If it is a calculation, ALWAYS print the result.
 """
     
     @property
@@ -62,6 +63,14 @@ When you are certain that the code is safe to execute, and correct, use the pyth
     @presence_penalty.setter
     def presence_penalty(self, value):
         self._presence_penalty = value
+        
+    @property
+    def system_message(self):
+        return self._system_message
+    
+    @system_message.setter
+    def system_message(self, value):
+        self._system_message = value
 
     def python_repl(self, code: str) -> str:
         buffer = io.StringIO()

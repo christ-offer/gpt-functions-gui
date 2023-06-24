@@ -64,6 +64,14 @@ You are responsible for handling the knowledgebase.
     @presence_penalty.setter
     def presence_penalty(self, value):
         self._presence_penalty = value
+        
+    @property
+    def system_message(self) -> str:
+        return self._system_message
+    
+    @system_message.setter
+    def system_message(self, value):
+        self._system_message = value
 
     def knowledgebase_create_entry(self, filename: str, content: str) -> str:
         return file_writer.write_file(filename, content, directory=self.KB_DIR)

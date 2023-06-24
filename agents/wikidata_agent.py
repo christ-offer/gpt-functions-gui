@@ -60,6 +60,14 @@ If anything is unclear, please ask the user for clarification.
     @presence_penalty.setter
     def presence_penalty(self, value):
         self._presence_penalty = value
+        
+    @property
+    def system_message(self) -> str:
+        return self._system_message
+    
+    @system_message.setter
+    def system_message(self, value):
+        self._system_message = value
 
     def wikidata_sparql_query(self, query: str) -> str:
         url = "https://query.wikidata.org/sparql"
