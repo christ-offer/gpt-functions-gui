@@ -26,6 +26,8 @@ from agents.python_agent import PythonRepl
 from agents.wikidata_agent import WikidataAgent
 from constants import *
 
+from tokenizer.tokens import num_tokens_from_messages, calculate_cost
+
 # Initialize logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 
@@ -100,6 +102,17 @@ class FileManager:
 class AIManager:
     def run_chat(self, event=None):
         user_input = chatbot_gui.user_input_text.get("1.0", tk.END).strip()
+        encoding = tiktoken.encoding_for_model("gpt-4-0613")
+        num_tokens = len(encoding.encode(user_input))
+        
+        chatbot_gui.total_tokens += num_tokens
+        cost = calculate_cost(num_tokens,  model="gpt-4-0613")
+        chatbot_gui.total_cost += cost
+        
+        # update tokens and cost in ui
+        #chatbot_gui.total_token_count.set(f"Total tokens: {chatbot_gui.total_tokens}")
+        #chatbot_gui.total_cost_of_input.set(f"Total cost: {chatbot_gui.total_cost}$")
+        
         html = markdown.markdown(user_input)
         user_input_html = f'<p style="background-color: lightgray;">You: {html}</p><br/>'
 
@@ -116,7 +129,7 @@ class AIManager:
 
     def handle_model_response(self, user_input):
         try:
-            response, _ = run_conversation(user_input, chatbot_gui.conversation)
+            response, _, tokens, cost = run_conversation(user_input, chatbot_gui.conversation)
         except requests.exceptions.RequestException as e:  
             response = "Oops! A network error occurred, please try again later."
             print(e)
@@ -126,12 +139,12 @@ class AIManager:
         chatbot_gui.root.after(0, chatbot_gui.update_text_area, response)
         chatbot_gui.text_area.see("end")  # Scrolls to the end of the text_area
         
-        # Update total token count and cost
-        total_token_count, total_input_cost = chatbot_gui.num_tokens_from_messages(chatbot_gui.conversation)
-        formatted_total_input_cost = format(total_input_cost, '.6f')
+        chatbot_gui.total_tokens += tokens
+        chatbot_gui.total_cost += cost
+        
         ## Add tokens and cost to chat sidebar
-        chatbot_gui.total_token_count.set(f"Total tokens: {total_token_count}")
-        chatbot_gui.total_cost_of_input.set(f"Total cost: {formatted_total_input_cost}$")
+        chatbot_gui.total_token_count.set(f"Total tokens: {chatbot_gui.total_tokens}")
+        chatbot_gui.total_cost_of_input.set(f"Total cost: {chatbot_gui.total_cost:.6f}$")
 
 
 class ChatbotGUI:
@@ -151,6 +164,14 @@ class ChatbotGUI:
         self.scrape_agent = Scraper()
         self.wikidata_agent = WikidataAgent()
         self.python_agent = PythonRepl()
+        
+        self.total_tokens = 0
+        self.total_cost = 0
+        
+        # max 6 decimals on prev values
+        
+        self.total_cost_dec = f'{self.total_cost:.6f}'
+        self.total_tokens_dec = f'{self.total_tokens:.6f}'
         
         # Initialize Pinecone
         #pinecone.init()
@@ -312,17 +333,19 @@ class ChatbotGUI:
         # Calculate cost of tokens
         if model is not None:
             if model == "gpt-3.5-turbo-0613":
-                cost_per_token = 0.00000000000000000
+                cost_per_token = 0.0000015
             elif model == "gpt-3.5-turbo-16k-0613":
                 cost_per_token = 0.0000015
             elif model == "gpt-4-0314":
                 cost_per_token = 0.00003
             elif model == "gpt-4-32k-0314":
-                cost_per_token = 0.00000000000000000
+                cost_per_token = 0.00003
             elif model == "gpt-4-0613":
                 cost_per_token = 0.00003
             elif model == "gpt-4-32k-0613":
-                cost_per_token = 0.00000000000000000
+                cost_per_token = 0.00003
+            elif model == "gpt-4":
+                cost_per_token = 0.00003
             else:
                 raise NotImplementedError(
                     f"""num_tokens_from_messages() is not implemented for model {model}."""
@@ -375,6 +398,8 @@ class ChatbotGUI:
 
     def reset_conversation(self):
         self.conversation = []
+        self.total_cost = 0
+        self.total_tokens = 0
         reset_html = "<p>Conversation reset.</p>"
         self.text_area.set_html(reset_html)
         self.current_html = reset_html

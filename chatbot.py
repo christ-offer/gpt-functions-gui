@@ -6,6 +6,7 @@ import logging
 from typing import Optional, Dict, List, Tuple
 import re
 
+from tokenizer.tokens import calculate_cost, num_tokens_from_messages
 from system_messages.system import (
     function_res_agent, 
     base_system_message,
@@ -40,7 +41,9 @@ def call_function(function_name, function_args):
         return agents.function_map[function_name]()
     return agents.function_map[function_name](*function_args.values())
 
-def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[str, List[Dict[str, str]]]:
+def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[str, List[Dict[str, str]], int, float]:
+    token_count = 0
+    conversation_cost = 0
     conversation.append({
         "role": "user",
         "content": prompt,
@@ -59,6 +62,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             model=agents.csv_handler.model,
             )
         message = response[0]
+        model = agents.csv_handler.model
+        tokens = num_tokens_from_messages(message, model=agents.csv_handler.model)
+        cost = calculate_cost(tokens, model=agents.csv_handler.model)
+        token_count += tokens
+        conversation_cost += cost
     elif get_command(prompt) == "/python":
         print("Python Agent")
         prompt = prompt[8:].strip()
@@ -73,6 +81,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             model=agents.python_repl.model,
             )
         message = response[0]
+        model = agents.python_repl.model
+        tokens = num_tokens_from_messages(message, model=agents.python_repl.model)
+        cost = calculate_cost(tokens, model=agents.python_repl.model)
+        token_count += tokens
+        conversation_cost += cost
     elif get_command(prompt) == "/kb":
         print("Knowledge Base Agent")
         prompt = prompt[3:].strip()
@@ -87,6 +100,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             model=agents.kb_handler.model,
             )
         message = response[0]
+        model = agents.kb_handler.model
+        tokens = num_tokens_from_messages(message, model=agents.kb_handler.model)
+        cost = calculate_cost(tokens, model=agents.kb_handler.model)
+        token_count += tokens
+        conversation_cost += cost
     elif get_command(prompt) == "/history":
         print("History Agent")
         prompt = prompt[8:].strip()
@@ -101,6 +119,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             model=agents.history_handler.model,
             )
         message = response[0]
+        model = agents.history_handler.model
+        tokens = num_tokens_from_messages(message, model=agents.history_handler.model)
+        cost = calculate_cost(tokens, model=agents.history_handler.model)
+        token_count += tokens
+        conversation_cost += cost
     elif get_command(prompt) == "/write":
         print("Write Code Agent")
         prompt = prompt[6:].strip()
@@ -115,6 +138,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             model=agents.file_handler.model,
             )
         message = response[0]
+        model = agents.file_handler.model
+        tokens = num_tokens_from_messages(message, model=agents.file_handler.model)
+        cost = calculate_cost(tokens, model=agents.file_handler.model)
+        token_count += tokens
+        conversation_cost += cost
     elif get_command(prompt) == "/read":
         print("Read File Agent")
         prompt = prompt[5:].strip()
@@ -129,6 +157,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             model=agents.file_handler.model,
             )
         message = response[0]
+        model = agents.file_handler.model
+        tokens = num_tokens_from_messages(message, model=agents.file_handler.model)
+        cost = calculate_cost(tokens, model=agents.file_handler.model)
+        token_count += tokens
+        conversation_cost += cost
     elif get_command(prompt) == "/edit":
         print("Edit File Agent")
         prompt = prompt[5:].strip()
@@ -143,6 +176,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             model=agents.file_handler.model,
             )
         message = response[0]
+        model = agents.file_handler.model
+        tokens = num_tokens_from_messages(message, model=agents.file_handler.model)
+        cost = calculate_cost(tokens, model=agents.file_handler.model)
+        token_count += tokens
+        conversation_cost += cost
     elif get_command(prompt) == "/wikidata":
         print("Wikidata Agent")
         prompt = prompt[9:].strip()
@@ -157,6 +195,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             model=agents.wikidata_agent.model,
             )
         message = response[0]
+        model = agents.wikidata_agent.model
+        tokens = num_tokens_from_messages(message, model=agents.wikidata_agent.model)
+        cost = calculate_cost(tokens, model=agents.wikidata_agent.model)
+        token_count += tokens
+        conversation_cost += cost
     elif get_command(prompt) == "/scrape":
         print("Scrape Webpage Agent")
         prompt = prompt[8:].strip()
@@ -171,6 +214,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             model=agents.scraper.model,
             )
         message = response[0]
+        model = agents.scraper.model
+        tokens = num_tokens_from_messages(message, model=agents.scraper.model)
+        cost = calculate_cost(tokens, model=agents.scraper.model)
+        token_count += tokens
+        conversation_cost += cost
     elif get_command(prompt) == "/image":
         print("Image to Text Agent")
         prompt = prompt[7:].strip()
@@ -185,6 +233,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             model=agents.image_agent.model,
             )
         message = response[0]
+        model = agents.image_agent.model
+        tokens = num_tokens_from_messages(message, model=agents.image_agent.model)
+        cost = calculate_cost(tokens, model=agents.image_agent.model)
+        token_count += tokens
+        conversation_cost += cost
     elif get_command(prompt) == "/help":
         print("Help Agent")
         prompt = prompt[5:].strip()
@@ -199,6 +252,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             model=agents.help_agent.model,
             )
         message = response[0]
+        model = agents.help_agent.model
+        tokens = num_tokens_from_messages(message, model=agents.help_agent.model)
+        cost = calculate_cost(tokens, model=agents.help_agent.model)
+        token_count += tokens
+        conversation_cost += cost
     elif get_command(prompt) == "/review":
         print("Review Agent")
         prompt = prompt[7:].strip()
@@ -208,6 +266,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             system_message=review_agent
             )
         message = response[0]
+        model = "gpt-4-0613"
+        tokens = num_tokens_from_messages(message, model=model)
+        cost = calculate_cost(tokens, model=model)
+        token_count += tokens
+        conversation_cost += cost
     elif get_command(prompt) == "/brainstorm":
         print("Brainstorm Agent")
         prompt = prompt[10:].strip()
@@ -217,6 +280,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             system_message=brainstorm_agent
             )
         message = response[0]
+        model = "gpt-4-0613"
+        tokens = num_tokens_from_messages(message, model=model)
+        cost = calculate_cost(tokens, model=model)
+        token_count += tokens
+        conversation_cost += cost
     elif get_command(prompt) == "/ticket":
         print("Ticket Agent")
         prompt = prompt[7:].strip()
@@ -226,6 +294,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             system_message=ticket_agent
             )
         message = response[0]
+        model = "gpt-4-0613"
+        tokens = num_tokens_from_messages(message, model=model)
+        cost = calculate_cost(tokens, model=model)
+        token_count += tokens
+        conversation_cost += cost
     elif get_command(prompt) == "/write_spec":
         print("Write Spec Agent")
         prompt = prompt[11:].strip()
@@ -235,6 +308,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             system_message=spec_writer
             )
         message = response[0]
+        model = "gpt-4-0613"
+        tokens = num_tokens_from_messages(message, model=model)
+        cost = calculate_cost(tokens, model=model)
+        token_count += tokens
+        conversation_cost += cost
     elif get_command(prompt) == "/write_code":
         print("Write Code Agent")
         prompt = prompt[11:].strip()
@@ -244,6 +322,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             system_message=code_writer
             )
         message = response[0]
+        model = "gpt-4-0613"
+        tokens = num_tokens_from_messages(message, model=model)
+        cost = calculate_cost(tokens, model=model)
+        token_count += tokens
+        conversation_cost += cost
     elif get_command(prompt) == "/save":
         print("Save Agent")
         prompt = prompt[5:].strip()
@@ -266,6 +349,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             system_message=base_system_message,
             )
         message = response[0]    
+        model = "gpt-4-0613"
+        tokens = num_tokens_from_messages(message, model=model)
+        cost = calculate_cost(tokens, model=model)
+        token_count += tokens
+        conversation_cost += cost
 
     if message.get("function_call"):
         function_name = message["function_call"]["name"]
@@ -294,10 +382,18 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
                 "role": "assistant",
                 "content": second_response["content"],
             }) 
-            return second_response["content"], conversation
+            model = "gpt-3.5-turbo-16k-0613"
+            print(f'About to calculate the cost of the response')
+            tokens = num_tokens_from_messages(second_response, model=model)
+            cost = calculate_cost(tokens, model=model)
+            token_count += tokens
+            conversation_cost += cost
+            print(f'Cost of run: {conversation_cost}')
+            return second_response["content"], conversation, token_count, conversation_cost
     else:
         conversation.append({
             "role": "assistant",
             "content": message["content"],
         })
-        return message["content"], conversation
+        print(f'Cost of run: {conversation_cost}')
+        return message["content"], conversation, token_count, conversation_cost
