@@ -44,7 +44,7 @@ Chatbot built with TKinter GUI and a bunch of functions.
 
 ## Functions
 
-* /help - lists these commands
+* /help - lists all available commands
 * /csv - csv handler
 * /python - python interpreter
 * /kb - knowledge base handler [read, write, list]
@@ -56,7 +56,6 @@ Chatbot built with TKinter GUI and a bunch of functions.
 * /image - image to text captioner
 * /scrape - web scraper 
 * /save 'filename' - saves entire conversation history to file in history folder
-* /help - returns a list of all available functions
 
 ### Coding Assistant commands
 
