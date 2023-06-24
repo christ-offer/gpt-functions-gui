@@ -7,7 +7,7 @@ from constants import DATA_DIR
 class FileWriter:
     def __init__(
             self, model: str = "gpt-4-0613", 
-            temperature: float = 0.3, 
+            temperature: float = 0.2, 
             top_p: float = 1.0, 
             frequency_penalty: float = 0.0, 
             presence_penalty: float = 0.0

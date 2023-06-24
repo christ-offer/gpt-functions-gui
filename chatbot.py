@@ -16,12 +16,15 @@ from system_messages.system import (
     code_writer
     )
 from agents.function_mapper import FunctionMapper
-from agents.function_call_agent import function_call_agent
-from agents.base_agent import regular_agent
+from agents.function_call_agent import FunctionCallAgent
+from agents.base_agent import RegularAgent
 from agents.function_response_agent import function_response_agent
 from constants import HISTORY_DIR
 agents = FunctionMapper()
-
+fc = FunctionCallAgent()
+ra = RegularAgent()
+function_call_agent = fc.call
+regular_agent = ra.call
 
 def get_command(prompt):
     """Extract command from prompt if it exists"""
@@ -263,7 +266,7 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         response = regular_agent(
             prompt=prompt, 
             conversation=conversation, 
-            system_message=base_system_message
+            system_message=base_system_message,
             )
         message = response[0]    
 

@@ -460,7 +460,7 @@ class ChatbotGUI:
         sidebar_label.grid(row=0, column=0, padx=5, pady=5, sticky='w')
 
         agents_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "agents")  # Directory of agents
-        agents = [f[:-3] for f in os.listdir(agents_dir) if f.endswith('.py') and f != "__init__.py" and f != "function_call_agent.py"]  # Remove '.py' from file name
+        agents = [f[:-3] for f in os.listdir(agents_dir) if f.endswith('.py') and f not in ["__init__.py", "function_mapper.py", "function_call_agent.py"]]
 
         self.agent_select = ttk.Combobox(self.sidebar_settings, values=agents)
         self.agent_select.set('Select Agent')  # Default text

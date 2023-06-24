@@ -19,10 +19,9 @@ class PythonRepl:
         self.system_message = """
         # Python REPL Agent
         You have access to a Python Interpreter through your python_repl function.
-        Make sure the code you execute does not contain any malicious commands!
         Think steps ahead and make sure the code you execute correctly handles the users request.
         If anything is unclear, ask the user for clarification.
-        When you are certain that the code is safe to execute, use the python_repl function to execute it.
+        When you are certain that the code is safe to execute, and correct, use the python_repl function to execute it.
         """
     
     @property
@@ -79,11 +78,11 @@ class PythonRepl:
         return [
             {
                 "name": "python_repl",
-                "description": "Executes the provided Python code and returns the output.",
+                "description": "Executes Python code and returns the output.",
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "code": {"type": "string", "description": "The Python code to execute. Remember to print the output!"},
+                        "code": {"type": "string", "description": "The Python code to execute."},
                     },
                     "required": ["code"],
                 },
