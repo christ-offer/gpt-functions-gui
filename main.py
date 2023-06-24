@@ -168,11 +168,6 @@ class ChatbotGUI:
         self.total_tokens = 0
         self.total_cost = 0
         
-        # max 6 decimals on prev values
-        
-        self.total_cost_dec = f'{self.total_cost:.6f}'
-        self.total_tokens_dec = f'{self.total_tokens:.6f}'
-        
         # Initialize Pinecone
         #pinecone.init()
 

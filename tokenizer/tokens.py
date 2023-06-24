@@ -30,7 +30,6 @@ def num_tokens_from_messages(message, model):
         raise NotImplementedError(
             f"""num_tokens_from_messages() is not implemented for model {model}. See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens."""
         )
-    print(message)
     num_tokens = 0
     if message.get("function_call"):
       num_tokens = len(encoding.encode(message.function_call.arguments))
@@ -62,5 +61,4 @@ def calculate_cost(num_tokens, model="gpt-4-0613"):
                 f"""calculate_cost() is not implemented for model {model}."""
             )
         cost = num_tokens * cost_per_token
-        cost_formatted = f"{cost:.6f}"
     return cost
