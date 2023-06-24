@@ -31,12 +31,12 @@ GUI chatbot playground with the new functions feature.
 
 ### TODO / Wants / Would if I could
 
-* Integration with Vector DB (A tab for it in the UI with upload/search/embed/etc)
-* Settings tab for configuring the parameters of the different agents
-* gpt-engineer function to start a new gpt-engineer interaction
-* Streamed responses live updated in UI. Not sure how to get around threading (or how to do it generally), especially for running python code.
-* Refactor the UI code to be more modular and less spaghetti
-* Probably more
+- [ ] Integration with Vector DB (A tab for it in the UI with upload/search/embed/etc)
+- [x] Settings tab for configuring the parameters of the different agents (slightly done)
+- [ ] gpt-engineer function to start a new gpt-engineer interaction
+- [ ] Streamed responses live updated in UI. Not sure how to get around threading (or how to do it generally), especially for running python code.
+- [ ] Refactor the UI code to be more modular and less spaghetti
+- [ ] Probably more
 
 ## Functions
 
