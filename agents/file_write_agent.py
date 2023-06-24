@@ -17,25 +17,22 @@ class FileWriter:
         self.top_p = top_p
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
-        self.write_system_message = """
-        # Write File Agent
-        This agent is responsible for writing files.
-        Available directories:
-        For general files:
-        'data/'
-        For general code files:
-        'data/code/'
-        For code projects:
-        'data/code/projects/'
-        """
-        self.read_system_message = """
-        # Read File Agent
-        This agent is responsible for reading files.
-        """
-        self.edit_system_message = """
-        # Edit File Agent
-        This agent is responsible for editing files.
-        """
+        self.write_system_message = """# Write File Agent
+This agent is responsible for writing files.
+Available directories:
+For general files:
+'data/'
+For general code files:
+'data/code/'
+For code projects:
+'data/code/projects/'
+"""
+        self.read_system_message = """# Read File Agent
+This agent is responsible for reading files.
+"""
+        self.edit_system_message = """# Edit File Agent
+This agent is responsible for editing files.
+"""
     
     @property
     def model(self):

@@ -20,10 +20,9 @@ class KnowledgebaseHandler:
         self.top_p = top_p
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
-        self.system_message = """
-        # Knowledgebase Agent
-        You are responsible for handling the knowledgebase.
-        """
+        self.system_message = """# Knowledgebase Agent
+You are responsible for handling the knowledgebase.
+"""
         self.KB_DIR = KB_DIR
     
     @property

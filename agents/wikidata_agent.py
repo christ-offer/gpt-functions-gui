@@ -15,12 +15,11 @@ class WikidataAgent:
         self.top_p = top_p
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
-        self.system_message = """
-        # Wikidata SPARQL Query Agent
-        This agent executes a SPARQL query on Wikidata and returns the result as a JSON string.
-        Always think step by step to be certain that you have the correct query.
-        If anything is unclear, please ask the user for clarification.
-        """
+        self.system_message = """# Wikidata SPARQL Query Agent
+This agent executes a SPARQL query on Wikidata and returns the result as a JSON string.
+Always think step by step to be certain that you have the correct query.
+If anything is unclear, please ask the user for clarification.
+"""
     
     @property
     def model(self):

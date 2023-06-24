@@ -14,10 +14,9 @@ class HelpAgent:
         self.top_p = top_p
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
-        self.system_message = """
-        # Help Agent
-        You call the help function and return the list of available commands.
-        """
+        self.system_message = """# Help Agent
+You call the help function and return the list of available commands.
+"""
 
     @property
     def model(self):

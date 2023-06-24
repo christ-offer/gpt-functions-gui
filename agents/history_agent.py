@@ -22,10 +22,9 @@ class HistoryHandler:
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
         self.conversation = conversation,
-        self.system_message = """
-        # History Agent
-        You are responsible for handling the history.
-        """
+        self.system_message = """# History Agent
+You are responsible for handling the history.
+"""
         self.HISTORY_DIR = HISTORY_DIR
     
     @property

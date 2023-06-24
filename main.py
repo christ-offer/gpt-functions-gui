@@ -172,6 +172,7 @@ class ChatbotGUI:
 
         self.is_loading = False
     
+    # CHAT TAB
     def create_widgets_chat_window(self):
         self.chat_window.grid_rowconfigure(0, weight=1)  
         self.chat_window.grid_columnconfigure(0, weight=1)  
@@ -258,7 +259,7 @@ class ChatbotGUI:
         self.text_area.set_html(reset_html)
         self.current_html = reset_html
     
-    # TAB 2
+    # FILE MANAGER TAB
     def create_widgets_file_manager(self):
         self.file_manager.grid_rowconfigure(0, weight=1)  
         self.file_manager.grid_columnconfigure(0, weight=1)  
@@ -440,7 +441,7 @@ class ChatbotGUI:
             # You may want to automatically scroll to the end of the text area
             self.text_area.see('end')
 
-        
+    # SETTINGS TAB
     def create_widgets_settings(self):
         self.settings.grid_rowconfigure(0, weight=1)
         self.settings.grid_columnconfigure(0, weight=1)
@@ -460,7 +461,7 @@ class ChatbotGUI:
         sidebar_label.grid(row=0, column=0, padx=5, pady=5, sticky='w')
 
         agents_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "agents")  # Directory of agents
-        agents = [f[:-3] for f in os.listdir(agents_dir) if f.endswith('.py') and f not in ["__init__.py", "function_mapper.py", "function_call_agent.py"]]
+        agents = [f[:-3] for f in os.listdir(agents_dir) if f.endswith('.py') and f not in ["__init__.py", "function_mapper.py", "function_call_agent.py", "base_agent.py", "function_response_agent.py", "file_write_agent.py"]]
 
         self.agent_select = ttk.Combobox(self.sidebar_settings, values=agents)
         self.agent_select.set('Select Agent')  # Default text
@@ -476,6 +477,7 @@ class ChatbotGUI:
         self.top_p_var = StringVar(value=self.csv_agent.top_p)
         self.frequency_penalty_var = StringVar(value=self.csv_agent.frequency_penalty)
         self.presence_penalty_var = StringVar(value=self.csv_agent.presence_penalty)
+        self.system_message_var = StringVar(value=self.csv_agent.system_message)
 
         # For Model
         ttk.Label(config_frame, text="Model", anchor='e').grid(row=0, column=0, padx=5, pady=5, sticky='ew')
@@ -514,8 +516,11 @@ class ChatbotGUI:
         self.presence_penalty_scale.grid(row=8, column=1, padx=5, pady=5, sticky='ew')
         
         # TODO Implement system messages text box
-        #self.system_message_text = Text(config_frame, width=40, height=10)
-        #self.system_message_text.grid(row=0, column=0, columnspan=2, padx=5, pady=5, sticky='ew')
+        ttk.Label(config_frame, text="System Message", anchor='e').grid(row=10, column=0, padx=5, pady=5, sticky='ew')
+        self.system_message_text = Text(config_frame, width=60, height=40, wrap='word')
+        self.system_message_text.grid(row=11, column=1, columnspan=2, padx=5, pady=5, sticky='ew')
+        self.system_message_text.insert('1.0', self.csv_agent.system_message)
+        
 
         apply_button = ttk.Button(config_frame, text='Apply', command=self.update_agent_settings)
         apply_button.grid(row=9, column=1, padx=5, pady=5, sticky='ew')
@@ -533,6 +538,8 @@ class ChatbotGUI:
         self.top_p_var.set(self.agent.top_p)
         self.frequency_penalty_var.set(self.agent.frequency_penalty)
         self.presence_penalty_var.set(self.agent.presence_penalty)
+        self.system_message_text.delete('1.0', 'end')
+        self.system_message_text.insert('1.0', self.agent.system_message)
 
     def update_agent_settings(self):
         self.agent.model = self.model_entry.get() or "gpt-4-0613"
@@ -540,6 +547,7 @@ class ChatbotGUI:
         self.agent.top_p = float(self.top_p_var.get() or 1.0)
         self.agent.frequency_penalty = float(self.frequency_penalty_var.get() or 0.0)
         self.agent.presence_penalty = float(self.presence_penalty_var.get() or 0.0)
+        self.agent.system_message = self.system_message_text.get('1.0', 'end-1c')
 
 
     

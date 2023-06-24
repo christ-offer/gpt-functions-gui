@@ -7,7 +7,13 @@ from agents.scrape_agent import Scraper
 from agents.wikidata_agent import WikidataAgent
 from agents.image_agent import ImageAgent
 from agents.help_agent import HelpAgent
-
+from system_messages.system import (
+    review_agent, 
+    brainstorm_agent, 
+    ticket_agent, 
+    spec_writer, 
+    code_writer
+    )
 
 
 class FunctionMapper:
@@ -50,3 +56,100 @@ class FunctionMapper:
             "image_to_text": self.image_agent.image_to_text,
             "help": self.help_agent.help,
         }
+
+        agents = {
+                "/csv": {
+                    "name": "CSV Agent",
+                    "agent": self.csv_handler,
+                    "system_message": self.csv_handler.system_message,
+                    "function_params": self.csv_handler.read_csv_columns_params,
+                    "is_function": True,
+                    "command_length": len("/csv")
+                },
+                "/python": {
+                    "name": "Python Agent",
+                    "agent": self.python_repl,
+                    "system_message": self.python_repl.system_message,
+                    "function_params": self.python_repl.python_repl_params,
+                    "is_function": True,
+                    "command_length": len("/python")
+                },
+                "/wikidata": {
+                    "name": "Wikidata Agent",
+                    "agent": self.wikidata_agent,
+                    "system_message": self.wikidata_agent.system_message,
+                    "function_params": self.wikidata_agent.wikidata_sparql_query_params,
+                    "is_function": True,
+                    "command_length": len("/wikidata")
+                },
+                "/kb": {
+                    "name": "Knowledgebase Agent",
+                    "agent": self.kb_handler,
+                    "system_message": self.kb_handler.system_message,
+                    "function_params": self.kb_handler.knowledgebase_params,
+                    "is_function": True,
+                    "command_length": len("/kb")
+                },
+                "/history": {
+                    "name": "History Agent",
+                    "agent": self.history_handler,
+                    "system_message": self.history_handler.system_message,
+                    "function_params": self.history_handler.history_params,
+                    "is_function": True,
+                    "command_length": len("/history")
+                },
+                "/scrape": {
+                    "name": "Scrape Webpage Agent",
+                    "agent": self.scraper,
+                    "system_message": self.scraper.system_message,
+                    "function_params": self.scraper.scrape_params,
+                    "is_function": True,
+                    "command_length": len("/scrape")
+                },
+                "/image": {
+                    "name": "Image to Text Agent",
+                    "agent": self.image_agent,
+                    "system_message": self.image_agent.system_message,
+                    "function_params": self.image_agent.image_to_text_params,
+                    "is_function": True,
+                    "command_length": len("/image")
+                },
+                "/help": {
+                    "name": "Help Agent",
+                    "agent": self.help_agent,
+                    "system_message": self.help_agent.system_message,
+                    "function_params": self.help_agent.help_params,
+                    "is_function": True,
+                    "command_length": len("/help")
+                },
+                "/review": {
+                    "name": "Review Agent",
+                    "system_message": review_agent,
+                    "is_function": False,
+                    "command_length": len("/review")
+                },
+                "/brainstorm": {
+                    "name": "Brainstorm Agent",
+                    "system_message": brainstorm_agent,
+                    "is_function": False,
+                    "command_length": len("/brainstorm")
+                },
+                "/ticket": {
+                    "name": "Ticket Agent",
+                    "system_message": ticket_agent,
+                    "is_function": False,
+                    "command_length": len("/ticket")
+                },
+                "/write_spec": {
+                    "name": "Write Spec Agent",
+                    "system_message": spec_writer,
+                    "is_function": False,
+                    "command_length": len("/write_spec")
+                },
+                "/write_code": {
+                    "name": "Write Code Agent",
+                    "system_message": code_writer,
+                    "is_function": False,
+                    "command_length": len("/write_code")
+                },
+            }

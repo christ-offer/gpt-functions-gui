@@ -16,13 +16,12 @@ class PythonRepl:
         self.top_p = top_p
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
-        self.system_message = """
-        # Python REPL Agent
-        You have access to a Python Interpreter through your python_repl function.
-        Think steps ahead and make sure the code you execute correctly handles the users request.
-        If anything is unclear, ask the user for clarification.
-        When you are certain that the code is safe to execute, and correct, use the python_repl function to execute it.
-        """
+        self.system_message = """# Python REPL Agent
+You have access to a Python Interpreter through your python_repl function.
+Think steps ahead and make sure the code you execute correctly handles the users request.
+If anything is unclear, ask the user for clarification.
+When you are certain that the code is safe to execute, and correct, use the python_repl function to execute it.
+"""
     
     @property
     def model(self):

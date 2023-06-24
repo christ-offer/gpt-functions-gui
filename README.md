@@ -81,7 +81,7 @@ Example Usecase: /read_file code.ts/py/rs/etc -> /review -> /edit_file code.ts/p
 ![File-manager](screenshots/image-3.png)
 
 ### Settings Tab
-![Settings Tab](screenshots/settings.png)
+![Settings tab](screenshots/setting.png)
 
 ### Read CSV and Use Python to plot (older GUI)
 ![Read CSV and Use Python to plot](screenshots/image-2.png)

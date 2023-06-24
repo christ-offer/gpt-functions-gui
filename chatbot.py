@@ -164,7 +164,7 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             prompt=prompt, 
             conversation=conversation, 
             system_message=agents.scraper.system_message, 
-            function_params=agents.scraper.scrape_webpage_params,
+            function_params=agents.scraper.scrape_params,
             temperature=agents.scraper.temperature,
             top_p=agents.scraper.top_p,
             frequency_penalty=agents.scraper.frequency_penalty,
@@ -247,16 +247,13 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
     elif get_command(prompt) == "/save":
         print("Save Agent")
         prompt = prompt[5:].strip()
-        
         filename = prompt
         conversation_string = ""
         for entry in conversation:
             conversation_string += f"{entry['role']}:\n{entry['content']}\n\n"
         conversation_string += "\n"
-        # save conversation to file in HISTORY_DIR
         with open(f"{HISTORY_DIR}/{filename}", "w") as f:
             f.write(conversation_string)
-        # return message
         message = {
             "role": "assistant",
             "content": f"Conversation saved to {filename} in {HISTORY_DIR}",
@@ -286,7 +283,13 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             return function_response, conversation  # directly return function response
         else:
             logging.info(f"Function response: {function_response}")
-            second_response = function_response_agent(prompt=prompt, system_message=function_res_agent, function_name=function_name, function_response=function_response, message=message)
+            second_response = function_response_agent(
+                prompt=prompt, 
+                system_message=function_res_agent, 
+                function_name=function_name, 
+                function_response=function_response, 
+                message=message
+                )
             conversation.append({
                 "role": "assistant",
                 "content": second_response["content"],
