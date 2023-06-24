@@ -14,6 +14,7 @@ _Your friendly neighborhood GTK GUI chatbot, now with bells and whistles (functi
   - [File-Manager](#file-manager)
   - [Settings](#settings-tab)
   - [Read CSV and Plot with Python](#read-csv-and-use-python-to-plot-older-gui)
+  - [Dev Flow](#development-flow-demo)
 
 
 ## Description
