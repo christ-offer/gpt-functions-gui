@@ -54,13 +54,18 @@ Chatbot built with TKinter GUI and a bunch of functions.
 * /image - image to text captioner
 * /scrape - web scraper 
 * /save 'filename' - saves entire conversation history to file in history folder
+* /help - returns a list of all available functions
 
-### Not "functions" but commands/strict prompts
+### Coding Assistant commands
 
-* review - performs a review of the code following a strict response format
-* brainstorm [n] - returns a list of n ideas for the topic following a strict response format
-* ticket - creates a ticket for the brainstorm following a strict response format
-* help - returns a list of all available functions
+These are not functions per se, they run a model with a specific system message for each that returns a response in a strict format. See `system.py` for the system messages. Also, screenshots.
+
+* /review - performs a review of the code following a strict response format
+* /brainstorm [n] - returns a list of n ideas for the topic following a strict response format
+* /write_spec - Writes a spec for the brainstorm following a strict response format
+* /ticket - creates a ticket for the brainstorm/spec following a strict response format
+* /write_tests - writes tests for the ticket / file from ticket
+* /write_code - writes code for the ticket / file from ticket
 
 Example Usecase: /read_file code.ts/py/rs/etc -> /review -> /edit_file code.ts/py/rs/etc
 
@@ -87,3 +92,14 @@ Example Usecase: /read_file code.ts/py/rs/etc -> /review -> /edit_file code.ts/p
 
 ### Read CSV and Use Python to plot (older GUI)
 ![Read CSV and Use Python to plot](screenshots/image-2.png)
+
+### Development Flow demo:
+
+#### Brainstorm
+![Brainstorming](screenshots/brainstorm.png)
+
+#### Write Spec
+![Spec writing](screenshots/specwriting.png)
+
+#### Create Ticket
+![Create ticket](screenshots/ticket.png)
