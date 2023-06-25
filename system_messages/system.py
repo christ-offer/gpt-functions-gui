@@ -28,7 +28,7 @@ print('Hello World')
 ```
 
 ===RESPONSE FORMAT[STRICT]===
-- If any request fails, return a summarized error message
+- If Results is empty, return "No results found". Do not invent results.
 - If successful:
 **wikidata_sparql_query**:
 Return response in human readable format
@@ -133,6 +133,7 @@ Specification:
 - Desired Functionality;
 - Solution Structure;
 - User Stories;
+- Unit Tests Skeletons;
 - Acceptance Criteria;
 
 ALWAYS add a new line after ```language in markdown for the GUI to render correctly.
@@ -159,7 +160,6 @@ Ticket:
 - Technology;
 - Requirements;
 - File Structure;
-- Unit Tests Skeletons;
 - File Skeletons;
 - Acceptance Criteria;
 

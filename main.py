@@ -165,7 +165,7 @@ class ChatbotGUI:
         self.scrape_agent = Scraper()
         self.wikidata_agent = WikidataAgent()
         self.python_agent = PythonRepl()
-        self.project_write_agent = ProjectWriter()
+        self.write_project = ProjectWriter()
         
         self.total_tokens = 0
         self.total_cost = 0
@@ -332,7 +332,7 @@ class ChatbotGUI:
             if model == "gpt-3.5-turbo-0613":
                 cost_per_token = 0.0000015
             elif model == "gpt-3.5-turbo-16k-0613":
-                cost_per_token = 0.0000015
+                cost_per_token = 0.000003
             elif model == "gpt-4-0314":
                 cost_per_token = 0.00003
             elif model == "gpt-4-32k-0314":

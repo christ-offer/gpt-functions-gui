@@ -43,19 +43,19 @@ def calculate_cost(num_tokens, model="gpt-4-0613"):
     """Calculate the cost based on the number of tokens and the model."""
     if model is not None:
         if model == "gpt-3.5-turbo-0613":
-            cost_per_token = 0.0000015
+            cost_per_token = 0.000002
         elif model == "gpt-3.5-turbo-16k-0613":
-            cost_per_token = 0.0000015
+            cost_per_token = 0.000004
         elif model == "gpt-4-0314":
-            cost_per_token = 0.00003
+            cost_per_token = 0.00006
         elif model == "gpt-4-32k-0314":
-            cost_per_token = 0.00003
+            cost_per_token = 0.00012
         elif model == "gpt-4-0613":
-            cost_per_token = 0.00003
+            cost_per_token = 0.00006
         elif model == "gpt-4-32k-0613":
-            cost_per_token = 0.00003
+            cost_per_token = 0.00012
         elif model == "gpt-4":
-            cost_per_token = 0.00003
+            cost_per_token = 0.00012
         else:
             raise NotImplementedError(
                 f"""calculate_cost() is not implemented for model {model}."""

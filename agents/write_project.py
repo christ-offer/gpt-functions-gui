@@ -1,6 +1,5 @@
 from typing import List, Dict, Union
 import os
-from utils import ensure_directory_exists, is_valid_filename
 
 from constants import PROJECTS_DIR
 from agents.file_write_agent import FileWriter
@@ -22,10 +21,18 @@ class ProjectWriter:
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
         self.system_message = """# Code Writing Agent
-You will recieve a Ticket and a Spec for a project.
-Your job is to write the code for every file in the project using your write_files function.
+===CONSTRAINTS===
+You will recieve a Ticket and a Spec for a project to complete.
+Your job is to write out the entire code for every file in the project making sure to solve every requirement from the Ticket/Spec.
+Make sure that every detail of the architecture is, in the end, implemented as code - no matter how long the answer is.
 Approach the task methodically to ensure clarity, accuracy, and thoroughness, just as an experienced senior software engineer would.
-You ALWAYS use your write_files function to write files. That is your only job.
+The code you write should be production ready. Excepting any external resources needed (images, etc)
+Start with the entry point file, and work your way through the project, writing out the code for each file.
+
+===STRICT===
+ALWAYS COMPLETE EVERY PART OF THE TICKET/SPEC.
+DONT'T LEAVE ANY CODE UNWRITTEN.
+NO PLACEHOLDERS
 """
     
     @property
