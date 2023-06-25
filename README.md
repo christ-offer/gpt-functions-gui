@@ -66,7 +66,8 @@ These are not functions per se, they run a model with a specific system message 
 * /write_spec - Writes a spec for the brainstorm following a strict response format
 * /ticket - creates a ticket for the brainstorm/spec following a strict response format
 * /write_tests - writes tests for the ticket / file from ticket
-* /write_code - writes code for the ticket / file from ticket
+* /write_code - writes code for a file from ticket
+* /write_files - writes all the files/subfolders from the ticket/spec into the projects folder.
 
 Example Usecase: /read_file code.ts/py/rs/etc -> /review -> /edit_file code.ts/py/rs/etc
 
