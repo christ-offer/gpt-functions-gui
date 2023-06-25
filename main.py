@@ -200,7 +200,7 @@ class ChatbotGUI:
     # CHAT TAB
     def create_widgets_chat_window(self):
         self.chat_window.grid_rowconfigure(0, weight=1)  
-        self.chat_window.grid_columnconfigure(0, weight=1)  
+        self.chat_window.grid_columnconfigure(0, weight=0)  
         self.chat_window.grid_columnconfigure(1, weight=0)  
         self.chat_window.grid_columnconfigure(2, weight=4)  
         ttk.Label(self.chat_window, text ="Chatbot").grid(column = 0, row = 0, padx = 30, pady = 30, sticky='nsew') 
@@ -212,8 +212,8 @@ class ChatbotGUI:
     
     def create_chat_sidebar(self, parent):
         self.sidebar = ttk.Frame(parent, width=200)
-        self.sidebar.grid(row=0, column=0, sticky='nsew')
-
+        self.sidebar.grid(row=0, column=0, sticky='ns')
+        parent.grid_columnconfigure(0, minsize=200)  # column index of sidebar
         # Add a widget to make the sidebar visible. Adjust as necessary for your design.
         sidebar_label = ttk.Label(self.sidebar, text="Sidebar")
         sidebar_label.pack()
@@ -404,7 +404,7 @@ class ChatbotGUI:
     # FILE MANAGER TAB
     def create_widgets_file_manager(self):
         self.file_manager.grid_rowconfigure(0, weight=1)  
-        self.file_manager.grid_columnconfigure(0, weight=1)  
+        self.file_manager.grid_columnconfigure(0, weight=0)  
         self.file_manager.grid_columnconfigure(1, weight=0)  
         self.file_manager.grid_columnconfigure(2, weight=4)  
 
@@ -582,7 +582,7 @@ class ChatbotGUI:
                 for i, line in enumerate(file, start=1):
                     # Append to chat history with line numbers
                     # Add line numbers to the HTML content
-                    content_html += f'{i}: {line}<br/>'
+                    content_html += f'Line nr: {i}: {line}<br/>'
             self.current_html += content_html
             self.text_area.set_html(self.current_html)
 
@@ -592,7 +592,7 @@ class ChatbotGUI:
     # SETTINGS TAB
     def create_widgets_settings(self):
         self.settings.grid_rowconfigure(0, weight=1)
-        self.settings.grid_columnconfigure(0, weight=1)
+        self.settings.grid_columnconfigure(0, weight=0)
         self.settings.grid_columnconfigure(1, weight=5)
 
         #ttk.Label(self.settings, text="Agent Configuration", justify=CENTER).grid(columnspan=2, row=0, padx=30, pady=30, sticky='nsew')

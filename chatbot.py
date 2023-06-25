@@ -15,7 +15,8 @@ from system_messages.system import (
     ticket_agent, 
     spec_writer, 
     code_writer,
-    unit_test_writer
+    unit_test_writer,
+    suggest_changes_agent
     )
 from agents.function_mapper import FunctionMapper
 from agents.function_call_agent import FunctionCallAgent
@@ -335,6 +336,20 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             prompt=prompt, 
             conversation=conversation, 
             system_message=unit_test_writer
+            )
+        message = response[0]
+        model = "gpt-4-0613"
+        tokens = num_tokens_from_messages(message, model=model)
+        cost = calculate_cost(tokens, model=model)
+        token_count += tokens
+        conversation_cost += cost
+    elif get_command(prompt) == "/suggest_edits":
+        print("Suggest Edits Agent")
+        prompt = prompt[14:].strip()
+        response = regular_agent(
+            prompt=prompt, 
+            conversation=conversation, 
+            system_message=suggest_changes_agent
             )
         message = response[0]
         model = "gpt-4-0613"
