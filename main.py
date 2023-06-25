@@ -24,6 +24,7 @@ from agents.kb_agent import KnowledgebaseHandler
 from agents.scrape_agent import Scraper
 from agents.python_agent import PythonRepl
 from agents.wikidata_agent import WikidataAgent
+from agents.write_project import ProjectWriter
 from constants import *
 
 from tokenizer.tokens import calculate_cost
@@ -164,6 +165,7 @@ class ChatbotGUI:
         self.scrape_agent = Scraper()
         self.wikidata_agent = WikidataAgent()
         self.python_agent = PythonRepl()
+        self.project_write_agent = ProjectWriter()
         
         self.total_tokens = 0
         self.total_cost = 0
@@ -582,7 +584,7 @@ class ChatbotGUI:
                 for i, line in enumerate(file, start=1):
                     # Append to chat history with line numbers
                     # Add line numbers to the HTML content
-                    content_html += f'Line nr: {i}: {line}<br/>'
+                    content_html += f'{i}: {line}<br/>'
             self.current_html += content_html
             self.text_area.set_html(self.current_html)
 

@@ -259,6 +259,25 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         cost = calculate_cost(tokens, model=agents.help_agent.model)
         token_count += tokens
         conversation_cost += cost
+    elif get_command(prompt) == "/write_files":
+        print("Write Project Agent")
+        prompt = prompt[13:].strip()
+        response = function_call_agent(
+            prompt=prompt, 
+            conversation=conversation, 
+            system_message=agents.write_project.system_message, 
+            function_params=agents.write_project.write_files_params,
+            temperature=agents.write_project.temperature,
+            top_p=agents.write_project.top_p,
+            frequency_penalty=agents.write_project.frequency_penalty,
+            model=agents.write_project.model,
+            )
+        message = response[0]
+        model = agents.write_project.model
+        tokens = num_tokens_from_messages(message, model=agents.write_project.model)
+        cost = calculate_cost(tokens, model=agents.write_project.model)
+        token_count += tokens
+        conversation_cost += cost
     elif get_command(prompt) == "/review":
         print("Review Agent")
         prompt = prompt[7:].strip()

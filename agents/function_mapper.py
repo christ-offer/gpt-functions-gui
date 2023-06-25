@@ -7,6 +7,7 @@ from agents.scrape_agent import Scraper
 from agents.wikidata_agent import WikidataAgent
 from agents.image_agent import ImageAgent
 from agents.help_agent import HelpAgent
+from agents.write_project import ProjectWriter
 from system_messages.system import (
     review_agent, 
     brainstorm_agent, 
@@ -28,6 +29,7 @@ class FunctionMapper:
         self.wikidata_agent = WikidataAgent()
         self.image_agent = ImageAgent()
         self.help_agent = HelpAgent()
+        self.write_project = ProjectWriter()
         self.functions_that_append_to_conversation = {
             "knowledgebase_read_entry", 
             "knowledgebase_list_entries", 
@@ -55,9 +57,10 @@ class FunctionMapper:
             "scrape_webpage": self.scraper.scrape_webpage,
             "image_to_text": self.image_agent.image_to_text,
             "help": self.help_agent.help,
+            "write_files": self.write_project.write_files,
         }
 
-        agents = {
+        self.agents = {
                 "/csv": {
                     "name": "CSV Agent",
                     "agent": self.csv_handler,
@@ -151,5 +154,13 @@ class FunctionMapper:
                     "system_message": code_writer,
                     "is_function": False,
                     "command_length": len("/write_code")
+                },
+                "/write_project": {
+                    "name": "Write Project Agent",
+                    "agent": self.write_project,
+                    "system_message": self.write_project.system_message,
+                    "function_params": self.write_project.write_files_params,
+                    "is_function": True,
+                    "command_length": len("/write_project")
                 },
             }
