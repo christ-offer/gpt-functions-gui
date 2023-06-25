@@ -109,11 +109,14 @@ This agent is responsible for editing files.
 
             # Apply the changes
             for change in changes:
-                for line_num in change['range']:
-                    if line_num <= len(lines):  # Ensure the line number is valid
-                        lines[line_num-1] = change['replacementcontent'] + '\n'
-                    else:
-                        return f"Line number {line_num} is out of range in file {filepath}."
+                start, end = change['range']  # get the start and end line numbers
+
+                # Ensure the line numbers are valid
+                if end > len(lines):
+                    return f"Line number {end} is out of range in file {filepath}."
+
+                # Replace the range of lines with the replacement content
+                lines[start-1:end] = [change['replacementcontent'] + '\n']
 
             # Write the modified lines back to the file
             with open(filepath, 'w', encoding='utf-8') as f:
@@ -125,6 +128,8 @@ This agent is responsible for editing files.
             return f"The file '{filepath}' does not exist."
         except Exception as e:
             return f"An error occurred while editing the file: {str(e)}"
+
+
 
     @property
     def write_file_params(self) -> List[Dict[str, Union[str, Dict]]]:

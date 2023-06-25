@@ -538,7 +538,7 @@ class ChatbotGUI:
     def file_manager_add_to_chat_history(self):
         # Get the currently selected file
         selected_item_id = self.tree.selection()[0]
-        selected_file = self.tree.item(selected_item_id, 'text')
+        #selected_file = self.tree.item(selected_item_id, 'text')
 
         file_path = self.file_manager_get_full_path(selected_item_id)
 
@@ -576,7 +576,13 @@ class ChatbotGUI:
             })
 
             # Create HTML for the loaded content and append to the current HTML
-            content_html = f'<p style="background-color: lightgray;">You: Content loaded:<br/>{content}</p><br/>'
+            # Here, newlines are replaced with <br/> for proper HTML formatting
+            content_html = f'<p style="background-color: lightgray;">You: Content loaded from {file_path}:<br/>'
+            with open(file_path, 'r') as file:
+                for i, line in enumerate(file, start=1):
+                    # Append to chat history with line numbers
+                    # Add line numbers to the HTML content
+                    content_html += f'{i}: {line}<br/>'
             self.current_html += content_html
             self.text_area.set_html(self.current_html)
 
