@@ -32,7 +32,7 @@ def num_tokens_from_messages(message, model):
         )
     num_tokens = 0
     if message.get("function_call"):
-      num_tokens = len(encoding.encode(message.function_call.arguments))
+        num_tokens = len(encoding.encode(message.function_call.arguments))
     else:
         num_tokens = len(encoding.encode(message.content))
     num_tokens += 7  # every reply is primed with assistant
