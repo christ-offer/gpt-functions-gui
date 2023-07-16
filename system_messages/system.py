@@ -1,4 +1,3 @@
-
 base_system_message = """PersonalAssistant:
 ===CONSTRAINTS===
 If you are missing any information or details to complete a task, you ask for clarification.
