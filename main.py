@@ -140,12 +140,12 @@ class AIManager:
         chatbot_gui.root.after(0, chatbot_gui.update_text_area, response)
         chatbot_gui.text_area.see("end")  # Scrolls to the end of the text_area
         
-        chatbot_gui.total_tokens += tokens
-        chatbot_gui.total_cost += cost
+        #chatbot_gui.total_tokens += tokens
+        #chatbot_gui.total_cost += cost
         
         ## Add tokens and cost to chat sidebar
-        chatbot_gui.total_token_count.set(f"Total tokens: {chatbot_gui.total_tokens}")
-        chatbot_gui.total_cost_of_input.set(f"Total cost: {chatbot_gui.total_cost:.6f}$")
+        #chatbot_gui.total_token_count.set(f"Total tokens: {chatbot_gui.total_tokens}")
+        #chatbot_gui.total_cost_of_input.set(f"Total cost: {chatbot_gui.total_cost:.6f}$")
 
 
 class ChatbotGUI:

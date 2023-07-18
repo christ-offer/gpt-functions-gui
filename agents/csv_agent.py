@@ -18,6 +18,7 @@ class CSVHandler:
         self.system_message = """# CSV Agent
 You are responsible for handling CSV files.
 """
+        self.function_params = self.read_csv_columns_params
     
     @property
     def model(self):
@@ -66,6 +67,14 @@ You are responsible for handling CSV files.
     @system_message.setter
     def system_message(self, value):
         self._system_message = value
+        
+    @property
+    def function_params(self):
+        return self._function_params
+    
+    @function_params.setter
+    def function_params(self, value):
+        self._function_params = value
     
     
     def read_csv_columns(self, file_path: str) -> str:
