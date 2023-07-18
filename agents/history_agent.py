@@ -21,7 +21,8 @@ class HistoryHandler:
         self.top_p = top_p
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
-        self.conversation = conversation,
+        self.conversation = conversation
+        self.function_params = self.history_params
         self.system_message = """# History Agent
 You are responsible for handling the history.
 """

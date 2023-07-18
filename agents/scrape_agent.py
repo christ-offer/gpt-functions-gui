@@ -17,6 +17,7 @@ class Scraper:
         self.top_p = top_p
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
+        self.function_params = self.scrape_params
         self.system_message = """# Scrape Webpage Agent
 This agent scrapes a webpage and returns the result as a JSON string.
 """

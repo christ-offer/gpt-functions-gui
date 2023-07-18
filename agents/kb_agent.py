@@ -20,6 +20,7 @@ class KnowledgebaseHandler:
         self.top_p = top_p
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
+        self.function_params = self.knowledgebase_params
         self.system_message = """# Knowledgebase Agent
 You are responsible for handling the knowledgebase.
 """

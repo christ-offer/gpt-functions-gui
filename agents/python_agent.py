@@ -16,6 +16,7 @@ class PythonRepl:
         self.top_p = top_p
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
+        self.function_params = self.python_repl_params
         self.system_message = """# Python REPL Agent
 You have access to a Python Interpreter through your python_repl function.
 Think steps ahead and make sure the code you execute correctly handles the users request.

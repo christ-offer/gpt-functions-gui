@@ -20,6 +20,7 @@ class ProjectWriter:
         self.top_p = top_p
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
+        self.function_params = self.write_files_params
         self.system_message = """# Code Writing Agent
 ===CONSTRAINTS===
 You will recieve a Ticket and a Spec for a project to complete.

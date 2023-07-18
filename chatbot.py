@@ -1,29 +1,19 @@
-
-import openai
-from openai.error import OpenAIError
 import json
 import logging
-from typing import Optional, Dict, List, Tuple
+from typing import Dict, List, Tuple
 import re
 
 from tokenizer.tokens import calculate_cost, num_tokens_from_messages
 from system_messages.system import (
     function_res_agent, 
     base_system_message,
-    review_agent, 
-    brainstorm_agent, 
-    ticket_agent, 
-    spec_writer, 
-    code_writer,
-    unit_test_writer,
-    suggest_changes_agent
     )
 from agents.function_mapper import FunctionMapper
 from agents.function_call_agent import FunctionCallAgent
 from agents.base_agent import RegularAgent
 from agents.function_response_agent import function_response_agent
 from constants import HISTORY_DIR
-agents = FunctionMapper()
+function_mapper = FunctionMapper()
 fc = FunctionCallAgent()
 ra = RegularAgent()
 function_call_agent = fc.call
@@ -37,11 +27,11 @@ def get_command(prompt):
     return None
 
 def call_function(function_name, function_args):
-    if function_name not in agents.function_map:
+    if function_name not in function_mapper.function_map:
         raise Exception(f"Function {function_name} not found.")
     if function_args is None:
-        return agents.function_map[function_name]()
-    return agents.function_map[function_name](*function_args.values())
+        return function_mapper.function_map[function_name]()
+    return function_mapper.function_map[function_name](*function_args.values())
 
 def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[str, List[Dict[str, str]], int, float]:
     token_count = 0
@@ -51,11 +41,10 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         "content": prompt,
     })
     
-    function_mapper = FunctionMapper()
-    agentes = function_mapper.agents
+    agents = function_mapper.agents
     command = get_command(prompt)
-    if command in agentes:
-        agent_properties = agentes[command]
+    if command in agents:
+        agent_properties = agents[command]
         print(agent_properties["name"])
         prompt = prompt[agent_properties["command_length"]:].strip()
         if agent_properties["is_function"]:
@@ -70,17 +59,11 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
                 model=agent_properties["agent"].model,
             )
             message = response[0]
-            print(message)
             model = agent_properties["agent"].model
             tokens = num_tokens_from_messages(message, model=model)
-            print(tokens)
-            print(model)
             cost = calculate_cost(tokens, model=model)
-            print(cost)
             token_count += tokens
-            print(token_count)
             conversation_cost += cost
-            print(conversation_cost)
     else:
         print('Personal Assistant')
         response = regular_agent(
@@ -102,13 +85,12 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
         print(f"Function arguments: {function_args}")
         
         function_response = call_function(function_name, function_args)
-        print(f"Function response: {function_response}")
-        if function_name in agents.functions_that_append_to_conversation:
+        if function_name in function_mapper.functions_that_append_to_conversation:
             conversation.append({
                 "role": "assistant",
                 "content": function_response,  # directly add function response to the conversation
             })
-            return function_response, conversation  # directly return function response
+            return function_response, conversation, token_count, conversation_cost  # directly return function response
         else:
             logging.info(f"Function response: {function_response}")
             second_response = function_response_agent(

@@ -19,6 +19,7 @@ class ImageAgent:
         self.temperature = temperature
         self.top_p = top_p
         self.frequency_penalty = frequency_penalty
+        self.function_params = self.image_to_text_params
         self.presence_penalty = presence_penalty
         self.system_message = """# Image to Text Agent
 This agent creates a caption / description of an image.
