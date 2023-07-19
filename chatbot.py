@@ -12,12 +12,15 @@ from agents.function_mapper import FunctionMapper
 from agents.function_call_agent import FunctionCallAgent
 from agents.base_agent import RegularAgent
 from agents.function_response_agent import function_response_agent
+
 from constants import HISTORY_DIR
 function_mapper = FunctionMapper()
 fc = FunctionCallAgent()
 ra = RegularAgent()
 function_call_agent = fc.call
 regular_agent = ra.call
+
+
 
 def get_command(prompt):
     """Extract command from prompt if it exists"""

@@ -15,6 +15,7 @@ import tiktoken
 import json
 
 from chatbot import run_conversation
+from gui.settings_tab import SettingsTab
 from agents.image_agent import ImageAgent
 from agents.csv_agent import CSVHandler
 from agents.file_write_agent import FileWriter
@@ -147,7 +148,14 @@ class AIManager:
         chatbot_gui.total_token_count.set(f"Total tokens: {chatbot_gui.total_tokens}")
         chatbot_gui.total_cost_of_input.set(f"Total cost: {chatbot_gui.total_cost:.6f}$")
 
-
+    def on_response(response_chunk):
+                # Update GUI with new text
+                html = markdown.markdown(response_chunk) 
+                ai_text = f'<p style="background-color: lightblue;">AI: {html}</p><br/>'
+                chatbot_gui.current_html += ai_text
+                chatbot_gui.text_area.set_html(chatbot_gui.current_html)
+                chatbot_gui.text_area.see("end")  # Scrolls to the end of the text_area
+                
 class ChatbotGUI:
     def __init__(self):
         self.styles = Styles()
@@ -195,7 +203,11 @@ class ChatbotGUI:
         # Create Tab 3
         self.settings = ttk.Frame(self.tabControl)
         self.tabControl.add(self.settings, text='Settings')
-        self.create_widgets_settings()
+        
+        # Initialize SettingsTab
+        self.settings_tab = SettingsTab(settings=self.settings ,csv_agent=self.csv_agent)
+        self.settings_tab.settings = self.settings
+        self.settings_tab.create_widgets_settings()
 
         self.is_loading = False
     

@@ -38,20 +38,20 @@ class FunctionCallAgent:
             presence_penalty: float = 0.0
             ):
         try:
-          response = openai.ChatCompletion.create(
-              model=model,
-              temperature=temperature,
-              top_p=top_p,
-              frequency_penalty=frequency_penalty,
-              presence_penalty=presence_penalty,
-              messages=[
-                  {"role": "system", "content": system_message}
-              ] + conversation + [
-                  {"role": "user", "content": prompt}
-              ],
-              functions=function_params,
-              function_call="auto",
-          )
+            response = openai.ChatCompletion.create(
+                model=model,
+                temperature=temperature,
+                top_p=top_p,
+                frequency_penalty=frequency_penalty,
+                presence_penalty=presence_penalty,
+                messages=[
+                    {"role": "system", "content": system_message}
+                ] + conversation + [
+                    {"role": "user", "content": prompt}
+                ],
+                functions=function_params,
+                function_call="auto",
+            )
         except OpenAIError as error:
             logging.error(f"OpenAI API call failed: {str(error)}")
             return "OpenAI API call failed due to an internal server error.", conversation
