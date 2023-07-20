@@ -13,15 +13,16 @@ from agents.function_mapper import FunctionMapper
 from agents.function_call_agent import FunctionCallAgent
 from agents.base_agent import RegularAgent
 from agents.function_response_agent import function_response_agent
+from agents.anthropic_base import AnthropicAgent
 
 from constants import HISTORY_DIR
 function_mapper = FunctionMapper()
 fc = FunctionCallAgent()
 ra = RegularAgent()
+aa = AnthropicAgent()
 function_call_agent = fc.call
 regular_agent = ra.call
-
-
+anthropic_agent = aa.call
 
 def get_command(prompt):
     """Extract command from prompt if it exists"""
@@ -68,21 +69,37 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             cost = calculate_cost(tokens, model=model)
             token_count += tokens
             conversation_cost += cost
+    elif command == "/claude":
+        print('Anthropic')
+        prompt = prompt[len(command):].strip()
+        response = anthropic_agent(
+            prompt=prompt, 
+            conversation=conversation,
+            )
+        message = response
+        #tokens = num_tokens_from_messages(message, model=model)
+        #cost = calculate_cost(tokens, model=model)
+        #token_count += tokens
+        #conversation_cost += cost
+        conversation.append({
+            "role": "assistant",
+            "content": message,
+        })
+        return message, conversation, token_count, conversation_cost
     else:
         print('Personal Assistant')
         response = regular_agent(
             prompt=prompt, 
             conversation=conversation, 
             system_message=base_system_message,
-            stream=False
             )
-            
-        message = response[0]    
+        print(response[0])
+        message = response[0]
         model = "gpt-4-0613"
         tokens = num_tokens_from_messages(message, model=model)
         cost = calculate_cost(tokens, model=model)
-        token_count += tokens
-        conversation_cost += cost
+        token_count = 10 #+= tokens
+        conversation_cost = 12 #+= cost
         conversation.append({
             "role": "assistant",
             "content": message["content"],
@@ -117,7 +134,7 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
                 "content": second_response["content"],
             }) 
             model = "gpt-3.5-turbo-16k-0613"
-
+            print(second_response)
             tokens = num_tokens_from_messages(second_response, model=model)
             cost = calculate_cost(tokens, model=model)
             token_count += tokens

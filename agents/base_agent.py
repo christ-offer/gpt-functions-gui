@@ -81,7 +81,7 @@ class RegularAgent:
             model: str = "gpt-4-0613",
             temperature: float = 0.6,
             top_p: float = 1.0,
-            stream: bool = True,
+            stream: bool = False,
             frequency_penalty: float = 0.0,
             presence_penalty: float = 0.0):
             
@@ -92,13 +92,31 @@ class RegularAgent:
                 top_p=top_p,
                 frequency_penalty=frequency_penalty,
                 presence_penalty=presence_penalty,
-                stream=stream,
                 messages=[
                     {"role": "system", "content": system_message},
                 ] + conversation + [
                     {"role": "user", "content": prompt}
                 ],
+                stream=stream,
             )
+            #print('streaming response')
+            #collected_chunks = []
+            #collected_messages = []
+            #iterate through the stream of events
+            #for chunk in response:
+            #    collected_chunks.append(chunk)  # save the event response                
+            #    chunk_message = chunk['choices'][0]['delta']  # extract the message
+            #    collected_messages.append(chunk_message)  # save the message
+            #    if (chunk.choices[0].finish_reason != 'stop'):
+            #        print(chunk.choices[0].delta.content)
+
+            #print the time delay and text receivedquest")
+            #full_reply_content = ''.join([m.get('content', '') for m in collected_messages])
+            #return_object = {
+            #    "role": "assistant",
+            #    "content": full_reply_content,
+            #}
+            #print(f"Full conversation received: {full_reply_content}")
         except OpenAIError as error:
             logging.error(f"OpenAI API call failed: {str(error)}")
             return "OpenAI API call failed due to an internal server error.", conversation
