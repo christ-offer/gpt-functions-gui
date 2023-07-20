@@ -11,8 +11,10 @@ class RegularAgent:
             model: str = "gpt-4-0613",
             temperature: float = 0.6,
             top_p: float = 1.0,
+            stream: bool = False,
             frequency_penalty: float = 0.0,
             presence_penalty: float = 0.0):
+            
         self.model = model
         self.temperature = temperature
         self.top_p = top_p
@@ -21,6 +23,7 @@ class RegularAgent:
         self.prompt = prompt
         self.conversation = conversation
         self.system_message = system_message
+        self.stream = stream
     
     @property
     def model(self):
@@ -78,8 +81,10 @@ class RegularAgent:
             model: str = "gpt-4-0613",
             temperature: float = 0.6,
             top_p: float = 1.0,
+            stream: bool = True,
             frequency_penalty: float = 0.0,
             presence_penalty: float = 0.0):
+            
         try:
             response = openai.ChatCompletion.create(
                 model=model,
@@ -87,6 +92,7 @@ class RegularAgent:
                 top_p=top_p,
                 frequency_penalty=frequency_penalty,
                 presence_penalty=presence_penalty,
+                stream=stream,
                 messages=[
                     {"role": "system", "content": system_message},
                 ] + conversation + [

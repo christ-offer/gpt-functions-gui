@@ -11,6 +11,7 @@ def function_response_agent(
         top_p = 1.0,
         frequency_penalty = 0.0,
         presence_penalty = 0.0,
+        stream: bool = False,
         function_response: any = None,
         function_name: str = None,
         message: str = None
@@ -22,6 +23,7 @@ def function_response_agent(
             top_p=top_p,
             frequency_penalty=frequency_penalty,
             presence_penalty=presence_penalty,
+            stream=stream,
             messages=[
                 {"role": "system", "content": system_message},
                 {"role": "user", "content": prompt},

@@ -2,9 +2,29 @@ import os
 from tkinter import *
 from tkinter import ttk
 
+from agents.image_agent import ImageAgent
+from agents.csv_agent import CSVHandler
+from agents.file_write_agent import FileWriter
+from agents.help_agent import HelpAgent
+from agents.history_agent import HistoryHandler
+from agents.kb_agent import KnowledgebaseHandler
+from agents.scrape_agent import Scraper
+from agents.python_agent import PythonRepl
+from agents.wikidata_agent import WikidataAgent
+from agents.write_project import ProjectWriter
+
 class SettingsTab:
-    def __init__(self, settings, csv_agent):
-        self.csv_agent = csv_agent
+    def __init__(self, settings):
+        self.image_agent = ImageAgent()
+        self.csv_agent = CSVHandler()
+        self.file_write_agent = FileWriter()
+        self.help_agent = HelpAgent()
+        self.history_agent = HistoryHandler()
+        self.kb_agent = KnowledgebaseHandler()
+        self.scrape_agent = Scraper()
+        self.wikidata_agent = WikidataAgent()
+        self.python_agent = PythonRepl()
+        self.write_project = ProjectWriter()
         self.settings = settings  # add this line
         self.create_widgets_settings()
 

@@ -2,6 +2,7 @@ import json
 import logging
 from typing import Dict, List, Tuple
 import re
+import time
 
 from tokenizer.tokens import calculate_cost, num_tokens_from_messages
 from system_messages.system import (
@@ -73,13 +74,20 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             prompt=prompt, 
             conversation=conversation, 
             system_message=base_system_message,
+            stream=False
             )
+            
         message = response[0]    
         model = "gpt-4-0613"
         tokens = num_tokens_from_messages(message, model=model)
         cost = calculate_cost(tokens, model=model)
         token_count += tokens
         conversation_cost += cost
+        conversation.append({
+            "role": "assistant",
+            "content": message["content"],
+        })
+        return message["content"], conversation, token_count, conversation_cost
 
     if message.get("function_call"):
         function_name = message["function_call"]["name"]
@@ -101,7 +109,8 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
                 system_message=function_res_agent, 
                 function_name=function_name, 
                 function_response=function_response, 
-                message=message
+                message=message,
+                stream=False
                 )
             conversation.append({
                 "role": "assistant",
@@ -115,10 +124,3 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             conversation_cost += cost
             print(f'Cost of run: {conversation_cost}$')
             return second_response["content"], conversation, token_count, conversation_cost
-    else:
-        conversation.append({
-            "role": "assistant",
-            "content": message["content"],
-        })
-        print(f'Cost of run: {conversation_cost}$')
-        return message["content"], conversation, token_count, conversation_cost
