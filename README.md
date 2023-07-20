@@ -38,7 +38,7 @@ Chatbot built with TKinter GUI and a bunch of functions.
 - [ ] Integration with Vector DB (A tab for it in the UI with upload/search/embed/etc)
 - [x] Settings tab for configuring the parameters of the different agents (somewhat done)
 - [ ] Streamed responses live updated in UI. Not sure how to get around threading (or how to do it generally), especially for running python code.
-- [ ] Refactor the UI code to be more modular and less spaghetti
+- [x] Refactor the UI code to be more modular and less spaghetti (somewhat done, tabs are seperated to their own files)
 - [x] Token counter / Cost counter
 - [ ] Probably more
 
