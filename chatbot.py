@@ -93,7 +93,6 @@ def run_conversation(prompt: str, conversation: List[Dict[str, str]]) -> Tuple[s
             conversation=conversation, 
             system_message=base_system_message,
             )
-        print(response[0])
         message = response[0]
         model = "gpt-4-0613"
         tokens = num_tokens_from_messages(message, model=model)
